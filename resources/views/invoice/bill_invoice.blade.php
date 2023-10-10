@@ -73,8 +73,8 @@
 				</div>
 				<div class="col-md-6">
 				<label for="" class="form-label">Select Bill Type</label>
-					<select class="form-select" name="bill_type" required>
-          <option value="">Select</option>
+					<select class="form-control" name="bill_type" required>
+            <option value="">Select</option>
 						<option value="pant_bill">Pant Bill</option>
 						<option value="shirt_bill">Shirt Bill</option>
             <option value="fabric_bill">Fabric Bill</option>
@@ -268,11 +268,11 @@ $(document).ready(function(){
       })
     </script>
     <script>
-    const printButton = document.getElementById('printButton');
-    printButton.addEventListener('click', () => {
-        window.print();
-    });
-</script>
+        const printButton = document.getElementById('printButton');
+        printButton.addEventListener('click', () => {
+            window.print();
+        });
+    </script>
 
     <x-footerscript/>
   </body>

@@ -77,3 +77,39 @@
 <link rel="stylesheet" href="{{asset('multiple/plugins/select2/css/select2.min.css')}}">
 <link rel="stylesheet" href="{{asset('multiple/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 
+<style>
+      @media print {
+        /* Remove unnecessary elements */
+        body {
+          font-size: 12pt; /* Adjust font size for readability */
+        }
+        .content-wrapper {
+          padding: 0; /* Remove padding to maximize content space */
+        }
+        .card {
+          border: 1px solid #000;
+          border-radius: 5px; /* Add rounded corners to the card */
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+        input, select, .form-control {
+          border: 1px solid #000;
+          border-radius: 3px; /* Add rounded corners to input fields */
+          padding: 3px; /* Add padding to input fields */
+          font-size: 10pt; /* Adjust font size for input fields */
+        }
+        h1 {
+          font-size: 16pt; /* Adjust font size for headings */
+          margin-top: 20px; /* Add margin to headings */
+        }
+        hr {
+          border: none; /* Remove the default horizontal rule */
+          border-top: 1px solid #000; /* Add a custom horizontal rule */
+          margin-top: 10px;
+        }
+        button {
+          display: none; /* Hide buttons when printing */
+        }
+        /* Customize other styles as needed */
+      }
+    </style>
