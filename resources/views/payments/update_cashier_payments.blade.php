@@ -155,7 +155,24 @@
                     autofocus
                   />
                 </div>
+                @if(session('role') == 'admin')
+                <div class="mb-3">
+                  <label for="cnic" class="form-label">Status</label>
+                  <select class="form-control" name="verify">
+                      @if($data->verify == 0)
+                        <option value="0">Not Verify</option>
+                        <option value="1">Verify</option>
+                        @else
+                        <option value="1">Verify</option>
+                        <option value="0">Not Verify</option>
+                        @endif
+                  </select>
+                </div>
+                @endif
                 <button class="btn btn-primary d-grid w-100" type="submit">Update</button>
+                @if(session('role') == 'admin')
+                <button class="btn btn-success d-grid w-100 mt-2" type="submit">Verify</button>
+                @endif
                 <a href="{{url('cashier_payments')}}"><button type="button" class="btn btn-secondary d-grid w-100 mt-2">Back</button></a>
               </form>
 

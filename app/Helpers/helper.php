@@ -250,6 +250,11 @@ function getpartiestatus($id){
     return $data->status;
 }
 
+function getpartieaddress($id){
+    $data = partie::where('partie_id', $id)->first();
+    return $data;
+}
+
 
 
 

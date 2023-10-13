@@ -28,10 +28,15 @@ class PaymentController extends Controller
     public function CashierLedger(){
         $config = ['table'=>'cashier_payments','field'=>'pay_id','length'=>10,'prefix'=>'PAY-'];
         $id = IdGenerator::generate($config);
-        $CashEntry = cashier_payment::all();
+        if(session('role') == 'admin'){
+            $CashEntry = cashier_payment::all();
+        }
+        else{
+            $CashEntry = cashier_payment::where('given_by', session('user_id'))->get();
+        }
         $EmpData = register::all();
         $ParData = partie::all();
-        $CashierData = register::where('role','cashier')->get();
+        $CashierData = register::where('role','cashier')->orwhere('role','manager')->get();
         return view('payments.cashier_payments',['debit_id'=>$id])->with('Empdata',$EmpData)->with('CashData',$CashierData)
         ->with('CashEntry',$CashEntry)
         ->with('ParData',$ParData);
@@ -48,6 +53,7 @@ class PaymentController extends Controller
             $EmpData->employee_id = $req->user_id;
             $EmpData->description = $req->description;
             $EmpData->debit = $req->debit;
+            $EmpData->verify = $request->verify;
             $EmpData->credit = $req->credit;
             $EmpData->given_by = $req->given_by;
             $EmpData->save();
@@ -186,6 +192,9 @@ class PaymentController extends Controller
             $data->debit = $request->debit;
         } else {
             $data->credit = $request->credit;
+        }
+        if($request->has('verify')){
+            $data->verify = 1;
         }
         $data->save();
 

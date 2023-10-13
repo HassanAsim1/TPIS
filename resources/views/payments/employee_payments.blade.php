@@ -74,10 +74,9 @@
                         </button> -->
                     </div>
                 </div>
-
             </div>
                 <div class="container table-responsive text-nowrap">
-                  <table class="table table-bordered display nowrap" id="example">
+                  <table class="container table-responsive text-nowrap" id="example">
                     <thead>
                       <tr>
                         <th>EMPLOYEE-ID</th>

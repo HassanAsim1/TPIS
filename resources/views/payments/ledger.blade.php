@@ -185,25 +185,13 @@
         </div>
       </form>
     </section>
-              <div class="card mt-5">
+              <div class="card mt-2">
                 <div class="row">
                 <h5 class="card-header col-md-10">Payments Details</h5>
-                <div class="col-md-2">
-                      <div class="mt-3">
-                        <!-- Button trigger modal -->
-                        <!-- <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-bs-toggle="modal"
-                          data-bs-target="#basicModal"
-                        >
-                          Add Parties
-                        </button> -->
-                    </div>
-                </div>
+                
             
             </div>   
-                <div class="table-responsive text-nowrap">
+                <div class="table-responsive text-nowrap" style="max-height: 500px; overflow-y: auto;">
                   <table class="table table-bordered" style="overflow-x: auto;" id="exportTable">
                     <thead>
                       <tr>
@@ -217,9 +205,12 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                   @php $balance = 0; @endphp
+                   @php $balance = 0;
+                    $num = count($ledger);
+                    $count = 1; @endphp
+                    <input type="hidden" id="table_row" value="{{$num}}"/>
                      @foreach($ledger as $parties_ledger)
-                      <tr>
+                      <tr id="row{{$count}}">
                         <td><span class="badge bg-label-secondary me-1">{{$parties_ledger->payment_id}} / {{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
                         <td>{{$parties_ledger->trans_id}}</td>
                         <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{$parties_ledger->given_by}}</span></td>
@@ -241,6 +232,7 @@
                             </div>
                           </div>
                         </td>
+                        @php $count++ @endphp
                       </tr>
                       @endforeach
                     </tbody>
@@ -257,7 +249,12 @@
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 
-
+    <script>
+      $(document).ready(function(){
+        let rowval = $('#table_row').val();
+        document.getElementById('row'+rowval).scrollIntoView();
+      })
+    </script>
     
     
     <x-footerscript/>

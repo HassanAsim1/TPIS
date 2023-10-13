@@ -111,17 +111,22 @@
                   </div>
                   <div class="col-sm-3">
                     <label for="inputGB">Given By</label>
-                      <select name="given_by" class="form-select" style="width: 100%;">
-                      @foreach ($CashData as $CData)
-                        <option value="{{$CData['user_id']}}">{{$CData['user_id']}} / {{$CData['name']}}</option>
-                      @endforeach
-                      </select>
-                  </div>
+                            @if(session('role') == 'admin')
+                              <select name="given_by" class="form-control" id="">
+                                <option value="{{session('user_id')}}">{{getname(session('user_id'))}}</option>
+                                @foreach($CashData as $data)
+                                    <option value="{{$data->user_id}}">{{$data->name}}</option>
+                                @endforeach
+                              </select>
+                              @else
+                              <input type="text" value="{{session('user_id')}}" name="given_by" class="form-control" required>
+                              @endif
+                          </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                  <!-- <a href="/parties" class="btn btn-secondary">Cancel</a> -->
+                  <button type="submit" value="Add lot" class="btn btn-success float-right">Add Credit</button>
                 </div>
-                <div class="col-12 mt-3">
-          <!-- <a href="/parties" class="btn btn-secondary">Cancel</a> -->
-          <button type="submit" value="Add lot" class="btn btn-success float-right">Add Credit</button>
-        </div>
               </div>
             </div>
             <!-- /.card-body -->
@@ -173,12 +178,18 @@
                     <input type="number" name="debit" class="form-control" placeholder="Debit" required>
                   </div>
                   <div class="col-sm-3">
+                    <input type="hidden" name="verify" value="0" class="form-control" readonly>
                     <label for="inputGB">Given By</label>
-                      <select name="given_by" class="form-control" style="width: 100%;">
-                      @foreach ($CashData as $CData)
-                        <option value="{{$CData['user_id']}}">{{$CData['user_id']}} / {{$CData['name']}}</option>
-                      @endforeach
+                      @if(session('role') == 'admin')
+                      <select name="given_by" class="form-control">
+                        <option value="{{session('user_id')}}">{{getname(session('user_id'))}}</option>
+                        @foreach($CashData as $data)
+                            <option value="{{$data->user_id}}">{{$data->name}}</option>
+                        @endforeach
                       </select>
+                      @else
+                      <input type="text" value="{{session('user_id')}}" name="given_by" class="form-control" required>
+                      @endif
                   </div>
                 </div>
                 <div class="col-12 mt-3">
@@ -211,7 +222,7 @@
                 </div>
 
             </div>
-                <div class="table-responsive text-nowrap">
+                <div class="table-responsive text-nowrap" style="max-height: 500px; overflow-y: auto;">
                   <table class="table table-bordered" style="overflow-x: auto;" id="exportTable">
                     <thead>
                       <tr>
@@ -224,7 +235,7 @@
                         <th>Action</th>
                       </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0"style="max-height: 300px; overflow-y: auto;">
+                    <tbody class="table-border-bottom-0">
                     @php $balance = 0;
                     $num = count($CashEntry);
                     $count = 1; @endphp
@@ -233,7 +244,11 @@
                       <tr id="row{{$count}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$CashData->pay_id}}</strong> / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($CashData->created_at)->format('d M Y')}}</span></td>
                         <td>{{$CashData->user_id}}</td>
-                        <td>{{$CashData->description}} / <span class="badge bg-label-primary me-1">{{$CashData->given_by}}</span></td>
+                        @if($CashData->verify == 0)
+                        <td>{{$CashData->description}} / <span class="badge bg-label-primary me-1">{{getname($CashData->given_by)}}</span> / <span class="badge bg-label-danger me-1">Not Verify</span></td>
+                        @else
+                        <td>{{$CashData->description}} / <span class="badge bg-label-primary me-1">{{getname($CashData->given_by)}}</span> / <span class="badge bg-label-success me-1">Verify</span></td>
+                        @endif
                         <td>{{$CashData->debit}}</td>
                         <td>{{$CashData->credit}}</td>
                         <td>{{$balance = ($balance + $CashData->credit - $CashData->debit)}}</td>

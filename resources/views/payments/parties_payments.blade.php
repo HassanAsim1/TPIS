@@ -62,8 +62,8 @@
                 </div>
             
             </div>   
-                <div class="table-responsive text-nowrap">
-                  <table class="table table-bordered">
+                <div class="container table-responsive text-nowrap">
+                  <table class="table table-bordered" id="example">
                     <thead>
                       <tr>
                         <th>PARTIE-ID</th>
@@ -114,7 +114,16 @@
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 
-
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            } );
+        } );
+    </script>
     
     
     <x-footerscript/>

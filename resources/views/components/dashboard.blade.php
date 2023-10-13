@@ -270,7 +270,7 @@
             @endif
             @endif
             <!-- Extended components -->
-            @if(session('role') == 'cashier' || session('role') == 'admin')
+            @if(session('role') == 'cashier' || session('role') == 'admin' || session('role') == 'manager')
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Payment Section</span></li>
             @if(session('role') == 'admin')
             <li class="menu-item {{(request()->is('parties_payments')) ? 'active open' : ''}}">

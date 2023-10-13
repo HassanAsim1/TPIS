@@ -72,7 +72,7 @@
 				<div class="col-md-6">
 					<h1>TO</h1>
 						<address>
-						<p>Saad Garments<br>c/o Haji Shab</br>Contact #: 0324-9899809<br></p>
+              <p>{{getpartieaddress($Invdata->partie_id)->name}}<br>{{getpartieaddress($Invdata->partie_id)->address}}</br>Contact #: {{getpartieaddress($Invdata->partie_id)->phone_no}}<br></p>
 						</address>
 				</div>
 			</div>
