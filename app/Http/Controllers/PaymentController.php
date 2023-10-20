@@ -53,7 +53,6 @@ class PaymentController extends Controller
             $EmpData->employee_id = $req->user_id;
             $EmpData->description = $req->description;
             $EmpData->debit = $req->debit;
-            $EmpData->verify = $request->verify;
             $EmpData->credit = $req->credit;
             $EmpData->given_by = $req->given_by;
             $EmpData->save();
@@ -72,6 +71,7 @@ class PaymentController extends Controller
         }
         $data->user_id = $req->user_id;
         $data->description = $req->description;
+        $EmpData->verify = 0;
         $data->debit = $req->debit;
         $data->credit = $req->credit;
         $data->given_by = $req->given_by;

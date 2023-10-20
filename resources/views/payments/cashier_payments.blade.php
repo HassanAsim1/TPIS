@@ -243,7 +243,11 @@
                      @foreach($CashEntry as $CashData)
                       <tr id="row{{$count}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$CashData->pay_id}}</strong> / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($CashData->created_at)->format('d M Y')}}</span></td>
+                        @if($CashData->user_id != 'Expense' && $CashData->user_id != 'Company')
                         <td>{{$CashData->user_id}}</td>
+                        @else
+                        <td>{{$CashData->user_id}}</td>
+                        @endif
                         @if($CashData->verify == 0)
                         <td>{{$CashData->description}} / <span class="badge bg-label-primary me-1">{{getname($CashData->given_by)}}</span> / <span class="badge bg-label-danger me-1">Not Verify</span></td>
                         @else

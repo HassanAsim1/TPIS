@@ -81,13 +81,13 @@
                                       @endif
                                     @endforeach
                               </select> --}}
-                              <input type="text" class="form-control" name="sname[]" id="basic-default-company" value="{{$lotcard->lot_id}}" readonly/>
+                              <input type="text" class="form-control" name="sname[]" id="basic-default-company" value="{{$lotcard->lot_id}}" />
                                 </div>
                                 <div class="col-sm-2 mt-1">
                                   <input type="text" class="form-control" name="sdes[]" id="basic-default-company" value="{{$lotcard->description}}" placeholder="Description"/>
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                <input type="text" class="form-control tquan" id="squan{{$count}}" name="squantity[]" value="{{$lotcard->quantity}}" readonly/>
+                                <input type="text" class="form-control tquan" id="squan{{$count}}" name="squantity[]" value="{{$lotcard->quantity}}" />
                                 </div>
                                 <div class="col-sm-2 mt-1">
                                   <input type="text" class="form-control trate" onkeydown="totalval({{$count}})" value="{{$lotcard->rate}}" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>

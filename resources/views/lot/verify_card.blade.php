@@ -30,7 +30,7 @@
           <!-- Content wrapper -->
           <div class="container py-5">
             <!-- Content -->
-            @if(session('role') != 'admin')
+            @if(session('role') != 'admin' && session('role') != 'manager')
               <div class="row">
               <div class="col">
                 <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">

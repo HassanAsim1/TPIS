@@ -64,7 +64,7 @@
                     <tbody class="table-border-bottom-0">
                       @foreach($data as $user)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->invoice_id}}</strong></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->invoice_id}} / {{getpartiename($user->partie_id)}}</strong></td>
                         <td>{{getpartiename($user->partie_id)}}</td>
                         <td><span class="badge bg-label-secondary me-1">{{$user->created_by}}</span></td>
                         <td>
