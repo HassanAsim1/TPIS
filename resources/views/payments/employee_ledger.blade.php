@@ -48,7 +48,8 @@
     <!-- Credit By Cashier -->
     <div class="card">
     <div class="card-header">
-              <h3 class="card-title">Select Payment Entry Method</h3>
+              <h3 class="card-title">{{getname($EMPID)}}
+              <h6 class="card-title">Select Payment Entry Method</h6>
               <div class="card-tools">
                 <button type="button" class="btn btn-tool btn-danger" data-card-widget="collapse" title="Collapse" id="DebitBtn">Add Debit
                 </button>
@@ -194,7 +195,6 @@
                     <thead>
                       <tr>
                         <th>PAY-ID</th>
-                        <th>EMPLOYEE-ID</th>
                         <th>Description</th>
                         <th>Debit</th>
                         <th>Credit</th>
@@ -206,8 +206,8 @@
                    @php $balance = 0; @endphp
                      @foreach($ledger as $parties_ledger)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$parties_ledger->payment_id}}</strong> / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
-                        <td>{{$parties_ledger->employee_id}}</td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$parties_ledger->payment_id}}</strong> / <span class="badge bg-label-secondary">{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
+                        {{-- <td>{{$parties_ledger->employee_id}}</td> --}}
                         <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{$parties_ledger->given_by}}</span></td>
                         <td>{{$parties_ledger->debit}}</td>
                         <td>{{$parties_ledger->credit}}</td>

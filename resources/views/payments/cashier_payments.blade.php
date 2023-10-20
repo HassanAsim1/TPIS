@@ -244,7 +244,11 @@
                       <tr id="row{{$count}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$CashData->pay_id}}</strong> / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($CashData->created_at)->format('d M Y')}}</span></td>
                         @if($CashData->user_id != 'Expense' && $CashData->user_id != 'Company')
-                        <td>{{$CashData->user_id}}</td>
+                          @if($CashData->debit != null)
+                          <td>{{getname($CashData->user_id)}}</td>
+                          @else
+                          <td>{{getpartiename($CashData->user_id)}}</td>
+                          @endif
                         @else
                         <td>{{$CashData->user_id}}</td>
                         @endif
