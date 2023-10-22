@@ -6,6 +6,7 @@ use App\Http\Controllers\LotController;
 use App\Http\Controllers\PartiesController;
 use App\Http\Controllers\fabricController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use App\Models\fabric;
 use App\Models\lot;
@@ -133,6 +134,9 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('show-verify-card-by-id/{id}',[LotController::class, 'show_verify_card_by_id']);
     Route::get('delete-verify-card/{id}',[LotController::class, 'delete_verify_card']);
     Route::get('delete-verify-card/{id}',[LotController::class, 'delete_verify_card']);
+    Route::get('/generate-invoice', [InvoiceController::class,'generateInvoice'])->name('generate-invoice');
+    Route::get('/printPartieInvoice/{partie_id}', [InvoiceController::class,'printPartieInvoice'])->name('printPartieInvoice');
+    Route::get('/printBillInvoice/{invoice_id}', [InvoiceController::class,'printBillInvoice'])->name('printBillInvoice');
 
 });
 

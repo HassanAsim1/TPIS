@@ -101,7 +101,7 @@
                             <div class="row justify-content-end">
                               <div class="col-sm-6">
                                 <a href="{{route('view_invoice')}}"><button class="btn btn-Danger">Back</button></a>
-                                <button type="button" id="printButton" class="btn btn-primary">Print</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('printBillInvoice', ['invoice_id' => $Invdata->invoice_id]) }}', '_blank');">Generate Invoice</button>
                               </div>
                               <div class="col-sm-3 mb-2">
                               <label class="col-form-label" for="basic-default-company">Total Quantity :</label>

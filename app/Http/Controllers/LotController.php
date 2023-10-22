@@ -332,46 +332,54 @@ class LotController extends Controller
         return view('invoice.bill_invoice',compact('id','lotdata'))->with('data',$data);
      }
      public function InsertInvoice(Request $req){
-        $data = new invoice;
-        $data->invoice_id = $req->invoice_id;
-        $data->partie_id = $req->partie_id;
-        $data->bill_type = $req->bill_type;
-        $data->total_pcs = $req->total_quantity;
-        $data->grand_total = $req->grandtotal;
-        $data->discount = 0;
-        $data->created_by = $req->created_by;
-        $num = count($req->squantity);
-            for($i=0; $i<$num; $i++){
+        try {
+            $data = new invoice;
+            $data->invoice_id = $req->invoice_id;
+            $data->partie_id = $req->partie_id;
+            $data->bill_type = $req->bill_type;
+            $data->total_pcs = $req->total_quantity;
+            $data->grand_total = $req->grandtotal;
+            $data->discount = 0;
+            $data->created_by = $req->created_by;
+        
+            $num = count($req->squantity);
+        
+            for ($i = 0; $i < $num; $i++) {
                 $InData = new linkinvoice;
                 $InData->invoice_id = $req->invoice_id;
                 $InData->lot_id = $req->slot[$i];
-                // $remaining_lot = lot::where('lot_id',$req->slot[$i])->first();
-                // $remaining_lot ->lot_remain = $remaining_lot ->lot_remain - $req->squantity[$i];
-                // $remaining_lot->save();
                 $InData->description = $req->sdes[$i];
                 $InData->quantity = $req->squantity[$i];
                 $InData->rate = $req->srate[$i];
                 $InData->total = $req->stotal[$i];
                 $InData->save();
             }
-        $data->save();
-        // For Credit in Parties Ledger
-        $config = ['table'=>'parties_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'PRTYPAY-'];
-        $Pid = IdGenerator::generate($config);
-        $partie = new parties_ledger;
-        $partie->payment_id = $Pid;
-        $partie->parties_id = $req->partie_id;
-        $partie->trans_id = $req->invoice_id;
-        $partie->description = $req->bill_type;
-        $partie->credit = $req->grandtotal;
-        $partie->given_by = session('user_id');
-        $partie->save();
+        
+            $data->save();
+        
+            // For Credit in Parties Ledger
+            $config = ['table' => 'parties_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'PRTYPAY-'];
+            $Pid = IdGenerator::generate($config);
+            $partie = new parties_ledger;
+            $partie->payment_id = $Pid;
+            $partie->parties_id = $req->partie_id;
+            $partie->trans_id = $req->invoice_id;
+            $partie->description = $req->bill_type;
+            $partie->credit = $req->grandtotal;
+            $partie->given_by = session('user_id');
+            $partie->save();
+        
             // Update Partie Current balance
-        $PartieData = partie::where('partie_id',$req->partie_id)->first();
-        $PartieData->current_balance = $PartieData->current_balance + $req->grandtotal;
-        $PartieData->save();
-        session()->put('msg',$req->invoice_id.' Has Successfully Inserted');
-        return redirect()->back();
+            $PartieData = partie::where('partie_id', $req->partie_id)->first();
+            $PartieData->current_balance = $PartieData->current_balance + $req->grandtotal;
+            $PartieData->save();
+        
+            session()->put('msg', $req->invoice_id . ' Has Successfully Inserted');
+            return redirect('printBillInvoice/' . $data->invoice_id);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error, '. $e->getMessage());
+        }
+        
      }
 
      public function ViewInvoice(Request $req){
@@ -388,36 +396,48 @@ class LotController extends Controller
     }
     public function InsertPantLot(Request $req){
         $data = new lotcard;
-        $id = IdGenerator::generate(['table' =>'lotcards','field'=>'card_id', 'length' => 10, 'prefix' =>'CARD-']);
-            $data->card_id = $id;
-            $data->user_id = $req->user_id;
-            $data->card_type = $req->card_type;
-            $data->fix_rate = $req->fix_rate;
-            $data->working_area = $req->working_area;
-            $data->total_pcs = $req->total_quantity;
-            $data->grand_total = $req->grandtotal;
-            // $data->user_role = session('role');
-            $data->verify_card = 0;
-            $num = count($req->squantity);
-            // dd($req->sname);
-            for($i=0; $i<$num; $i++){
-                $InData = new linklotcard;
-                $InData->card_id = $id;
-                $InData->user_id = $req->user_id;
-                $InData->lot_id = $req->sname[$i];
-                $InData->description = $req->sdes[$i];
-                $InData->quantity = $req->squantity[$i];
-                $InData->rate = $req->srate[$i];
-                $InData->role = session('role');
-                $InData->total = $req->stotal[$i];
-                $InData->save();
+        $id = IdGenerator::generate(['table' => 'lotcards', 'field' => 'card_id', 'length' => 10, 'prefix' => 'CARD-']);
+        $data->card_id = $id;
+        $data->user_id = $req->user_id;
+        $data->card_type = $req->card_type;
+        $data->fix_rate = $req->fix_rate;
+        $data->working_area = $req->working_area;
+        $data->total_pcs = $req->total_quantity;
+        $data->grand_total = $req->grandtotal;
+        $data->verify_card = 0;
+        
+        $num = count($req->squantity);
+        
+        for ($i = 0; $i < $num; $i++) {
+            $lot_id = $req->sname[$i];
+            $workingArea = $req->working_area;
+        
+            // Check if a record with the same lot_id and role already exists in the database
+            $existingRecord = linklotcard::where('lot_id', $lot_id)->where('role', $workingArea)->where('status',1)->first();
+        
+            if ($existingRecord) {
+                // If a record with the same lot_id and role exists, you can choose to skip or take other actions
+                // Here, I'm skipping the current iteration
+                continue;
             }
-            if($data->save()){
-                Alert::success('Success', 'Lot-Card Added Successfully');
-
-            }
-           // return view('lot.shitrtlot',['data'=>$data]);
-            return redirect()->back();
+        
+            $InData = new linklotcard;
+            $InData->card_id = $id;
+            $InData->user_id = $req->user_id;
+            $InData->lot_id = $lot_id;
+            $InData->description = $req->sdes[$i];
+            $InData->quantity = $req->squantity[$i];
+            $InData->rate = $req->srate[$i];
+            $InData->role = $workingArea;
+            $InData->total = $req->stotal[$i];
+            $InData->save();
+        }
+        
+        if ($data->save()) {
+            Alert::success('Success', 'Lot-Card Added Successfully');
+        }
+        
+        return redirect()->back();        
     }
 
             // Verify Lot Cards
@@ -441,42 +461,67 @@ class LotController extends Controller
         return view('lot.editpantlot')->with('data',$data)->with('mstatus',$mstatus)->with('FabData',$FabData);
     }
     public function VerifyCardAdmin(Request $req){
-        $data = lotcard::where('card_id',$req->card_id)->first();
-        if($data != ""){
-            $lotdata = linklotcard::where('card_id',$data->card_id)->get();
+        $data = lotcard::where('card_id', $req->card_id)->first();
+
+        if ($data) {
+            $lotdata = linklotcard::where('card_id', $data->card_id)->get();
             $lotdata->each->delete();
-        }
+            
             $data->total_pcs = $req->total_quantity;
             $data->grand_total = $req->grandtotal;
+            $data->working_area = $req->working_area;
             $data->verify_card = 1;
             $num = count($req->squantity);
-            for($i=0; $i<$num; $i++){
+
+            for ($i = 0; $i < $num; $i++) {
+                $lot_id = $req->sname[$i];
+                $workingArea = $req->working_area;
+
+                // Check if a record with the same lot_id, role, and status = 1 already exists in the database
+                $existingRecord = linklotcard::where('lot_id', $lot_id)
+                    ->where('role', $workingArea)
+                    ->where('status', 1)
+                    ->first();
+
+                if ($existingRecord) {
+                    // If a record with the same lot_id, role, and status = 1 exists, you can choose to skip or take other actions
+                    // Here, I'm skipping the current iteration
+                    continue;
+                }
+
                 $InData = new linklotcard;
                 $InData->card_id = $req->card_id;
                 $InData->user_id = $req->user_id;
-                $InData->lot_id = $req->sname[$i];
+                $InData->lot_id = $lot_id;
                 $InData->description = $req->sdes[$i];
                 $InData->quantity = $req->squantity[$i];
                 $InData->rate = $req->srate[$i];
-                $InData->role = $data->user_role;
+                $InData->status = 1;
+                $InData->role = $workingArea;
                 $InData->total = $req->stotal[$i];
                 $InData->save();
             }
+
             $EmpData = new employee_ledger;
-            $config = ['table'=>'employee_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'EMPPAY-'];
+            $config = ['table' => 'employee_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'EMPPAY-'];
             $Pid = IdGenerator::generate($config);
             $EmpData->payment_id = $Pid;
             $EmpData->employee_id = $req->user_id;
-            $EmpData->description = 'Credit By '.session('name').' Pcs: '.$req->total_quantity;
+            $EmpData->description = 'Credit By ' . session('name') . ' Pcs: ' . $req->total_quantity;
             $EmpData->debit = $req->debit;
             $EmpData->credit = $req->grandtotal;
             $EmpData->given_by = $req->given_by;
             $EmpData->save();
 
-            if($data->save()){
-                Alert::success('Success', 'Lot-Card Added Successfully');
+            if ($data->save()) {
+                Alert::success('Success', 'Lot-Card Updated Successfully');
             }
-            return redirect()->back();
+        } else {
+            Alert::success('Error', 'Lot-Card Not Found');
+        }
+
+        return redirect()->back();
+
     }
     public function KadhiLot(){
         $data = lot::where('kadi',1)->get();

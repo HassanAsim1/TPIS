@@ -223,6 +223,43 @@
           
         })
       </script>
+
+<script>
+                        $(document).ready(function () {
+                            calculateTotals(); // Calculate totals when the page loads
+
+                            // Calculate totals when quantity input changes
+                            $(document).on('input', '.tquan', function () {
+                                calculateTotals();
+                            });
+
+                            function calculateTotals() {
+                                var totalQuantity = 0;
+                                var grandTotal = 0;
+
+                                $('.tquan').each(function () {
+                                    var quantity = parseFloat($(this).val());
+                                    totalQuantity += isNaN(quantity) ? 0 : quantity;
+
+                                    var unitPrice = parseFloat($(this).data('unit-price')); // Replace with your actual unit price data
+                                    grandTotal += isNaN(quantity) || isNaN(unitPrice) ? 0 : (quantity * unitPrice);
+                                });
+
+                                $('#totalquan').val(totalQuantity);
+                                calculateGrandTotal();
+                            }
+                            function calculateGrandTotal() {
+                              var grandTotal = 0;
+
+                              $('.tsum').each(function () {
+                                var total = parseFloat($(this).val());
+                                grandTotal += isNaN(total) ? 0 : total;
+                              });
+
+                              $('#grandtotal').val(grandTotal);
+                            }
+                        });
+                    </script>
     <x-footerscript/>
   </body>
 </html>

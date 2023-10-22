@@ -13,6 +13,7 @@ use App\Models\employee_ledger;
 use Illuminate\Support\Facades\DB;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use RealRashid\SweetAlert\Facades\Alert;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -82,21 +83,51 @@ class PaymentController extends Controller
             $config = ['table'=>'parties_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'PRTYPAY-'];
             $Pid = IdGenerator::generate($config);
             $PRTYID = partie::where('partie_id',$id)->first();
-            $PartiesLedger = parties_ledger::where('parties_id',$id)->get();
+            $PartiesLedger = parties_ledger::where('parties_id', $id)->orderBy('created_at', 'asc')->get();
             return view('payments.ledger')->with('ledger',$PartiesLedger)->with('PAYID',$Pid)
             ->with('PRTYID',$PRTYID);
     }
     public function Partie_Credit(Request $req){
-        $data = new parties_ledger;
-        $data->payment_id = $req->inputDebitID;
-        $data->trans_id = $req->trans_id;
-        $data->parties_id = $req->parties_id;
-        $data->description = $req->description;
-        $data->debit = $req->debit;
-        $data->credit = $req->credit;
-        $data->given_by = $req->given_by;
-        $data->save();
-        return redirect()->back();
+        try {
+            if($req->trans_id != ''){
+                $check = parties_ledger::where('trans_id', $req->trans_id)->first();
+            
+                if ($check) {
+                    $dateString = $check->created_at;
+                    $dateTime =  Carbon::parse($dateString);
+                    $formattedDate  = $dateTime->format('j F y , H:i');
+                    return redirect()->back()->with('error', 'Trans ID Exist ' . $check->trans_id . ' Date: ' . $formattedDate);
+                } else {
+                    $data = new parties_ledger;
+                    $data->payment_id = $req->inputDebitID;
+                    $data->trans_id = $req->trans_id;
+                    $data->parties_id = $req->parties_id;
+                    $data->description = $req->description;
+                    $data->debit = $req->debit;
+                    $data->credit = $req->credit;
+                    $data->given_by = $req->given_by;
+                    $data->created_at = Carbon::parse($req->date);
+                    $data->save();
+                    return redirect()->back();
+                }
+            }
+            else{
+                $data = new parties_ledger;
+                $data->payment_id = $req->inputDebitID;
+                $data->trans_id = $req->trans_id;
+                $data->parties_id = $req->parties_id;
+                $data->description = $req->description;
+                $data->debit = $req->debit;
+                $data->credit = $req->credit;
+                $data->given_by = $req->given_by;
+                $data->created_at = Carbon::parse($req->date);
+                $data->save();
+                return redirect()->back();
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions here
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }        
     }
     public function Employee_Payments(){
         $data = register::all();
@@ -205,19 +236,29 @@ class PaymentController extends Controller
         return view('payments.update_parties_payments',compact('data'));
     }
     public function update_partie_cash_data(Request $request){
-        $data = parties_ledger::where('payment_id',$request->payment_id)->first();
-        if($request->description != ''){
-            $data->description = $request->description;
-        }
-        $data->trans_id = $request->trans_id;
-        if ($request->debit) {
-            $data->debit = $request->debit;
-        } else {
-            $data->credit = $request->credit;
-        }
-        $data->save();
-
-        return redirect('parties_ledger/'.$data->parties_id)->with('success', 'Payment Edit Successfully');
+        try {
+            $data = parties_ledger::where('payment_id', $request->payment_id)->first();
+        
+            if ($request->description !== '') {
+                $data->description = $request->description;
+            }
+        
+            $data->trans_id = $request->trans_id;
+        
+            if ($request->debit) {
+                $data->debit = $request->debit;
+            } else {
+                $data->credit = $request->credit;
+            }
+        
+            $data->created_at = Carbon::parse($request->date);
+            $data->save();
+        
+            return redirect('parties_ledger/'.$data->parties_id)->with('success', 'Payment '.$request->payment_id.' Edit Successfully');
+        } catch (\Exception $e) {
+            // Handle exceptions here
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }    
     }
     public function week_payments(){
         $data = weeklypayment::all();

@@ -43,6 +43,7 @@
                 </nav>
               </div>
             </div>
+            <x-alert />
 
               <!-- Basic Bootstrap Table -->
     <!-- Credit By Cashier -->

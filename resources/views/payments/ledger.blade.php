@@ -43,6 +43,7 @@
                 </nav>
               </div>
             </div>
+            <x-alert />
 
               <!-- Basic Bootstrap Table -->
     <!-- Credit By Cashier -->
@@ -64,6 +65,7 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
+                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('printPartieInvoice', ['partie_id' => $PRTYID->partie_id]) }}', '_blank');">Generate Invoice</button>
                   </div>
                   <div class="col-sm-4">
                   <label for="inputDate">Balance</label>
@@ -97,6 +99,10 @@
                   <div class="col-sm-3">
                     <label for="inputId">TRANSACTION ID</label>
                     <input type="text" name="trans_id" class="form-control">
+                  </div>
+                  <div class="col-sm-3">
+                      <label for="inputId">TRANSACTION Date</label>
+                      <input type="date" name="date" id="inputId" class="form-control">
                   </div>
                 </div>
                 <div class="row">
@@ -153,6 +159,10 @@
                   <div class="col-sm-3">
                     <label for="inputId">TRANSACTION ID</label>
                     <input type="text" name="trans_id" class="form-control">
+                  </div>
+                  <div class="col-sm-3">
+                      <label for="inputId">TRANSACTION Date</label>
+                      <input type="date" name="date" id="inputIdDebit" class="form-control">
                   </div>
                 </div>
                 <div class="row">
@@ -211,8 +221,8 @@
                     <input type="hidden" id="table_row" value="{{$num}}"/>
                      @foreach($ledger as $parties_ledger)
                       <tr id="row{{$count}}">
-                        <td><span class="badge bg-label-secondary me-1">{{$parties_ledger->payment_id}} / {{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
-                        <td>{{$parties_ledger->trans_id}}</td>
+                        <td>{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y , H:i')}}</td>
+                        <td>{{$parties_ledger->trans_id}} <span class="badge bg-label-secondary me-1">{{$parties_ledger->payment_id}}</span></td>
                         <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{$parties_ledger->given_by}}</span></td>
                         <td>{{$parties_ledger->debit}}</td>
                         <td>{{$parties_ledger->credit}}</td>
@@ -319,6 +329,11 @@ swalWithBootstrapButtons.fire({
 })
 }
     </script>
+
+<script>
+    document.getElementById("inputId").valueAsDate = new Date(); // Set the input's value to the current date
+    document.getElementById("inputIdDebit").valueAsDate = new Date(); // Set the input's value to the current date
+</script>
     
   </body>
 </html>

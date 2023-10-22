@@ -45,12 +45,7 @@
                     </nav>
                 </div>
             </div>
-            @if(session()->has('success'))
-          <div class="alert alert-success alert-dismissible" role="alert">
-                  {{session()->get('success')}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-          @endif
+           <x-alert />
 
               <!-- Basic Bootstrap Table -->
     <!-- Credit By Cashier -->
@@ -64,6 +59,7 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
+                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('generate-invoice') }}', '_blank');">Generate Invoice</button>
               </div>
             </div>
 </div>
