@@ -153,7 +153,11 @@
                                         <td class="py-1">
                                             <p class="card-text text-nowrap">
                                                 {{ $parties_ledger->trans_id }} / {{ $parties_ledger->payment_id }}<br>
+                                                @if($parties_ledger->trans_id != '' && $parties_ledger->credit != null)
+                                                {{ $parties_ledger->description }} / {!! getInvoiceRecord($parties_ledger->trans_id) !!}
+                                                @else
                                                 {{ $parties_ledger->description }}
+                                                @endif
                                             </p>
                                         </td>
                                         <td class="py-1">

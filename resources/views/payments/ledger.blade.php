@@ -223,7 +223,11 @@
                       <tr id="row{{$count}}">
                         <td>{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y , H:i')}}</td>
                         <td>{{$parties_ledger->trans_id}} <span class="badge bg-label-secondary me-1">{{$parties_ledger->payment_id}}</span></td>
+                        @if($parties_ledger->trans_id && $parties_ledger->credit)
+                        <td>{{$parties_ledger->description}} / {!! getInvoiceRecord($parties_ledger->trans_id) !!} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
+                        @else
                         <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
+                        @endif
                         <td>{{$parties_ledger->debit}}</td>
                         <td>{{$parties_ledger->credit}}</td>
                         <td>{{$balance = ($balance + $parties_ledger->credit - $parties_ledger->debit)}}</td>

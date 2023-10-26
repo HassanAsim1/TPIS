@@ -265,6 +265,17 @@ function getpartieaddress($id){
     return $data;
 }
 
+function getInvoiceRecord($id) {
+    $data = invoice::where('invoice_id', $id)->first();
+    if($data){
+        $html = 'Total Pcs-Meter: ' . $data->total_pcs . '<br /> Total Amount: ' . $data->grand_total . ' / Avg Rate: ' . number_format($data->grand_total / $data->total_pcs, 2);
+        return $html;
+    }
+    else{
+        return '';
+    }
+    
+}
 
 
 
