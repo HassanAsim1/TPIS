@@ -84,6 +84,9 @@
                         <th>USER-ID</th>
                         <th>NAME</th>
                         <th>EMAIL</th>
+                        <th>Bank Acc No</th>
+                        <th>Bank Name</th>
+                        <th>Bank Acc Name</th>
                         <th>CNIC</th>
                         <th>PHONE-NO</th>
                         <th>status</th>
@@ -96,6 +99,9 @@
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->user_id}}</strong></td>
                         <td>{{$user->name}}</td>
                         <td>{{$user->email}}</td>
+                        <td>{{$user->bankAccountNumber}}</td>
+                        <td>{{$user->bankAccountName}}</td>
+                        <td>{{$user->bankName}}</td>
                         <td>{{$user->cnic}}</td>
                         <td>{{$user->phone_no}}</td>
                         <td>

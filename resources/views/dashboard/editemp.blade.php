@@ -28,7 +28,7 @@
     <!-- Content -->
 
     <div class="container-xxl">
-      <div class="authentication-wrapper authentication-basic container-p-y">
+      <div class="container-xxl flex-grow-1 container-p-y">
         <div class="authentication-inner">
           <!-- Register Card -->
           <div class="card">
@@ -121,29 +121,112 @@
                   <input type="text" class="form-control" id="email" name="email" value="{{$data->email}}" />
                 </div>       
  
-                <div class="mb-3">
-                  <label for="phonenumber" class="form-label">Phone Number</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="phonenumber"
-                    name="phonenumber"
-                    value="{{$data->phone_no}}"
-                    autofocus
-                  />
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="phonenumber" class="form-label">Phone Number</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="phonenumber"
+                        name="phonenumber"
+                        value="{{$data->phone_no}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="cnic" class="form-label">CNIC</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="cnic"
+                        name="cnic"
+                        value="{{$data->cnic}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div class="mb-3">
-                  <label for="cnic" class="form-label">CNIC</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="cnic"
-                    name="cnic"
-                    value="{{$data->cnic}}"
-                    autofocus
-                  />
+                <div class="row">
+                  @if($data->fix_rate == '')
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="salary" class="form-label">Salary</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="salary"
+                        name="salary"
+                        value="{{$data->salary}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+                  @else
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="fix_rate" class="form-label">Rate</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="fix_rate"
+                        name="fix_rate"
+                        value="{{$data->fix_rate}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+                  @endif
+
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="bankAccountNumber" class="form-label">Bank Account Number</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="bankAccountNumber"
+                        name="bankAccountNumber"
+                        value="{{$data->bankAccountNumber}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="bankName" class="form-label">Bank Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="bankName"
+                        name="bankName"
+                        value="{{$data->bankName}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="bankAccountName" class="form-label">Bank Account Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="bankAccountName"
+                        name="bankAccountName"
+                        value="{{$data->bankAccountName}}"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+                </div>
+
 
                 <div class="mb-3">
                   <label for="address" class="form-label">Address</label>

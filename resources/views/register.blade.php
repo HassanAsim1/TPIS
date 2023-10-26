@@ -28,15 +28,9 @@
     <!-- Content -->
 
     <div class="container-xxl">
-      <div class="authentication-wrapper authentication-basic container-p-y">
+      <div class="container-xxl flex-grow-1 container-p-y">
         <div class="authentication">  
-          @if(session()->has('error'))
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    {{session('error')}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-              @php session()->pull('error') @endphp
-          @endif
+          <x-alert />
           @if(session('role') == null)
             <div class="row">
               <div class="col">
@@ -69,7 +63,7 @@
             @else
           <!-- Register Card -->
           <div class="card">
-            <div class="card-body">
+            <div class="card-body col-xl">
               <!-- Logo -->
               <div class="app-brand justify-content-center">
                 <a href="/register" class="app-brand-link gap-2">
@@ -151,47 +145,60 @@
                 </div>
 
 
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
-                </div>
-                <div class="mb-3 form-password-toggle">
-                  <label class="form-label" for="password">Password</label>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password"
-                    />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email</label>
+                      <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="mb-3 form-password-toggle">
+                      <label class="form-label" for="password">Password</label>
+                      <div class="input-group input-group-merge">
+                        <input
+                          type="password"
+                          id="password"
+                          class="form-control"
+                          name="password"
+                          placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                          aria-describedby="password"
+                        />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="mb-3">
-                  <label for="phonenumber" class="form-label">Phone Number</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="phonenumber"
-                    name="phonenumber"
-                    placeholder="Enter your phonenumber"
-                    autofocus
-                  />
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="phonenumber" class="form-label">Phone Number</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="phonenumber"
+                        name="phonenumber"
+                        placeholder="Enter your phonenumber"
+                        autofocus
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label for="cnic" class="form-label">CNIC</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="cnic"
+                        name="cnic"
+                        placeholder="Enter your CNIC"
+                        autofocus
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div class="mb-3">
-                  <label for="cnic" class="form-label">CNIC</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="cnic"
-                    name="cnic"
-                    placeholder="Enter your CNIC"
-                    autofocus
-                  />
-                </div>
 
                 <div class="mb-3">
                   <label for="address" class="form-label">Address</label>
@@ -204,6 +211,49 @@
                     autofocus
                   />
                 </div>
+
+                <div class="mb-3">
+                  <label for="address" class="form-label">Bank Account No:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="bankAccountNumber"
+                    name="bankAccountNumber"
+                    placeholder="Enter your Bank Number"
+                    autofocus
+                  />
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Bank Account Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="bankAccountName"
+                          name="bankAccountName"
+                          placeholder="Enter your Bank Account Name"
+                          autofocus
+                        />
+                      </div>
+                  </div>
+                    <div class="col-sm-6">
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Bank Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="bankName"
+                          name="bankName"
+                          placeholder="Enter your Bank Account Name"
+                          autofocus
+                        />
+                      </div>
+                    </div>
+                </div>
+
+
                 <div class="mb-3">
                         <label for="exampleFormControlSelect1" class="form-label">Select Role</label>
                         <select class="form-select" id="selrole" aria-label="Default select example" name="role">
@@ -215,35 +265,42 @@
                           <option value="employee">employee</option>
                         </select>
                 </div>
-                <div class="mb-3" style="display:none" id="WorkingArea">
-                        <label for="exampleFormControlSelect1" class="form-label">Select Working Area</label>
-                        <select class="form-select" aria-label="Default select example" name="WorkingArea">
-                          <option value="" selected>-- Select --</option>
-                          <option value="1">Cutting</option>
-                          <option value="2">Kadhi</option>
-                          <option value="3">Employee - Singer</option>
-                          <option value="4">Employee - Fido</option>
-                          <option value="5">Employee - Safety</option>
-                          <option value="6">Employee - Batake</option>
-                          <option value="7">Employee - Thoka/Mori/Bottom</option>
-                          <option value="8">Washing</option>
-                          <option value="9">Clipping</option>
-                          <option value="10">Rib - Button</option>
-                          <option value="11">Press</option>
-                          <option value="12">Packing</option>
-                          <option value="14">Shirt</option>
-                          <option value="15">Worker</option>
-                        </select>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="mb-3" style="display:none" id="WorkingArea">
+                      <label for="exampleFormControlSelect1" class="form-label">Select Working Area</label>
+                      <select class="form-select" aria-label="Default select example" name="WorkingArea">
+                        <option value="" selected>-- Select --</option>
+                        <option value="1">Cutting</option>
+                        <option value="2">Kadhi</option>
+                        <option value="3">Employee - Singer</option>
+                        <option value="4">Employee - Fido</option>
+                        <option value="5">Employee - Safety</option>
+                        <option value="6">Employee - Batake</option>
+                        <option value="7">Employee - Thoka/Mori/Bottom</option>
+                        <option value="8">Washing</option>
+                        <option value="9">Clipping</option>
+                        <option value="10">Rib - Button</option>
+                        <option value="11">Press</option>
+                        <option value="12">Packing</option>
+                        <option value="14">Shirt</option>
+                        <option value="15">Worker</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="mb-3" style="display:none" id="MethodofSalary">
+                      <label for="exampleFormControlSelect1" class="form-label">Method of Salary</label>
+                      <select class="form-control" aria-label="Default select example" name="MethodofSalary">
+                        <option value="" selected>-- Select --</option>
+                        <option value="salary">Salary</option>
+                        <option value="perpiece">Per Piece</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="mb-3" style="display:none" id="MethodofSalary">
-                                    <label for="exampleFormControlSelect1" class="form-label">Method of Salary</label>
-                                    <select class="form-control" aria-label="Default select example"  name="MethodofSalary"  >
-                                       <option value="" selected>-- Select --</option>
-                                        <option value="salary">Salary</option>
-                                        <option value="perpiece" >Per Piece</option>
-                                    </select>
-                </div>
 
                 <div class="mb-3" style="display:none" id="salaryno">
                   <label for="salaryno" class="form-label">Salary</label>

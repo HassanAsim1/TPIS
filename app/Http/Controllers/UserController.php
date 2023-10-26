@@ -14,73 +14,66 @@ class UserController extends Controller
     //
     function addData(Request $req)
     {
-        $data = new register;
-        $checkdata = register::where('email',$req->email)->first();
-        if($checkdata != ''){
-            session()->put('error',$req->email. ' is already register.');
+        try {
+            $data = new register;
+            $checkdata = register::where('email', $req->email)->first();
+            if ($checkdata) {
+                session()->put('error', $req->email . ' is already registered.');
+                return redirect()->back();
+            }
+        
+            $data->address = $req->address;
+            $data->name = $req->name;
+            $data->email = $req->email;
+            $data->password = Hash::make($req->password);
+            $data->working_area = $req->WorkingArea;
+            $data->bankAccountNumber = $req->bankAccountNumber;
+            $data->bankAccountName = $req->bankAccountName;
+            $data->bankName = $req->bankName;
+            
+            if ($req->salaryno == "") {
+                $data->salary = "";
+            } else {
+                $data->salary = $req->salaryno;
+            }
+            
+            if ($req->fix_rate == "") {
+                $data->fix_rate = "";
+            } else {
+                $data->fix_rate = $req->fix_rate;
+            }
+        
+            $data->method_salary = $req->MethodofSalary;
+            $data->role = $req->role;
+        
+            $id = [
+                'table' => 'registers',
+                'field' => 'user_id',
+                'length' => 7,
+                'prefix' => 'EMP-',
+                'reset_on_prefix_change' => true
+            ];
+            $data->user_id = IdGenerator::generate($id);
+        
+            $data->cnic = $req->cnic;
+            $data->phone_no = $req->phonenumber;
+            $data->status = $req->status;
+        
+            if ($data->save()) {
+                Alert::success('success', $data->name . ' Register Successful');
+                if (session()->has('role') == 'admin') {
+                    return redirect('emptable');
+                } else {
+                    return view('login');
+                }
+            } else {
+                return redirect()->back();
+            }
+        } catch (\Exception $e) {
+            session()->put('error', 'An error occurred: ' . $e->getMessage());
             return redirect()->back();
         }
-        $data->address = $req->address;
-        $data->name = $req->name;
-        $data->email = $req->email;
-        $data->password =Hash::make( $req->password);
-        $data->working_area = $req->WorkingArea;
-        if($req->salaryno=="")
-        {
-            $data->salary = "";
-        }
-        else{
-            $data->salary = $req->salaryno;
-        }
-        if($req->fix_rate=="")
-        {
-            $data->fix_rate = "";
-        }
-        else{
-            $data->fix_rate = $req->fix_rate;
-        }
-
-        $data->method_salary = $req->MethodofSalary;
-        $data->role = $req->role;
-        // if($req->role == 'admin'){
-        //     $id = IdGenerator::generate(['table' =>'registers','field'=>'user_id', 'length' => 7, 'prefix' =>'ADM-']);
-        //     $data->user_id= $id;
-        // }
-        // elseif($req->role == 'cashier'){
-        //     $id = IdGenerator::generate(['table' =>'registers','field'=>'user_id', 'length' => 7, 'prefix' =>'CAS-']);
-        //     $data->user_id= $id;
-        // }
-        // elseif($req->role == 'manager'){
-        //     $id = IdGenerator::generate(['table' =>'registers','field'=>'user_id', 'length' => 7, 'prefix' =>'MAN-']);
-        //     $data->user_id= $id;
-        // }
-        // elseif($req->role == 'master'){
-        //     $id = IdGenerator::generate(['table' =>'registers','field'=>'user_id', 'length' => 7, 'prefix' =>'MAS-']);
-        //     $data->user_id= $id;
-        // }
-        // else{
-        $id = ['table' =>'registers','field'=>'user_id', 'length' => 7, 'prefix' =>'EMP-', 'reset_on_prefix_change' => true];
-        $data->user_id= IdGenerator::generate($id);
-        // }
-        $data->cnic = $req->cnic;
-        $data->phone_no = $req->phonenumber;
-        $data->status = $req->status;
-      //  $data->password = $req->password;
-        //$data->save();
-        if($data->save())
-        {
-            Alert::success('Success',$data->name.' Register Successful');
-            if(session()->has('role') == 'admin')
-            {
-                return redirect('emptable');
-            }
-            else{
-                return view('login');
-            }
-        }
-        else{
-            return redirect()->back();
-        }
+        
     }
 
 
@@ -154,23 +147,31 @@ class UserController extends Controller
 
      public function update(Request $req)
      {
-        $data = register::where('user_id',$req->user_id)->first();
-        $data->address = $req->address;
-        $data->name = $req->name;
-        $data->email = $req->email;
-        $data->cnic = $req->cnic;
-        $data->phone_no = $req->phonenumber;
-        $data->status = $req->status;
-        if($req->new_password != ''){
-            $data->password = Hash::make($req->new_password);
+        try {
+            $data = register::where('user_id', $req->user_id)->first();
+            $data->address = $req->address;
+            $data->name = $req->name;
+            $data->email = $req->email;
+            $data->cnic = $req->cnic;
+            $data->phone_no = $req->phonenumber;
+            $data->bankAccountNumber = $req->bankAccountNumber;
+            $data->bankAccountName = $req->bankAccountName;
+            $data->bankName = $req->bankName;
+            $data->status = $req->status;
+            
+            if ($req->new_password != '') {
+                $data->password = Hash::make($req->new_password);
+            }
+            
+            if ($data->save()) {
+                session()->put('success', 'User Updated Successfully');
+            } else {
+                session()->put('error', 'User Not Updated Successfully');
+            }
+        } catch (\Exception $e) {
+            session()->put('error', 'An error occurred: ' . $e->getMessage());
         }
-        if($data->save()){
-            session()->put('msg','User Updated Successfully');
-        }
-        else{
-            session()->put('error','User Not Updated Successfully');
-        }
-
+        
         return redirect(route('Emptable'));
      }
      public function parties(Request $req)

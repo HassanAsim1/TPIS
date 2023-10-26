@@ -57,7 +57,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('emptable',[UserController::class,'EmpTable'])->name('Emptable');
     Route::get('viewemp/{id}',[UserController::class,'ViewEmp']);
     Route::get('editemp/{id}',[UserController::class,'EditEmp']);
-    Route::post('editemp',[UserController::class, 'Update']);
+    Route::post('editemp',[UserController::class, 'update']);
     Route::post('add_partie',[PartiesController::class, 'add_parties']);
     Route::get('editparty/{id}',[PartiesController::class,'EditParties']);
     Route::post('editparty',[PartiesController::class, 'Update']);
