@@ -374,8 +374,8 @@ class LotController extends Controller
             $PartieData->current_balance = $PartieData->current_balance + $req->grandtotal;
             $PartieData->save();
         
-            session()->put('msg', $req->invoice_id . ' Has Successfully Inserted');
-            return redirect('printBillInvoice/' . $data->invoice_id);
+            session()->put('invoiceNumber', $data->invoice_id);
+            return redirect()->back()->with('success', $data->invoice_id.' Has Successfully Inserted');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Error, '. $e->getMessage());
         }

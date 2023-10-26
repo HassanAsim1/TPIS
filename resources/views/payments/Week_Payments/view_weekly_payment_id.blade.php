@@ -85,8 +85,8 @@
                                 <a href="{{url('show-weekly-payments')}}">
                                     <button type="button" class="btn btn-danger">Back</button>
                                 </a>
-                                <!-- <button type="button" id="printButton" class="btn btn-primary">Print</button>
-                                <button type="button" class="btn btn-primary" id="openSignatureModal">Enter Signature</button> -->
+                                <button type="button" id="printButton" class="btn btn-primary">Print</button>
+                                <!-- <button type="button" class="btn btn-primary" id="openSignatureModal">Enter Signature</button> -->
                               </div>
                               <div class="col-sm-2 mb-2">
                               <label class="col-form-label" for="basic-default-company">Total Amount:</label>

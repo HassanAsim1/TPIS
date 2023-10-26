@@ -12,14 +12,8 @@
 
   <body>
     <x-dashboard/>
+    <x-alert />
 	<div class="content-wrapper" style="padding: 20px;">
-  @if(session()->has('msg'))
-          <div class="alert alert-success alert-dismissible" role="alert">
-                  {{session('msg')}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @php session()->pull('msg') @endphp
-          @endif
 	<div class="card">
 		<div class="card-body invoice-padding pb-0">
     <form action="{{url('bill_inv')}}" method="POST">
@@ -77,7 +71,8 @@
             <option value="">Select</option>
 						<option value="pant_bill">Pant Bill</option>
 						<option value="shirt_bill">Shirt Bill</option>
-            <option value="fabric_bill">Fabric Bill</option>
+            <option value="Fabric Bill">Fabric Bill</option>
+            <option value="Pant & Shirt Bill">Pant & Shirt Bill</option>
 					</select>
 				</div>
 			</div>
@@ -149,7 +144,9 @@
                             <div class="row justify-content-end">
                               <div class="col-sm-6">
                                 <button type="submit" class="btn btn-primary">Add Invoice</button>
-                                <!-- <button type="button" id="printButton" class="btn btn-primary">Print</button> -->
+                                @if(session()->has('invoiceNumber'))
+                                  <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('printBillInvoice', ['invoice_id' => session('invoiceNumber')]) }}', '_blank');">Generate Previous Invoice</button>
+                                @endif
                               </div>
                               <div class="col-sm-3 mb-2">
                               <label class="col-form-label" for="basic-default-company">Total Quantity :</label>

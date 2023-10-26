@@ -136,6 +136,7 @@
                         <table class="table m-0">
                             <thead>
                                 <tr>
+                                    <th class="py-1 pl-4">Date</th>
                                     <th class="py-1 pl-4">Task description</th>
                                     <th class="py-1">Debit</th>
                                     <th class="py-1">Credit</th>
@@ -143,30 +144,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                            @foreach($ledger as $parties_ledger)
-                                            @php $balance = 0;
-                                            $num = count($ledger);
-                                            $count = 1; @endphp
-                                            <tr>
-                                                <td class="py-1">
-                                                    <p class="card-text font-weight-bold mb-25">{{ \Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y') }}</p>
-                                                    <p class="card-text text-nowrap">
-                                                        {{ $parties_ledger->trans_id }} / {{ $parties_ledger->payment_id }}<br>
-                                                        {{ $parties_ledger->description }}
-                                                    </p>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="font-weight-bold">{{ $parties_ledger->debit }}</span>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="font-weight-bold">{{ $parties_ledger->credit }}</span>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="font-weight-bold">{{ $balance = ($balance + $parties_ledger->credit - $parties_ledger->debit) }}</span>
-                                                </td>
-                                            </tr>
-                                            @php $count++ @endphp
-                                            @endforeach
+                                @php $balance = 0; @endphp
+                                @foreach($ledger as $parties_ledger)
+                                    <tr>
+                                        <td>
+                                            <p class="card-text font-weight-bold mb-25">{{ \Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y') }}</p>
+                                        </td>
+                                        <td class="py-1">
+                                            <p class="card-text text-nowrap">
+                                                {{ $parties_ledger->trans_id }} / {{ $parties_ledger->payment_id }}<br>
+                                                {{ $parties_ledger->description }}
+                                            </p>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class="font-weight-bold">{{ $parties_ledger->debit }}</span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class="font-weight-bold">{{ $parties_ledger->credit }}</span>
+                                        </td>
+                                        <td class="py-1">
+                                            <span class="font-weight-bold">
+                                                @php
+                                                    $balance += ($parties_ledger->credit - $parties_ledger->debit);
+                                                    echo $balance;
+                                                @endphp
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                         </table>
                     </div>

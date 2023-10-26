@@ -72,6 +72,8 @@
                             <span class="badge bg-label-info me-1">Pant Bill</span>
                             @elseif($user->bill_type == 'shirt_bill')
                             <span class="badge bg-label-info me-1">Shirt Bill</span>
+                            @else
+                            <span class="badge bg-label-info me-1">{{$user->bill_type}}</span>
                             @endif
                         </td>
                         <td>{{$user->total_pcs}}</td>
