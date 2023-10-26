@@ -243,7 +243,12 @@ function checklotcard($id){
 }
 function getname($id){
     $user = register::where('user_id',$id)->first();
-    return $user->name;
+    if($user != ''){
+        return $user->name;
+    }
+    else {
+        return $id;
+    }
 }
 function getpartiestatus($id){
     $data = partie::where('partie_id',$id)->first();
