@@ -159,7 +159,12 @@ function getpartiename($id){
     return $data->name;
 }
 function gettrans(){
-    $data = cashier_payment::where('user_id','Expense')->get()->take(5);
+    $data = cashier_payment::where('user_id', 'Expense')->latest()->take(5)->get();
+    return $data;
+}
+function getInvoice(){
+    $today = Carbon::today(); // Get the current date
+    $data = invoice::whereDate('created_at', $today)->latest()->take(5)->get();
     return $data;
 }
 function getexpense(){
