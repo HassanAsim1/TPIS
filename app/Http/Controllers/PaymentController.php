@@ -130,7 +130,12 @@ class PaymentController extends Controller
         }        
     }
     public function Employee_Payments(){
-        $data = register::all();
+        if(session('role') == 'admin'){
+            $data = register::all();
+        }
+        else{
+            $data = register::where('user_id',session('user_id'))->get();
+        }
         return view('payments.employee_payments',['data'=>$data]);
     }
     public function Employee_Ledger($id){

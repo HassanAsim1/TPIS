@@ -270,7 +270,7 @@
             @endif
             @endif
             <!-- Extended components -->
-            @if(session('role') == 'cashier' || session('role') == 'admin' || session('role') == 'manager')
+            @if(session('role') == 'cashier' || session('role') == 'admin' || session('role') == 'manager' || session('role') == 'employee')
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Payment Section</span></li>
             @if(session('role') == 'admin')
             <li class="menu-item {{(request()->is('parties_payments')) ? 'active open' : ''}}">
@@ -296,6 +296,7 @@
                 </li> -->
               </ul>
             </li>
+            @endif
             <li class="menu-item {{(request()->is('employee_payments')) ? 'active open' : ''}}">
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
@@ -314,7 +315,7 @@
                 </li> -->
               </ul>
             </li>
-            @endif
+            @if(session('role') == 'cashier' || session('role') == 'admin' || session('role') == 'manager')
             <li class="menu-item">
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
@@ -338,6 +339,7 @@
                 </li> -->
               </ul>
             </li>
+            @endif
             @endif
             <!-- <li class="menu-item">
               <a href="icons-boxicons.html" class="menu-link">

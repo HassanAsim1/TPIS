@@ -47,6 +47,7 @@
 
               <!-- Basic Bootstrap Table -->
     <!-- Credit By Cashier -->
+    @if(session('role') == 'admin')
     <div class="card">
     <div class="card-header">
               <h3 class="card-title">{{getname($EMPID)}}
@@ -173,6 +174,7 @@
         </div>
       </form>
     </section>
+    @endif
               <div class="card mt-5">
                 <div class="row">
                 <h5 class="card-header col-md-10">Payments Details</h5>

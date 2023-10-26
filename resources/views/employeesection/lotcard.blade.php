@@ -135,6 +135,13 @@
                             @endif
                           </div>
                         </div>
+
+                        <div class="row mb-3">
+                          <label class="col-sm-1 col-form-label" for="basic-default-company">Advance :</label>
+                          <div class="col-sm-5">
+                            <input type="text" class="form-control" name="" id="" value="{{number_format(cal_employee_amount(session('user_id')))}}" readonly/>
+                          </div>
+                        </div>
                         <hr />
                           <div id="addnewrow">
                             {{-- @php $count = 0 @endphp
