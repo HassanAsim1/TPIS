@@ -65,7 +65,7 @@
                     <div class="col-md-2">
                         <div class="mt-3">
                             <!-- Button trigger modal -->
-                            <a href="{{url('addshirtlot')}}"><button
+                            <a href="{{url('addshirt')}}"><button
                             type="button"
                             class="btn btn-primary"
                             >

@@ -81,7 +81,7 @@
                             </div>
                             <p class="mb-25">Rahmat Garden, Baghwali Puli Lahore</p>
                             <p class="mb-25">c/o Mubashir Hussain</p>
-                            <p class="mb-0">Contact #: 0324-9841972</p>
+                            <p class="mb-0">Contact #: 0324-9841973</p>
                         </div>
                         <div class="mt-md-0 mt-2">
                             <!-- <h4 class="font-weight-bold text-right mb-1">LEDGER #3492</h4> -->
@@ -137,7 +137,7 @@
                             <thead>
                                 <tr>
                                     <th class="py-1 pl-4">Date</th>
-                                    <th class="py-1 pl-4">Task description</th>
+                                    <th class="py-1 pl-4">Description</th>
                                     <th class="py-1">Debit</th>
                                     <th class="py-1">Credit</th>
                                     <th class="py-1">Total</th>

@@ -20,6 +20,8 @@ use App\Models\kadhilot;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 // use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 
 class LotController extends Controller
@@ -395,49 +397,62 @@ class LotController extends Controller
         return view('invoice.view_detail_invoice',compact('data','Invdata'));
     }
     public function InsertPantLot(Request $req){
-        $data = new lotcard;
-        $id = IdGenerator::generate(['table' => 'lotcards', 'field' => 'card_id', 'length' => 10, 'prefix' => 'CARD-']);
-        $data->card_id = $id;
-        $data->user_id = $req->user_id;
-        $data->card_type = $req->card_type;
-        $data->fix_rate = $req->fix_rate;
-        $data->working_area = $req->working_area;
-        $data->total_pcs = $req->total_quantity;
-        $data->grand_total = $req->grandtotal;
-        $data->verify_card = 0;
+        try {
+            DB::beginTransaction(); // Start a database transaction
         
-        $num = count($req->squantity);
+            $data = new lotcard;
+            $id = IdGenerator::generate(['table' => 'lotcards', 'field' => 'card_id', 'length' => 10, 'prefix' => 'CARD-']);
+            $data->card_id = $id;
+            $data->user_id = $req->user_id;
+            $data->card_type = $req->card_type;
+            $data->fix_rate = $req->fix_rate;
+            $data->working_area = $req->working_area;
+            $data->total_pcs = $req->total_quantity;
+            $data->grand_total = $req->grandtotal;
+            $data->verify_card = 0;
         
-        for ($i = 0; $i < $num; $i++) {
-            $lot_id = $req->sname[$i];
-            $workingArea = $req->working_area;
+            if ($data->save()) {
+                $num = count($req->squantity);
         
-            // Check if a record with the same lot_id and role already exists in the database
-            $existingRecord = linklotcard::where('lot_id', $lot_id)->where('role', $workingArea)->where('status',1)->first();
+                for ($i = 0; $i < $num; $i++) {
+                    $lot_id = $req->sname[$i];
+                    $workingArea = $req->working_area;
         
-            if ($existingRecord) {
-                // If a record with the same lot_id and role exists, you can choose to skip or take other actions
-                // Here, I'm skipping the current iteration
-                continue;
+                    if (session('role') != 'shirt') {
+                        $existingRecord = linklotcard::where('lot_id', $lot_id)
+                            ->where('role', $workingArea)
+                            ->where('status', 1)
+                            ->first();
+        
+                        if ($existingRecord) {
+                            continue;
+                        }
+                    }
+        
+                    $InData = new linklotcard;
+                    $InData->card_id = $id;
+                    $InData->user_id = $req->user_id;
+                    $InData->lot_id = $lot_id;
+                    $InData->description = $req->sdes[$i];
+                    $InData->quantity = $req->squantity[$i];
+                    $InData->rate = $req->srate[$i];
+                    $InData->role = $workingArea;
+                    $InData->total = $req->stotal[$i];
+                    $InData->save();
+                }
+        
+                DB::commit(); // Commit the transaction if everything is successful
+                Alert::success('Success', 'Lot-Card Added Successfully');
+            } else {
+                DB::rollBack(); // Rollback the transaction if $data->save() fails
+                Alert::error('Error', 'Failed to add Lot-Card');
             }
-        
-            $InData = new linklotcard;
-            $InData->card_id = $id;
-            $InData->user_id = $req->user_id;
-            $InData->lot_id = $lot_id;
-            $InData->description = $req->sdes[$i];
-            $InData->quantity = $req->squantity[$i];
-            $InData->rate = $req->srate[$i];
-            $InData->role = $workingArea;
-            $InData->total = $req->stotal[$i];
-            $InData->save();
-        }
-        
-        if ($data->save()) {
-            Alert::success('Success', 'Lot-Card Added Successfully');
-        }
-        
-        return redirect()->back();        
+        } catch (Exception $e) {
+            DB::rollBack(); // Rollback the transaction on any exception
+            Alert::error('Error', 'An error occurred. Please try again.');
+        } finally {
+            return redirect()->back();
+        }        
     }
 
             // Verify Lot Cards
@@ -477,16 +492,18 @@ class LotController extends Controller
                 $lot_id = $req->sname[$i];
                 $workingArea = $req->working_area;
 
-                // Check if a record with the same lot_id, role, and status = 1 already exists in the database
-                $existingRecord = linklotcard::where('lot_id', $lot_id)
+                if(session('role') != 'shirt'){
+                    // Check if a record with the same lot_id, role, and status = 1 already exists in the database
+                    $existingRecord = linklotcard::where('lot_id', $lot_id)
                     ->where('role', $workingArea)
                     ->where('status', 1)
                     ->first();
 
-                if ($existingRecord) {
-                    // If a record with the same lot_id, role, and status = 1 exists, you can choose to skip or take other actions
-                    // Here, I'm skipping the current iteration
-                    continue;
+                    if ($existingRecord) {
+                        // If a record with the same lot_id, role, and status = 1 exists, you can choose to skip or take other actions
+                        // Here, I'm skipping the current iteration
+                        continue;
+                    }
                 }
 
                 $InData = new linklotcard;

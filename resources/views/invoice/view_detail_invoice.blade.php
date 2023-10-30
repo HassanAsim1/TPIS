@@ -66,7 +66,7 @@
 				<div class="col-md-6">
 					<h1>From</h1>
 						<address>
-							<p>Owner Jeans<br>c/o Mubashir Hussain</br>Contact #: 0324-9841972<br></p>
+							<p>Owner Jeans<br>c/o Mubashir Hussain</br>Contact #: 0324-9841973<br></p>
 						</address>
 				</div>
 				<div class="col-md-6">

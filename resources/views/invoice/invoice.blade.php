@@ -81,7 +81,7 @@
                             </div>
                             <p class="mb-25">Rahmat Garden, Baghwali Puli Lahore</p>
                             <p class="mb-25">c/o Mubashir Hussain</p>
-                            <p class="mb-0">Contact #: 0324-9841972</p>
+                            <p class="mb-0">Contact #: 0324-9841973</p>
                         </div>
                         <div class="mt-md-0 mt-2">
                             <h4 class="font-weight-bold text-right mb-1">Invoice #{{$Invdata->invoice_id}}</h4>
