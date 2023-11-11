@@ -335,6 +335,9 @@ class LotController extends Controller
      }
      public function InsertInvoice(Request $req){
         try {
+            // Start a database transaction
+            DB::beginTransaction();
+        
             $data = new invoice;
             $data->invoice_id = $req->invoice_id;
             $data->partie_id = $req->partie_id;
@@ -344,8 +347,10 @@ class LotController extends Controller
             $data->discount = 0;
             $data->created_by = $req->created_by;
         
+            // Save the main invoice data
             $num = count($req->squantity);
         
+            // Save the linked invoice data
             for ($i = 0; $i < $num; $i++) {
                 $InData = new linkinvoice;
                 $InData->invoice_id = $req->invoice_id;
@@ -357,31 +362,39 @@ class LotController extends Controller
                 $InData->save();
             }
         
-            $data->save();
-        
             // For Credit in Parties Ledger
             $config = ['table' => 'parties_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'PRTYPAY-'];
-            $Pid = IdGenerator::generate($config);
+            $pid = IdGenerator::generate($config);
+        
             $partie = new parties_ledger;
-            $partie->payment_id = $Pid;
+            $partie->payment_id = $pid;
             $partie->parties_id = $req->partie_id;
             $partie->trans_id = $req->invoice_id;
             $partie->description = $req->bill_type;
             $partie->credit = $req->grandtotal;
             $partie->given_by = session('user_id');
             $partie->save();
+
+            $data->slipId = $pid;
+            $data->save();
         
             // Update Partie Current balance
-            $PartieData = partie::where('partie_id', $req->partie_id)->first();
-            $PartieData->current_balance = $PartieData->current_balance + $req->grandtotal;
-            $PartieData->save();
+            $partieData = partie::where('partie_id', $req->partie_id)->first();
+            $partieData->current_balance = $partieData->current_balance + $req->grandtotal;
+            $partieData->save();
+        
+            // Commit the transaction if everything is successful
+            DB::commit();
         
             session()->put('invoiceNumber', $data->invoice_id);
-            return redirect()->back()->with('success', $data->invoice_id.' Has Successfully Inserted');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error, '. $e->getMessage());
-        }
         
+            return redirect()->back()->with('success', $data->invoice_id . ' Has Successfully Inserted');
+        } catch (Exception $e) {
+            // An error occurred, rollback the transaction
+            DB::rollBack();
+        
+            return redirect()->back()->with('error', 'Error, ' . $e->getMessage());
+        }
      }
 
      public function ViewInvoice(Request $req){
@@ -636,5 +649,72 @@ class LotController extends Controller
         $data->delete();
 
         return redirect()->back()->with('success', 'Lot Deleted Successfully');
+    }
+    public function invoiceEdit($id){
+        $invoiceId = invoice::where('invoice_id',$id)->first();
+        $invoiceIdData = linkinvoice::where('invoice_id',$id)->get();
+        $data = partie::all();
+        return view('invoice.invoiceEdit.invoiceEdit',compact('invoiceId', 'invoiceIdData','data'));
+    }
+    public function updateInvoice(Request $request){
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+        
+            $data = invoice::where('invoice_id', $request->invoice_id)->first();
+            $data->invoice_id = $request->invoice_id;
+            $data->partie_id = $request->partie_id;
+            $data->bill_type = $request->bill_type;
+            $data->total_pcs = $request->total_quantity;
+            $data->grand_total = $request->grandtotal;
+            $data->discount = 0;
+            $data->created_by = $request->created_by;
+        
+            // Save the main invoice data
+            $data->save();
+        
+            // Delete existing linked invoice data
+            $invoiceData = linkinvoice::where('invoice_id', $request->invoice_id)->get();
+            $invoiceData->each->delete();
+        
+            // Save the new linked invoice data
+            $num = count($request->squantity);
+            for ($i = 0; $i < $num; $i++) {
+                $InData = new linkinvoice;
+                $InData->invoice_id = $request->invoice_id;
+                $InData->lot_id = $request->slot[$i];
+                $InData->description = $request->sdes[$i];
+                $InData->quantity = $request->squantity[$i];
+                $InData->rate = $request->srate[$i];
+                $InData->total = $request->stotal[$i];
+                $InData->save();
+            }
+        
+            // For Credit in Parties Ledger
+            $partie = parties_ledger::where('payment_id', $data->slipId)->first();
+            $partie->parties_id = $request->partie_id;
+            $partie->trans_id = $request->invoice_id;
+            $partie->description = $request->bill_type;
+            $partie->credit = $request->grandtotal;
+            $partie->given_by = session('user_id');
+            $partie->save();
+        
+            // Update Partie Current balance
+            $partieData = partie::where('partie_id', $request->partie_id)->first();
+            $partieData->current_balance = $partieData->current_balance + $request->grandtotal;
+            $partieData->save();
+        
+            // Commit the transaction if everything is successful
+            DB::commit();
+        
+            session()->put('invoiceNumber', $data->invoice_id);
+        
+            return redirect()->back()->with('success', $data->invoice_id . ' Has Successfully Updated');
+        } catch (Exception $e) {
+            // An error occurred, rollback the transaction
+            DB::rollBack();
+        
+            return redirect()->back()->with('error', 'Error, ' . $e->getMessage());
+        }
     }
 }

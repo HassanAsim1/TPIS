@@ -69,6 +69,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('view_invoice',[LotController::class,'ViewInvoice'])->name('view_invoice');
     Route::get('view_detail_invoice/{id}',[LotController::class,'ViewInvDetail']);
     Route::get('/get-fix-rate/{id}', [UserController::class,'getFixRate'])->name('get-fix-rate');
+    Route::get('/invoiceEdit/{id}', [LotController::class,'invoiceEdit'])->name('invoiceEdit');
 
     //---------------------- Hassan Route --------------------
 
@@ -82,6 +83,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::post('addshirtlot',[LotController::class,'InsertShirtLot'])->name('InsertShirtlot');
     Route::get('bill_invoice',[LotController::class,'bill_inv'])->name('b_inv');
     Route::post('bill_inv',[LotController::class,'InsertInvoice'])->name('insert_bill_inv');
+    Route::post('updateInvoice',[LotController::class,'updateInvoice'])->name('updateInvoice');
     Route::post('addpantlot',[LotController::class,'InsertPantLot'])->name('InsertPantlot');
     Route::get('verify_card',[LotController::class,'CardVerify'])->name('CardVerify');
     Route::get('verify_card/{id}',[LotController::class,'CardVerifyID'])->name('CardVerifyID');

@@ -88,7 +88,7 @@
                               <a class="dropdown-item" href="{{url('view_detail_invoice/'.$user->invoice_id)}}"
                               ><i class="bx bx-edit-alt me-1"></i>View</a
                               >   
-                               <a class="dropdown-item" href="{{url('editemp/' .$user->user_id)}}"
+                               <a class="dropdown-item" href="{{url('invoiceEdit/' .$user->invoice_id)}}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                               >
                               <a class="dropdown-item" href="javascript:void(0);"
