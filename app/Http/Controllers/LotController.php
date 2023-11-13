@@ -445,7 +445,7 @@ class LotController extends Controller
                     $InData = new linklotcard;
                     $InData->card_id = $id;
                     $InData->user_id = $req->user_id;
-                    $InData->lot_id = $lot_id;
+                    $InData->lot_id = $lot_id.'-'.session('user_id');
                     $InData->description = $req->sdes[$i];
                     $InData->quantity = $req->squantity[$i];
                     $InData->rate = $req->srate[$i];
