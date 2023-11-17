@@ -59,6 +59,7 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
+                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('printEmployeeInvoice', ['employeeId' => $EMPID]) }}', '_blank');">Generate Invoice</button>
               </div>
             </div>
 </div>
@@ -193,7 +194,7 @@
                 </div>
 
             </div>
-                <div class="table-responsive text-nowrap">
+                <div class="table-responsive text-nowrap" style="max-height: 500px; overflow-y: auto;">
                   <table class="table table-bordered" style="overflow-x: auto;" id="exportTable">
                     <thead>
                       <tr>
@@ -206,9 +207,12 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                   @php $balance = 0; @endphp
+                     @php $balance = 0;
+                     $num = count($ledger);
+                     $count = 1; @endphp
+                     <input type="hidden" id="table_row" value="{{$num}}"/>
                      @foreach($ledger as $parties_ledger)
-                      <tr>
+                      <tr id="row{{$count}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$parties_ledger->payment_id}}</strong> / <span class="badge bg-label-secondary">{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
                         {{-- <td>{{$parties_ledger->employee_id}}</td> --}}
                         <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
@@ -231,6 +235,7 @@
                           </div>
                         </td>
                       </tr>
+                      @php $count++ @endphp
                       @endforeach
                     </tbody>
                   </table>
@@ -281,6 +286,12 @@
             $('#DebitCashier').css('display','none');
             $('#CreditCashier').css('display','none');
         })
+    </script>
+    <script>
+      $(document).ready(function(){
+        let rowval = $('#table_row').val();
+        document.getElementById('row'+rowval).scrollIntoView();
+      })
     </script>
 
   </body>

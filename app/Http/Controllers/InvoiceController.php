@@ -7,6 +7,8 @@ use Dompdf\Options;
 use Illuminate\Http\Request;
 use App\Models\parties_ledger;
 use App\Models\partie;
+use App\Models\register;
+use App\Models\employee_ledger;
 use App\Models\cashier_payment;
 use App\Models\invoice;
 use App\Models\linkinvoice;
@@ -52,5 +54,10 @@ class InvoiceController extends Controller
         $data = linkinvoice::where('invoice_id',$invoiceId)->get();
         // dd($data);
         return view('invoice.invoice',compact('data','Invdata'));
+    }
+    public function printEmployeeInvoice($employeeId){
+        $employee = register::where('user_id', $employeeId)->first();
+        $employeeData = employee_ledger::where('employee_id', $employeeId)->orderBy('created_at', 'asc')->get();
+        return view('invoice.employee.employeInvoice')->with('employee', $employee)->with('employeeData', $employeeData);
     }
 }

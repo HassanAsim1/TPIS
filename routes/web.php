@@ -140,6 +140,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('/printPartieInvoice/{partie_id}', [InvoiceController::class,'printPartieInvoice'])->name('printPartieInvoice');
     Route::get('/printBillInvoice/{invoice_id}', [InvoiceController::class,'printBillInvoice'])->name('printBillInvoice');
     Route::get('/checkLot', [LotController::class,'checkLot'])->name('checkLot');
+    Route::get('/printEmployeeInvoice/{employeeId}', [InvoiceController::class,'printEmployeeInvoice'])->name('printEmployeeInvoice');
 
 });
 
