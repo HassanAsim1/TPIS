@@ -432,7 +432,7 @@ class LotController extends Controller
                     $workingArea = $req->working_area;
         
                     if (session('role') != 'shirt') {
-                        $existingRecord = linklotcard::where('lot_id', $lot_id)
+                        $existingRecord = linklotcard::where('lot_id', $lot_id.'-'.session('user_id'))
                             ->where('role', $workingArea)
                             ->where('status', 1)
                             ->first();
@@ -513,8 +513,6 @@ class LotController extends Controller
                     ->first();
 
                     if ($existingRecord) {
-                        // If a record with the same lot_id, role, and status = 1 exists, you can choose to skip or take other actions
-                        // Here, I'm skipping the current iteration
                         continue;
                     }
                 }
@@ -716,5 +714,26 @@ class LotController extends Controller
         
             return redirect()->back()->with('error', 'Error, ' . $e->getMessage());
         }
+    }
+    public function checkLot(Request $request){
+        $user = register::whereNotIn('role', ['admin', 'cashier'])->get();
+        $lotQuery = linklotcard::query();
+        if(isset($request->getLot)) {
+            $lotQuery->where('lot_id', 'LIKE', "%$request->getLot%");
+        }
+        if(isset($request->userId)) {
+            $lotQuery->where('user_id', $request->userId);
+        }
+        if(isset($request->role)) {
+            $lotQuery->where('role', $request->role);
+        }
+        if(isset($request->getLot) || isset($request->userId) || isset($request->role)) {
+            $lot = $lotQuery->get();
+            $lotSum = $lot->sum('quantity');
+        } else {
+            $lot = linklotcard::all();
+            $lotSum = $lot->sum('quantity');
+        }
+        return view('lot.verification.checkLot', compact('lot', 'lotSum', 'user'));
     }
 }

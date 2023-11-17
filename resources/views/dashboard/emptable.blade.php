@@ -84,7 +84,7 @@
                         <th>USER-ID</th>
                         <th>NAME</th>
                         <th>EMAIL</th>
-                        <th>Bank Acc No</th>
+                        <th>Rate</th>
                         <th>Bank Name</th>
                         <th>Bank Acc Name</th>
                         <th>CNIC</th>
@@ -99,7 +99,11 @@
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->user_id}}</strong></td>
                         <td>{{$user->name}}</td>
                         <td>{{$user->email}}</td>
-                        <td>{{$user->bankAccountNumber}}</td>
+                        @if($user->fix_rate == '')
+                        <td>{{$user->salary}}</td>
+                        @else
+                        <td>{{$user->fix_rate}}</td>
+                        @endif
                         <td>{{$user->bankAccountName}}</td>
                         <td>{{$user->bankName}}</td>
                         <td>{{$user->cnic}}</td>

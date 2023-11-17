@@ -132,6 +132,8 @@
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="complete" readonly/>
                             @elseif($data->working_area == 14)
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="shirt" readonly/>
+                            @elseif($data->working_area == 15)
+                            <input type="text" class="form-control" id="basic-default-company" name="working_area" value="worker" readonly/>
                             @endif
                           </div>
                         </div>

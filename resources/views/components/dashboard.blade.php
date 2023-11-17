@@ -209,10 +209,10 @@
             </li>
             <!-- User interface -->
             @if(session('role') == 'admin' || session('role') == 'manager')
-            <li class="menu-item {{(request()->is('verify_card') || request()->is('show-verify-card-by-id/*')) ? 'active open' : ''}}">
+            <li class="menu-item {{(request()->is('verify_card') || request()->is('show-verify-card-by-id/*') || request()->is('checkLot')) ? 'active open' : ''}}">
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">Verify Card
+                <div data-i18n="User interface">Verfication
                   @if(getverifycard() > 0)
                     <span class="right badge badge-danger">{{getverifycard()}}</span>
                     @endif
@@ -228,12 +228,18 @@
                     </div>
                   </a>
                 </li>
-                <li class="menu-item">
+                {{-- <li class="menu-item">
                   <a href="ui-alerts.html" class="menu-link">
                     <div data-i18n="Alerts">Shirt Card
                     @if(getshirtverify() > 0)
                     <span class="right badge badge-danger">{{getshirtverify()}}</span>
                     @endif
+                    </div>
+                  </a>
+                </li> --}}
+                <li class="menu-item {{(request()->is('checkLot')) ? 'active' : ''}}">
+                  <a href="{{url('checkLot')}}" class="menu-link">
+                    <div data-i18n="Alerts">Checks
                     </div>
                   </a>
                 </li>
