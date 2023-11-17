@@ -158,6 +158,12 @@ class UserController extends Controller
             $data->bankAccountName = $req->bankAccountName;
             $data->bankName = $req->bankName;
             $data->status = $req->status;
+            if($req->has('salary')){
+                $data->salary = $req->salary;
+            }
+            else{
+                $data->fix_rate = $req->fix_rate;
+            }
             
             if ($req->new_password != '') {
                 $data->password = Hash::make($req->new_password);

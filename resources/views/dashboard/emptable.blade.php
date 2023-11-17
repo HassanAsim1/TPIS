@@ -85,11 +85,12 @@
                         <th>NAME</th>
                         <th>EMAIL</th>
                         <th>Rate</th>
+                        <th>Status</th>
+                        <th>Advance</th>
+                        <th>Bank Acc</th>
                         <th>Bank Name</th>
-                        <th>Bank Acc Name</th>
-                        <th>CNIC</th>
-                        <th>PHONE-NO</th>
-                        <th>status</th>
+                        <th>Cnic</th>
+                        <th>Phone #</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -104,16 +105,20 @@
                         @else
                         <td>{{$user->fix_rate}}</td>
                         @endif
+                        <td>
+                          @if($user->status == 'disable')
+                          <span class="badge bg-label-danger me-1">{{$user->status}}</span>
+                          @else
+                          <span class="badge bg-label-primary me-1">{{$user->status}}</span>
+                          @endif
+                        </td>
+                        <td>
+                          <strong>Rs :</strong> {{number_format(cal_employee_amount($user->user_id))}}
+                        </td>
                         <td>{{$user->bankAccountName}}</td>
                         <td>{{$user->bankName}}</td>
                         <td>{{$user->cnic}}</td>
                         <td>{{$user->phone_no}}</td>
-                        <td>
-                          @if($user->status == 'disable')
-                          <span class="badge bg-label-danger me-1">{{$user->status}}</span>
-                          @else<span class="badge bg-label-primary me-1">{{$user->status}}</span>
-                          @endif
-                        </td>
                         <td>
                           <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
