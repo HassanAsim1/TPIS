@@ -17,6 +17,7 @@ use App\Models\partie;
 use App\Models\fabric;
 use App\Models\invoice;
 use App\Models\kadhilot;
+use App\Models\Removelot;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 // use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -438,6 +439,18 @@ class LotController extends Controller
                             ->first();
         
                         if ($existingRecord) {
+                            $removeLot = new Removelot;
+                            $removeLot->card_id = $id;
+                            $removeLot->user_id = $req->user_id;
+                            $removeLot->lot_id = $lot_id.'-'.session('user_id');
+                            $removeLot->description = $req->sdes[$i];
+                            $removeLot->quantity = $req->squantity[$i];
+                            $removeLot->rate = $req->srate[$i];
+                            $removeLot->role = $workingArea;
+                            $removeLot->total = $req->stotal[$i];
+                            $removeLot->verify_lot = 0;
+                            $removeLot->check_by = 'system';
+                            $removeLot->save();
                             continue;
                         }
                     }
@@ -462,7 +475,7 @@ class LotController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack(); // Rollback the transaction on any exception
-            Alert::error('Error', 'An error occurred. Please try again.');
+            Alert::error('Error', $e->getMessage());
         } finally {
             return redirect()->back();
         }        
@@ -513,6 +526,18 @@ class LotController extends Controller
                     ->first();
 
                     if ($existingRecord) {
+                        $removeLot = new Removelot;
+                        $removeLot->card_id = $id;
+                        $removeLot->user_id = $req->user_id;
+                        $removeLot->lot_id = $lot_id.'-'.session('user_id');
+                        $removeLot->description = $req->sdes[$i];
+                        $removeLot->quantity = $req->squantity[$i];
+                        $removeLot->rate = $req->srate[$i];
+                        $removeLot->role = $workingArea;
+                        $removeLot->total = $req->stotal[$i];
+                        $removeLot->verify_lot = 0;
+                        $removeLot->check_by = 'system';
+                        $removeLot->save();
                         continue;
                     }
                 }
@@ -735,5 +760,10 @@ class LotController extends Controller
             $lotSum = $lot->sum('quantity');
         }
         return view('lot.verification.checkLot', compact('lot', 'lotSum', 'user'));
+    }
+    public function removeLot(){
+        $data = removeLot::all();
+        $mstatus = register::where('email',session('email'))->first();
+        return view('lot.verification.removeLot',compact('data','mstatus'));
     }
 }

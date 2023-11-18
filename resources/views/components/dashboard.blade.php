@@ -209,7 +209,7 @@
             </li>
             <!-- User interface -->
             @if(session('role') == 'admin' || session('role') == 'manager')
-            <li class="menu-item {{(request()->is('verify_card') || request()->is('show-verify-card-by-id/*') || request()->is('checkLot')) ? 'active open' : ''}}">
+            <li class="menu-item {{(request()->is('verify_card') || request()->is('show-verify-card-by-id/*') || request()->is('checkLot') || request()->is('removeLot')) ? 'active open' : ''}}">
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
                 <div data-i18n="User interface">Verfication
@@ -240,6 +240,12 @@
                 <li class="menu-item {{(request()->is('checkLot')) ? 'active' : ''}}">
                   <a href="{{url('checkLot')}}" class="menu-link">
                     <div data-i18n="Alerts">Checks
+                    </div>
+                  </a>
+                </li>
+                <li class="menu-item {{(request()->is('removeLot')) ? 'active' : ''}}">
+                  <a href="{{url('removeLot')}}" class="menu-link">
+                    <div data-i18n="Alerts">Remove Lots
                     </div>
                   </a>
                 </li>
