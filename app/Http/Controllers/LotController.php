@@ -766,4 +766,30 @@ class LotController extends Controller
         $mstatus = register::where('email',session('email'))->first();
         return view('lot.verification.removeLot',compact('data','mstatus'));
     }
+    public function disableEmployees(){
+        $employees = register::where('role', '!=', 'admin')
+                            ->where('role', '!=', 'cashier')
+                            ->where('role', '!=', 'manager')
+                            ->get();
+        
+        foreach ($employees as $employee) {
+            $employee->loginStatus = 0;
+            $employee->save();
+        }
+        session()->put('loginStatus','Disable');
+        return redirect()->back();
+    }
+    public function activeEmployees(){
+        $employees = register::where('role', '!=', 'admin')
+                            ->where('role', '!=', 'cashier')
+                            ->where('role', '!=', 'manager')
+                            ->get();
+        
+        foreach ($employees as $employee) {
+            $employee->loginStatus = 1;
+            $employee->save();
+        }
+        session()->put('loginStatus','Active');
+        return redirect()->back();
+    }
 }

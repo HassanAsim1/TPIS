@@ -154,8 +154,28 @@
                     <div class="card">
                       <div class="row row-bordered g-0">
                         <div class="col-md-8">
-                          <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
-                          <div id="totalRevenueChart" class="px-2"></div>
+                          <h5 class="card-header m-0 me-2 pb-3">Employee Status</h5>
+                            <div class="col-lg-8 mb-4 order-0">
+                                <div class="d-flex align-items-end row">
+                                  <div class="col-sm-12">
+                                    <div class="card-body">
+                                      <p class="mb-4">
+                                        Employee Status is currenlty <span class="fw-bold">
+                                          @if(session()->has('loginStatus'))
+                                            {{session()->get('loginStatus')}}
+                                          @endif
+                                          </span>.
+                                      </p>
+                                      <a href="{{url('disableEmployees')}}">
+                                        <button class="btn btn-danger">Disable</button>
+                                      </a>
+                                      <a href="{{url('activeEmployees')}}">
+                                        <button class="btn btn-success">Active</button>
+                                      </a>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div >
                         </div>
                         <div class="col-md-4">
                           <div class="card-body">
