@@ -37,7 +37,7 @@
                 <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
                   <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{url('dashboard')}}" style ="font-size:15px">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Employee Details</li>
+                    <li class="breadcrumb-item active" aria-current="page">Roll Details</li>
                   </ol>
                 </nav>
               </div>
@@ -47,19 +47,19 @@
               <div class="card">
                 <div class="row">
                     <div class="col-sm-10">
-                      <h5 class="card-header">Employee Tables </h5>
+                      <h5 class="card-header">Roll Tables </h5>
                     </div>
                     <div class="col-md-2">
                       <div class="mt-3">
                         <!-- Button trigger modal -->
-                        <a href="{{url('register')}}">
+                        <a href="{{url('addRoll')}}">
                         <button
                           type="button"
                           class="btn btn-primary"
                           data-bs-toggle="modal"
                           data-bs-target="#basicModal"
                         >
-                          Add Employee
+                          Add Roll
                         </button></a>
                     </div>
                 </div>
@@ -68,57 +68,34 @@
                   <table id="example1" class="table table-bordered">
                     <thead>
                       <tr>
-                        <th>USER-ID</th>
-                        <th>NAME</th>
-                        <th>EMAIL</th>
+                        <th>Roll-ID</th>
+                        <th>Partie Name</th>
                         <th>Rate</th>
-                        <th>Status</th>
-                        <th>Advance</th>
-                        <th>Bank Acc</th>
-                        <th>Bank Name</th>
-                        <th>Cnic</th>
-                        <th>Phone #</th>
+                        <th>Remaining Meter</th>
+                        <th>Total Meter</th>
+                        <th>Created By</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                      @foreach($data as $user)
+                      @foreach($data as $roll)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->user_id}}</strong></td>
-                        <td>{{$user->name}}</td>
-                        <td>{{$user->email}}</td>
-                        @if($user->fix_rate == '')
-                        <td>{{$user->salary}}</td>
-                        @else
-                        <td>{{$user->fix_rate}}</td>
-                        @endif
-                        <td>
-                          @if($user->status == 'disable')
-                          <span class="badge bg-label-danger me-1">{{$user->status}}</span>
-                          @else
-                          <span class="badge bg-label-primary me-1">{{$user->status}}</span>
-                          @endif
-                        </td>
-                        <td>
-                          <strong>Rs :</strong> {{number_format(cal_employee_amount($user->user_id))}}
-                        </td>
-                        <td>{{$user->bankAccountName}}</td>
-                        <td>{{$user->bankName}}</td>
-                        <td>{{$user->cnic}}</td>
-                        <td>{{$user->phone_no}}</td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$roll->rollId}}</strong></td>
+                        <td>{{getpartiename($roll->partieId)}}</td>
+                        <td>{{$roll->rollRate}}</td>
+                        <td>{{getRemainingRoll($roll->rollId)}}</td>
+                        <td>{{$roll->rollTotalMeter}}</td>
+                        <td><span class="badge badge-info">{{$roll->createdBy}}</span></td>
                         <td>
                           <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" href="{{url('viewemp/'.$user->user_id)}}"
-                              ><i class="bx bx-edit-alt me-1"></i>View</a
-                              >   
-                               <a class="dropdown-item" href="{{url('editemp/' .$user->user_id)}}"
+                               <a class="dropdown-item" href="{{url('editRoll/' .$roll->rollId)}}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                               >
-                              <a class="dropdown-item" href="javascript:void(0);" onclick="deleteemp('{{$user->user_id}}')" data-toggle="modal" data-target="#exampleModal"
+                              <a class="dropdown-item" href="javascript:void(0);" onclick="deleteemp('{{$roll->rollId}}')" data-toggle="modal" data-target="#exampleModal"
                                 ><i class="bx bx-trash me-1"></i> Delete</a
                               >
                             </div>

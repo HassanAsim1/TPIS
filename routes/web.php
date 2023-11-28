@@ -144,6 +144,13 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('/removeLot', [LotController::class,'removeLot'])->name('removeLot');
     Route::get('/disableEmployees', [LotController::class,'disableEmployees'])->name('disableEmployees');
     Route::get('/activeEmployees', [LotController::class,'activeEmployees'])->name('activeEmployees');
+    Route::get('/fabricDetail/{id}', [fabricController::class,'fabricDetail'])->name('fabricDetail');
+
+    // Roll Details
+    Route::get('/addRoll', [fabricController::class,'addRoll'])->name('addRoll');
+    Route::post('addRollData', [fabricController::class,'addRollData'])->name('addRollData');
+    Route::get('viewRoll', [fabricController::class,'viewRoll'])->name('viewRoll');
+    Route::get('editRoll/{id}', [fabricController::class,'editRoll'])->name('editRoll');
 
 });
 

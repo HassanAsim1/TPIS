@@ -32,7 +32,16 @@
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4">fabrics Details</h4>
+            <div class="row">
+              <div class="col">
+                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{url('dashboard')}}" style ="font-size:15px">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Fabrics</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
 
               <!-- Basic Bootstrap Table -->
               <div class="card">
@@ -60,7 +69,8 @@
                         <th>FABRIC-ID</th>
                         <th>FABRIC-NAME</th>
                         <th>Fabric-Type</th>
-                        <th>METER</th>
+                        <th>Total Meter</th>
+                        <th>Lot-METER</th>
                         <th>RATE</th>
                         <th>CUSTOMER-NAME</th>
                         <th>status</th>
@@ -73,6 +83,7 @@
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$fabric->fabric_id}}</strong></td>
                         <td>{{$fabric->fabric_name}}</td>
                         <td>{{$fabric->fabric_type}}</td>
+                        <td></td>
                         <td>{{$fabric->meter}}</td>
                         <td>{{$fabric->rate}}</td>
                         <td>{{$fabric->customer_name}}</td>
@@ -84,10 +95,10 @@
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" href="javascript:void(0);"
+                              <!-- <a class="dropdown-item" href="javascript:void(0);"
                               ><i class="bx bx-edit-alt me-1"></i>View</a
-                              >   
-                               <a class="dropdown-item" href="javascript:void(0);"
+                              >    -->
+                               <a class="dropdown-item" href="{{url('fabricDetail/'.$fabric->fabric_id)}}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                               >
                               <a class="dropdown-item" href="javascript:void(0);"
@@ -151,10 +162,8 @@
                                     <label for="customername" class="form-label">Customer Name</label>
                                     <input type="text" id="customername" name="customername" class="form-control" placeholder="Customer Name" />
                                   </div>
-                                  
                                 </div>
                                 <div class="row g-2">
-                                  
                                   <div class="col mb-0">
                                     <label for="dobBasic" class="form-label">status</label>
                                     <select class="form-control"   name="status"  >

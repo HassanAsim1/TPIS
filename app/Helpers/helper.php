@@ -10,6 +10,7 @@ use App\Models\partie;
 use App\Models\cashier_payment;
 use App\Models\register;
 use App\Models\kadhilot;
+use App\Models\linkRoll;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -285,6 +286,11 @@ function getSalary($id){
     else {
         return 0;
     }
+}
+
+function getRemainingRoll($id){
+    $data = linkRoll::where('rollId',$id)->where('rollUseStatus',0)->get()->sum('rollQuantity');
+    return $data;
 }
 
 

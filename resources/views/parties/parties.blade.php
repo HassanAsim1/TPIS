@@ -32,7 +32,16 @@
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-              <h4 class="fw-bold py-3 mb-4">Parties Details</h4>
+            <div class="row">
+              <div class="col">
+                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{url('dashboard')}}" style ="font-size:15px">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Parties</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
 
               <!-- Basic Bootstrap Table -->
               <div class="card">
@@ -61,6 +70,7 @@
                         <th>NAME</th>
                         <th>ADDRESS</th>
                         <th>PHONE-NO</th>
+                        <th>CATEGORY</th>
                         <th>CURRENT-BALANCE</th>
                         <th>status</th>
                         <th>Actions</th>
@@ -73,6 +83,11 @@
                         <td>{{$partie->name}}</td>
                         <td>{{$partie->address}}</td>
                         <td>{{$partie->phone_no}}</td>
+                        @if($partie->category == 'buyer')
+                        <td><span class="badge bg-label-info me-1">{{$partie->category}}</span></td>
+                        @else
+                        <td><span class="badge bg-label-warning me-1">{{$partie->category}}</span></td>
+                        @endif
                         <td><strong>Rs:</strong> {{number_format(cal_current_amount($partie->partie_id))}}</td>
                         <td>
                           @if($partie->status == 'active')
@@ -153,7 +168,15 @@
                                   </div>
                                 </div> -->
                                 <div class="row g-2">
-                                  
+                                  <div class="col mb-0">
+                                    <label for="dobBasic" class="form-label">Category</label>
+                                    <select class="form-control" name="category"  >
+                                        <option value="seller">Fabric Seller</option>
+                                        <option value="buyer">Product Buyer</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="row g-2">
                                   <div class="col mb-0">
                                     <label for="dobBasic" class="form-label">status</label>
                                     <select class="form-control"   name="status"  >

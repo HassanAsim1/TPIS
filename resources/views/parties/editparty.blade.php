@@ -144,7 +144,6 @@
                     autofocus
                   />
                 </div> -->
-
                 <div class="mb-3">
                   <label for="address" class="form-label">Current Balance</label>
                   <input
@@ -156,7 +155,15 @@
                     readonly
                   />
                 </div>
-                
+                <div class="row g-2">
+                                  <div class="col mb-0">
+                                    <label for="dobBasic" class="form-label">Category</label>
+                                    <select class="form-control" name="category"  >
+                                        <option value="seller">Fabric Seller</option>
+                                        <option value="buyer">Product Buyer</option>
+                                    </select>
+                                  </div>
+                                </div>
                 <div class="mb-3">
                         <label for="exampleFormControlSelect1" class="form-label">Select Role</label>
                         <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" name="status">

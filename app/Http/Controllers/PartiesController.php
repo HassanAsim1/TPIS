@@ -25,6 +25,7 @@ class PartiesController extends Controller
         $data->phone_no = $req->phone_no;
         $data->opening_balance = $req->openbalance; 
         $data->current_balance = $req->currentbalance;
+        $data->category = $req->category;
         $data->status = $req->status;
         if($data->save()){
             Alert::success('Success', 'Partie Added Successfully');
@@ -48,6 +49,7 @@ class PartiesController extends Controller
         $data->opening_balance = $req->opening_balance;
         $data->current_balance = $req->current_balance;
         $data->phone_no = $req->phone_no;
+        $data->category = $req->category;
         $data->status = $req->status;
        if ($data->save()){
         Alert::success('Success', 'Partie Edit Successfully');

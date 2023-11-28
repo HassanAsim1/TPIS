@@ -99,6 +99,24 @@
                 <div data-i18n="Layouts">Fabrics</div>
               </a>
             </li>
+            <li class="menu-item {{((request()->is('addRoll') || request()->is('viewRoll'))) ? 'active open' : ''}}">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxs-file-doc"></i>
+                <div data-i18n="Lot">Fabric Roll</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item {{(request()->is('addRoll*')) ? 'active' : ''}}">
+                  <a href="{{url('addRoll')}}" class="menu-link">
+                    <div data-i18n="Pant Lot">Add Roll</div>
+                  </a>
+                </li>
+                <li class="menu-item {{(request()->is('viewRoll')) ? 'active' : ''}}">
+                  <a href="{{url('viewRoll')}}" class="menu-link">
+                    <div data-i18n="Shirt Lot">View Roll</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
             @endif
             @if(session('role') == 'admin' || session('role') == 'master' || session('role') == 'manager' || session('role') == 'cashier' || session('working_area') == 2)
             @php
