@@ -277,6 +277,16 @@ function getInvoiceRecord($id) {
     
 }
 
+function getSalary($id){
+    $user = register::where('user_id',$id)->first();
+    if($user != ''){
+        return $user->salary;
+    }
+    else {
+        return 0;
+    }
+}
+
 
 
 

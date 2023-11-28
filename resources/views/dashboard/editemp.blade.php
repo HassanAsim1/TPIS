@@ -181,7 +181,6 @@
                     </div>
                   </div>
                   @endif
-
                   <div class="col-sm-6">
                     <div class="mb-3">
                       <label for="bankAccountNumber" class="form-label">Bank Account Number</label>
@@ -196,6 +195,22 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                      <div class="mb-3">
+                        <label for="salary" class="form-label">Salary / Advance</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="salary"
+                          name="salary"
+                          value="{{$data->salary}}"
+                          autofocus
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                 <div class="row">
                   <div class="col-sm-6">

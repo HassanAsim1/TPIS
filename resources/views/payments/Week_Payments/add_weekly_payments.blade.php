@@ -64,7 +64,11 @@
                                   <input type="text" class="form-control mt-2" value="{{getname($employee->user_id)}}" name="name[]" placeholder="EMP NAME" readonly/>
                                 </div>
                                 <div class="col">
-                                <input type="text" class="form-control mt-2 tquan" id="squan{{$count}}" value="{{cal_employee_amount($employee->user_id)}}" name="debit[]" placeholder="debit" required/>
+                                  @if(cal_employee_amount($employee->user_id) >= 299)
+                                  <input type="text" class="form-control mt-2 tquan" id="squan{{$count}}" value="{{cal_employee_amount($employee->user_id)}}" name="debit[]" placeholder="debit" required/>
+                                  @else
+                                  <input type="text" class="form-control mt-2 tquan" id="squan{{$count}}" value="{{getSalary($employee->user_id)}}" name="debit[]" placeholder="debit" required/>
+                                  @endif
                                 </div>
                                 <div class="col">
                                   <input type="text" class="form-control mt-2 signature-input" name="signature[]" placeholder="Signature" required/>

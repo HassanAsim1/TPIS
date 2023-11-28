@@ -174,7 +174,7 @@ class UserController extends Controller
             if($req->has('salary')){
                 $data->salary = $req->salary;
             }
-            else{
+            if($req->has('fix_rate')){
                 $data->fix_rate = $req->fix_rate;
             }
             

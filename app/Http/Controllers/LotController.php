@@ -503,11 +503,9 @@ class LotController extends Controller
     }
     public function VerifyCardAdmin(Request $req){
         $data = lotcard::where('card_id', $req->card_id)->first();
-
         if ($data) {
             $lotdata = linklotcard::where('card_id', $data->card_id)->get();
             $lotdata->each->delete();
-            
             $data->total_pcs = $req->total_quantity;
             $data->grand_total = $req->grandtotal;
             $data->working_area = $req->working_area;
@@ -518,7 +516,6 @@ class LotController extends Controller
                 $lot_id = $req->sname[$i];
                 $workingArea = $req->working_area;
 
-                if(session('role') != 'shirt'){
                     // Check if a record with the same lot_id, role, and status = 1 already exists in the database
                     $existingRecord = linklotcard::where('lot_id', $lot_id)
                     ->where('role', $workingArea)
@@ -540,7 +537,6 @@ class LotController extends Controller
                         $removeLot->save();
                         continue;
                     }
-                }
 
                 $InData = new linklotcard;
                 $InData->card_id = $req->card_id;
