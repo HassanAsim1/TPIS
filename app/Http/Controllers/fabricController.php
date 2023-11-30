@@ -7,6 +7,7 @@ use App\Models\fabric;
 use App\Models\partie;
 use App\Models\Roll;
 use App\Models\linkRoll;
+use App\Models\LinkFabricLot;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Support\Facades\DB;
 use Alert;
@@ -20,22 +21,43 @@ class fabricController extends Controller
    }
 
     public function add_fabric(Request $req){
-        $data = new fabric;
-        $id = IdGenerator::generate(['table' =>'fabrics','field'=>'fabric_id', 'length' => 10, 'prefix' =>'FABR-']);
-        $data->fabric_id = $id;
-        $data->fabric_name = $req->fabricname;
-        $data->fabric_type = $req->fabrictype;
-        $data->meter = $req->meter;
-        $data->rate = $req->rate;
-        $data->remaining_meter = $req->meter;
-        $data->customer_name = $req->customername;
-        $data->status = $req->status;
-
-        if($data->save()){
-            Alert::success('Success', 'Fabric Added Successfully');
+        try {
+            $data = new fabric;
+            $id = IdGenerator::generate(['table' =>'fabrics','field'=>'fabricId', 'length' => 10, 'prefix' =>'FABR-']);
+            $data->fabricId = $id;
+            $data->fabricName = $req->fabricName;
+            $data->fabricColor = $req->fabricColor;
+            $data->meter = $req->meter;
+            $minusRoll = Roll::where('rollId', $req->rollId)->first();
+            $minusRoll->remainingQuantity -= $req->meter;
+            $minusRoll->save();
+            $data->rate = $req->rate;
+            $data->rollId = $req->rollId;
+            $data->rolls = count($req->rollData);
+            $data->remainingMeter = $req->meter;
+            $data->fabricBaar = $req->fabricBaar;
+            $data->description = $req->description;
+        
+            foreach($req->rollData as $rolls){
+                $insertData = new LinkFabricLot;
+                $insertData->fabricId = $id;
+                $insertData->rollId = $req->rollId;
+                $insertData->rollSubId = $rolls;
+                $insertData->roleQuantity = getSubRollQuantity($rolls);
+                $insertData->rollUseStatus = 1;
+                $insertData->save();
+            }
+            $data->status = 0;
+        
+            if($data->save()){
+                Alert::success('Success', 'Fabric Added Successfully');
+            }
+            return redirect('fabrics');
+        } catch (QueryException $e) {
+            Log::error($e->getMessage());
+            Alert::error('Error', 'There was an error adding fabric. Please try again.');
+            return redirect()->back();
         }
-
-        return redirect('fabrics');
     }
     public function fabricDetail($id){
         $data = fabric::where('fabric_id',$id)->first();
@@ -57,7 +79,7 @@ class fabricController extends Controller
             $data->rollTotalMeter = $request->rollTotalMeter;
             $data->totalRollQuantity = $request->totalRollQuantity;
             $data->totalAmount = $request->totalAmount;
-            $data->remainingQuantity = $request->remainingQuantity;
+            $data->remainingQuantity = $request->totalRollQuantity;
             $data->gatePass = $request->gatePass;
             $data->biltyNo = $request->biltyNo;
             $data->date = $request->date;
@@ -71,7 +93,7 @@ class fabricController extends Controller
                 for ($i = 0; $i < $num; $i++) {
                     $roll = new linkRoll;
                     $roll->rollId = $id;
-                    $roll->rollSubId = $request->rollSubId[$i];
+                    $roll->rollSubId = $id.'-'.$request->rollSubId[$i];
                     $roll->rollDescription = $request->sdes[$i];
                     $roll->rollQuantity = $request->squantity[$i];
                     $roll->rollRate = $request->srate[$i];
@@ -153,5 +175,18 @@ class fabricController extends Controller
             DB::rollBack(); // Rollback the transaction on any exception
             Alert::error('Error', $e->getMessage());
         }       
+    }
+    public function addFabricLot(){
+        $fabricRoll = Roll::where('remainingQuantity','>',0)->get();
+        // dd($fabricRoll);
+        return view('dashboard.fabrics.addFabricLot',compact('fabricRoll'));
+    }
+    public function getRollIdData($id){
+        $rollData = linkRoll::where('rollId',$id)->where('rollUseStatus',0)->get();
+        return response()->json($rollData);
+    }
+    public function getFabricLotQuantity($id){
+        $data = fabric::where('fabricId',$id)->first();
+        return response()->json($data->remainingMeter);
     }
 }

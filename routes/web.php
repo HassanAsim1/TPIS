@@ -153,6 +153,12 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('editRoll/{id}', [fabricController::class,'editRoll'])->name('editRoll');
     Route::post('updateRollData', [fabricController::class,'updateRollData'])->name('updateRollData');
 
+    // Fabric Section
+
+    Route::get('/addFabricLot', [fabricController::class,'addFabricLot'])->name('addFabricLot');
+    Route::get('/getRollIdData/{id}', [fabricController::class,'getRollIdData'])->name('getRollIdData');
+    Route::get('/getFabricLotQuantity/{id}', [fabricController::class,'getFabricLotQuantity'])->name('getFabricLotQuantity');
+
 });
 
 

@@ -329,10 +329,11 @@ class LotController extends Controller
             return redirect()->back();
      }
      public function bill_inv(){
-        $data = partie::all();
+        $data = partie::where('category','buyer')->get();
+        $fabric = fabric::where('remainingMeter','>',0)->get();
         $id = IdGenerator::generate(['table' =>'invoices','field'=>'invoice_id', 'length' => 10, 'prefix' =>'INV-']);
         $lotdata = lot::where('status',13)->where('lot_remain','>',0)->get();
-        return view('invoice.bill_invoice',compact('id','lotdata'))->with('data',$data);
+        return view('invoice.bill_invoice',compact('id','lotdata','fabric'))->with('data',$data);
      }
      public function InsertInvoice(Request $req){
         try {
@@ -356,6 +357,13 @@ class LotController extends Controller
                 $InData = new linkinvoice;
                 $InData->invoice_id = $req->invoice_id;
                 $InData->lot_id = $req->slot[$i];
+                if($req->bill_type == 'Fabric Bill'){
+                    $minusFabric = fabric::where('fabricId',$req->slot[$i])->first();
+                    if($minusFabric){
+                        $minusFabric->remainingMeter -= $req->squantity[$i];
+                        $minusFabric->save();
+                    }
+                }
                 $InData->description = $req->sdes[$i];
                 $InData->quantity = $req->squantity[$i];
                 $InData->rate = $req->srate[$i];

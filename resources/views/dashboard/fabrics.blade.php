@@ -50,14 +50,14 @@
                 <div class="col-md-2">
                       <div class="mt-3">
                         <!-- Button trigger modal -->
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-bs-toggle="modal"
-                          data-bs-target="#basicModal"
-                        >
-                          Add Fabric
-                        </button>
+                        <a href="{{url('addFabricLot')}}">
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                          >
+                            Add Fabric
+                          </button>
+                        </a>
                     </div>
                 </div>
             
@@ -71,6 +71,8 @@
                         <th>Fabric-Type</th>
                         <th>Total Meter</th>
                         <th>Lot-METER</th>
+                        <th>Description</th>
+                        <th>Total Rolls</th>
                         <th>RATE</th>
                         <th>CUSTOMER-NAME</th>
                         <th>status</th>
@@ -80,13 +82,15 @@
                    <tbody class="table-border-bottom-0">
                        @foreach($data as $fabric)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$fabric->fabric_id}}</strong></td>
-                        <td>{{$fabric->fabric_name}}</td>
-                        <td>{{$fabric->fabric_type}}</td>
-                        <td></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$fabric->fabricId}}</strong></td>
+                        <td>{{$fabric->fabricName}}</td>
+                        <td>{{$fabric->fabricColor}}</td>
                         <td>{{$fabric->meter}}</td>
+                        <td>{{$fabric->remainingMeter}}</td>
+                        <td>{{$fabric->description}}</td>
+                        <td>{{$fabric->rolls}}</td>
                         <td>{{$fabric->rate}}</td>
-                        <td>{{$fabric->customer_name}}</td>
+                        <td>{{$fabric->customerName}}</td>
                         
                         <td><span class="badge bg-label-primary me-1">{{$fabric->status}}</span></td>
                         <td>
@@ -115,77 +119,6 @@
               </div>
               </div>
               <!--/ Basic Bootstrap Table -->
-
-               <!-- FORM TRIGGER -->
-               <form action="{{url('add_fabric')}}" method="POST">
-                @csrf
-            <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel1">Add Fabric</h5>
-                                <button
-                                  type="button"
-                                  class="btn-close"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                ></button>
-                              </div>
-                              <div class="modal-body">
-                                <div class="row">
-                                  <div class="col mb-3">
-                                    <label for="fabricname" class="form-label">Fabric_Name</label>
-                                    <input type="text" id="fabricname" name="fabricname" class="form-control" placeholder="Fabric Name" />
-                                  </div>
-                                </div>
-                                <div class="row">
-                                  <div class="col mb-3">
-                                    <label for="fabrictype" class="form-label">Fabric_Type</label>
-                                    <input type="text" id="fabrictype" name="fabrictype" class="form-control" placeholder="Fabric Type" />
-                                  </div>
-                                </div>
-
-                                <div class="row g-2">
-                                  <div class="col mb-0">
-                                    <label for="meter" class="form-label">Meter</label>
-                                    <input type="text" id="meter" name="meter" class="form-control" placeholder="Meter" />
-                                  </div>
-                                  <div class="row g-2">
-                                  <div class="col mb-0">
-                                    <label for="rate" class="form-label">Rate</label>
-                                    <input type="text" id="rate" name="rate" class="form-control" placeholder="Rate" />
-                                  </div>
-                                </div>
-                   
-                                <div class="row g-2">
-                                  <div class="col mb-0">
-                                    <label for="customername" class="form-label">Customer Name</label>
-                                    <input type="text" id="customername" name="customername" class="form-control" placeholder="Customer Name" />
-                                  </div>
-                                </div>
-                                <div class="row g-2">
-                                  <div class="col mb-0">
-                                    <label for="dobBasic" class="form-label">status</label>
-                                    <select class="form-control"   name="status"  >
-                                        <option value="disable">Disable</option>
-                                        <option value="active" selected>Active</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                  Close
-                                </button>
-                                <button type="submit" class="btn btn-primary">Add Fabrics</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </form>
-             
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->

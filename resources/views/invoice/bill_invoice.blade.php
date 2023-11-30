@@ -54,7 +54,7 @@
 				<div class="col-md-6">
 					<label for="" class="form-label">Select Partie</label>
 					<select class="form-control" name="partie_id" id="parties_id" required>
-          <option value=""> -- Select --</option>
+            <option value=""> -- Select --</option>
 						@foreach($data as $parties)
 							@if($parties->status == 'active')
 							<option value="{{$parties->partie_id}}" data-subtext="{{$parties->partie_id}}">{{$parties->name}} / {{$parties->partie_id}}</option>
@@ -67,13 +67,13 @@
 				</div>
 				<div class="col-md-6">
 				<label for="" class="form-label">Select Bill Type</label>
-					<select class="form-control" name="bill_type" required>
-            <option value="">Select</option>
-						<option value="pant_bill">Pant Bill</option>
-						<option value="shirt_bill">Shirt Bill</option>
-            <option value="Fabric Bill">Fabric Bill</option>
-            <option value="Pant & Shirt Bill">Pant & Shirt Bill</option>
-					</select>
+          <select class="form-control" name="bill_type" id="billTypeSelect" required>
+              <option value="">Select</option>
+              <option value="pant_bill">Pant Bill</option>
+              <option value="shirt_bill">Shirt Bill</option>
+              <option value="Fabric Bill">Fabric Bill</option>
+              <option value="Pant & Shirt Bill">Pant & Shirt Bill</option>
+          </select>
 				</div>
 			</div>
 		</div>
@@ -94,12 +94,20 @@
 			</div>
 		</div>
 		<hr class="mt-4">
-    {{-- @php $count = 0 @endphp
-    @foreach($lotdata as $lot) --}}
                           <div id="addnewrow">
                               <div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="slot[]" placeholder="Lot ID" required/>
+                                  <div class="fabricFields" style="display: none;">
+                                      <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
+                                  </div>
+                                  <div class="fabricSelect" style="display: none;">
+                                      <select class="form-control" name="slot[]" >
+                                      <option value="">-- Select --</option>
+                                      @foreach($fabric as $fabricLot)
+                                        <option value="{{$fabricLot->fabricId}}" data-subtext="{{$fabricLot->fabricId}}">{{$fabricLot->fabricId}}</option>
+                                      @endforeach
+                                      </select>
+                                  </div>
                                 </div>
                                 <div class="col-sm-2">
                                   <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description" required/>
@@ -118,28 +126,6 @@
                                 </div>
                               </div>
                             </div>
-                            {{-- <div class="row" style="margin-top:10px;">
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" name="slot[]" value="{{$lot->lot_id}}" placeholder="Lot ID" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" name="sdes[]" value="{{count((array)json_decode($lot->lot_size))}}" placeholder="Description" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                <input type="text" class="form-control mt-2 tquan" id="squan{{$count}}" value="{{$lot->lot_remain}}" name="squantity[]" placeholder="Quantity"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" onkeydown="totalval('{{$count}}')" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2 tsum" id="stotal{{$count}}" name="stotal[]" placeholder="Total" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <button type="button" class="btn btn-danger mt-2" id="remove_row">Remove Row</button>
-                                </div>
-                              </div>
-                              @php $count++ @endphp
-                              @endforeach --}}
                             <hr />
                             <div class="row justify-content-end">
                               <div class="col-sm-6">
@@ -168,13 +154,39 @@
 
 	<script>
 $(document).ready(function(){
+  var currentBillType = $('#billTypeSelect').val();
+
+  $('#billTypeSelect').change(function() {
+    currentBillType = $(this).val();
+    updateFabricFieldsVisibility();
+  });
+
+  function updateFabricFieldsVisibility() {
+    if (currentBillType === 'Fabric Bill') {
+      $('.fabricFields').hide();
+      $('.fabricSelect').show();
+      $('.fabricFields input[name="slot[]"]').remove(); // Remove the input fields
+    } else {
+      $('.fabricSelect').hide();
+      $('.fabricFields').show();
+      if ($('.fabricFields input[name="slot[]"]').length === 0) {
+        $('.fabricFields').append('<input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>');
+      }
+    }
+  }
   var count = 0;
   $('#add_row').click(function(){
-    count++
-    // e.preventDefault();
-    $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
+    if (currentBillType === 'Fabric Bill'){
+      $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="slot[]" placeholder="Lot ID" required/>
+                                  <div class="fabricSelect" style="display: none;">
+                                      <select class="form-control" name="slot[]" required>
+                                          <option value="">-- Select --</option>
+                                          @foreach($fabric as $fabricLot)
+                                            <option value="{{$fabricLot->fabricId}}" data-subtext="{{$fabricLot->fabricId}}">{{$fabricLot->fabricId}}</option>
+                                          @endforeach
+                                      </select>
+                                  </div>
                                 </div>
                                 <div class="col-sm-2">
                                   <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description" required/>
@@ -192,6 +204,35 @@ $(document).ready(function(){
                                   <button type="button" class="btn btn-danger" id="remove_row">Remove Row</button>
                                 </div>
                               </div>`);
+                              updateFabricFieldsVisibility();
+    }
+    else{
+      $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
+                                <div class="col-sm-2">
+                                  <div class="fabricFields" style="display: none;">
+                                      <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
+                                  </div>
+                                </div>
+                                <div class="col-sm-2">
+                                  <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description" required/>
+                                </div>
+                                <div class="col-sm-2">
+                                <input type="text" class="form-control tquan" id="squan`+count+`"  name="squantity[]" placeholder="Quantity" required/>
+                                </div>
+                                <div class="col-sm-2">
+                                  <input type="text" class="form-control" onkeydown=totalval(`+count+`) id="srate`+count+`" name="srate[]" placeholder="Rate" required/>
+                                </div>
+                                <div class="col-sm-2">
+                                  <input type="text" class="form-control tsum" id="stotal`+count+`" name="stotal[]" placeholder="Total" readonly required/>
+                                </div>
+                                <div class="col-sm-2">
+                                  <button type="button" class="btn btn-danger" id="remove_row">Remove Row</button>
+                                </div>
+                              </div>`);
+                              updateFabricFieldsVisibility();
+    }
+    count++
+    // e.preventDefault();
   });
   $(document).on('click','#remove_row',function(e){
       e.preventDefault();
@@ -265,11 +306,32 @@ $(document).ready(function(){
       })
     </script>
     <script>
-        const printButton = document.getElementById('printButton');
-        printButton.addEventListener('click', () => {
-            window.print();
+        $(document).on('change', 'select[name="slot[]"]', function() {
+        var selectedLotId = $(this).val();
+        var currentRow = $(this).closest('.row');
+
+        // Make an AJAX request to get quantity based on selectedLotId
+        $.ajax({
+            type: 'GET',
+            url: 'getFabricLotQuantity/' + selectedLotId,
+            success: function(response) {
+                // Update the quantity field in the current row
+                $(currentRow).find('.tquan').val(response);
+                // Recalculate the total for the current row
+                totalval(currentRow);
+                OnRemoveSum();
+            },
+            error: function(error) {
+                console.error('Error fetching quantity:', error);
+            }
         });
+    });
+        // const printButton = document.getElementById('printButton');
+        // printButton.addEventListener('click', () => {
+        //     window.print();
+        // });
     </script>
+
 
     <x-footerscript/>
   </body>

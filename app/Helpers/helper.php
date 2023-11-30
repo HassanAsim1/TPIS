@@ -292,6 +292,12 @@ function getRemainingRoll($id){
     $data = linkRoll::where('rollId',$id)->where('rollUseStatus',0)->get()->sum('rollQuantity');
     return $data;
 }
+function getSubRollQuantity($id){
+    $data = linkRoll::where('rollSubId',$id)->first();
+    $data->rollUseStatus = 1;
+    $data->save();
+    return $data->rollQuantity;
+}
 
 
 

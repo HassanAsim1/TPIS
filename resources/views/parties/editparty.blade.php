@@ -158,9 +158,9 @@
                 <div class="row g-2">
                                   <div class="col mb-0">
                                     <label for="dobBasic" class="form-label">Category</label>
-                                    <select class="form-control" name="category"  >
-                                        <option value="seller">Fabric Seller</option>
+                                    <select class="form-control" name="category">
                                         <option value="buyer">Product Buyer</option>
+                                        <option value="seller">Fabric Seller</option>
                                     </select>
                                   </div>
                                 </div>
