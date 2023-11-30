@@ -58,6 +58,12 @@ class fabricController extends Controller
             $data->totalRollQuantity = $request->totalRollQuantity;
             $data->totalAmount = $request->totalAmount;
             $data->remainingQuantity = $request->remainingQuantity;
+            $data->gatePass = $request->gatePass;
+            $data->biltyNo = $request->biltyNo;
+            $data->date = $request->date;
+            $data->driverName = $request->driverName;
+            $data->dcNumber = $request->dcNumber;
+            $data->noOfRolls = $request->noOfRolls;
             $data->createdBy = $request->created_by;
         
             if ($data->save()) {
@@ -99,5 +105,53 @@ class fabricController extends Controller
         $partie = partie::where('category','seller')->get();
 
         return view('dashboard.Roll.editRoll',compact('roll','rollData','partie'));
+    }
+    public function updateRollData(Request $request){
+        try {
+            DB::beginTransaction(); // Start a database transaction
+            
+            $data = Roll::where('rollId',$request->rollId)->first();
+            $data->partieId = $request->partie_id;
+            $data->rollRate = $request->rollRate;
+            $data->rollTotalMeter = $request->rollTotalMeter;
+            $data->totalRollQuantity = $request->totalRollQuantity;
+            $data->totalAmount = $request->totalAmount;
+            $data->remainingQuantity = $request->remainingQuantity;
+            $data->gatePass = $request->gatePass;
+            $data->biltyNo = $request->biltyNo;
+            $data->date = $request->date;
+            $data->driverName = $request->driverName;
+            $data->dcNumber = $request->dcNumber;
+            $data->noOfRolls = $request->noOfRolls;
+            $data->createdBy = $request->created_by;
+        
+            if ($data->save()) {
+                $num = count($request->squantity);
+                $rollData = linkRoll::where('rollId',$request->rollId)->get();
+                $rollData->each->delete();
+                for ($i = 0; $i < $num; $i++) {
+                    $roll = new linkRoll;
+                    $roll->rollId = $request->rollId;
+                    $roll->rollSubId = $request->rollSubId[$i];
+                    $roll->rollDescription = $request->sdes[$i];
+                    $roll->rollQuantity = $request->squantity[$i];
+                    $roll->rollRate = $request->srate[$i];
+                    $roll->rollUseStatus = 0;
+                    $roll->rollTotalRate = $request->stotal[$i];
+                    $roll->createdBy = session('role');
+                    $roll->save();
+                }
+        
+                DB::commit(); // Commit the transaction if everything is successful
+                Alert::success('Success', 'Roll Details Added Successfully');
+                return redirect()->back();
+            } else {
+                DB::rollBack(); // Rollback the transaction if $data->save() fails
+                Alert::error('Error', 'Failed to add Roll Details');
+            }
+        } catch (Exception $e) {
+            DB::rollBack(); // Rollback the transaction on any exception
+            Alert::error('Error', $e->getMessage());
+        }       
     }
 }

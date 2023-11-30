@@ -151,6 +151,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::post('addRollData', [fabricController::class,'addRollData'])->name('addRollData');
     Route::get('viewRoll', [fabricController::class,'viewRoll'])->name('viewRoll');
     Route::get('editRoll/{id}', [fabricController::class,'editRoll'])->name('editRoll');
+    Route::post('updateRollData', [fabricController::class,'updateRollData'])->name('updateRollData');
 
 });
 
