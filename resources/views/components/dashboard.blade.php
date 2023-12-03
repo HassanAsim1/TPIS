@@ -117,6 +117,24 @@
                 </li>
               </ul>
             </li>
+            <li class="menu-item {{((request()->is('workingArea') || request()->is('changeWorkingArea'))) ? 'active open' : ''}}">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxs-file-doc"></i>
+                <div data-i18n="Lot">Others</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item {{(request()->is('workingArea*')) ? 'active' : ''}}">
+                  <a href="{{url('workingArea')}}" class="menu-link">
+                    <div data-i18n="Pant Lot">Working Area</div>
+                  </a>
+                </li>
+                <li class="menu-item {{(request()->is('changeWorkingArea')) ? 'active' : ''}}">
+                  <a href="{{url('changeWorkingArea')}}" class="menu-link">
+                    <div data-i18n="Shirt Lot">Change Working Area</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
             @endif
             @if(session('role') == 'admin' || session('role') == 'master' || session('role') == 'manager' || session('role') == 'cashier' || session('working_area') == 2)
             @php

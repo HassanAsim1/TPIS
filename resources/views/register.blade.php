@@ -271,20 +271,9 @@
                       <label for="exampleFormControlSelect1" class="form-label">Select Working Area</label>
                       <select class="form-select" aria-label="Default select example" name="WorkingArea">
                         <option value="" selected>-- Select --</option>
-                        <option value="1">Cutting</option>
-                        <option value="2">Kadhi</option>
-                        <option value="3">Employee - Singer</option>
-                        <option value="4">Employee - Fido</option>
-                        <option value="5">Employee - Safety</option>
-                        <option value="6">Employee - Batake</option>
-                        <option value="7">Employee - Thoka/Mori/Bottom</option>
-                        <option value="8">Washing</option>
-                        <option value="9">Clipping</option>
-                        <option value="10">Rib - Button</option>
-                        <option value="11">Press</option>
-                        <option value="12">Packing</option>
-                        <option value="14">Shirt</option>
-                        <option value="15">Worker</option>
+                        @foreach($data as $workingArea)
+                          <option value="{{$workingArea->workingAreaId}}">{{$workingArea->workingAreaName}}</option>
+                        @endforeach
                       </select>
                     </div>
                   </div>

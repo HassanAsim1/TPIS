@@ -18,6 +18,8 @@ use App\Models\fabric;
 use App\Models\invoice;
 use App\Models\kadhilot;
 use App\Models\Removelot;
+use App\Models\workingArea;
+use App\Models\changeWorkingArea;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 // use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -505,7 +507,7 @@ class LotController extends Controller
     public function EditPantLot($id){
         $data = lot::where('lot_id',$id)->first();
         $mstatus = register::where('email',session('email'))->first();
-        $FabData = fabric::where('remaining_meter','>',0)->get();
+        $FabData = fabric::where('remainingMeter','>',0)->get();
         // dd($data);
         return view('lot.editpantlot')->with('data',$data)->with('mstatus',$mstatus)->with('FabData',$FabData);
     }
@@ -747,6 +749,7 @@ class LotController extends Controller
     public function checkLot(Request $request){
         $user = register::whereNotIn('role', ['admin', 'cashier'])->get();
         $lotQuery = linklotcard::query();
+        $workingArea = workingArea::all();
         if(isset($request->getLot)) {
             $lotQuery->where('lot_id', 'LIKE', "%$request->getLot%");
         }
@@ -763,7 +766,7 @@ class LotController extends Controller
             $lot = linklotcard::all();
             $lotSum = $lot->sum('quantity');
         }
-        return view('lot.verification.checkLot', compact('lot', 'lotSum', 'user'));
+        return view('lot.verification.checkLot', compact('lot', 'lotSum', 'user','workingArea'));
     }
     public function removeLot(){
         $data = removeLot::all();
@@ -796,4 +799,62 @@ class LotController extends Controller
         session()->put('loginStatus','Active');
         return redirect()->back();
     }
+    public function workingArea(){
+        $data = workingArea::all();
+        return view('lot.workingArea.workingArea',compact('data'));
+    }
+    public function addWorkingArea(Request $request){
+        $data = new workingArea;
+        $data->workingAreaId = $request->workingAreaId;
+        $data->mainWorkingArea = $request->mainWorkingArea;
+        $data->workingAreaName = $request->workingAreaName;
+        $data->workingAreaStatus = 'active';
+        $data->addedBy = session('user_id');
+
+        $data->save();
+
+        return redirect()->back()->with('success', 'Working Area is Added Successfully');
+
+    }
+    public function deleteWorkingArea($id){
+        $data = workingArea::where('id',$id)->first();
+        $data->delete();
+
+        return redirect()->back()->with('success', 'Working Area is Deleted Successfully');
+    }
+    public function changeWorkingArea(){
+        $employee = register::all();
+        $workingArea = workingArea::all();
+        return view('lot.workingArea.changeWorkingArea',compact('employee','workingArea'));
+    }
+    public function addChangeWorkingArea(Request $request){
+        try {
+            DB::beginTransaction();
+    
+            $data = new changeWorkingArea;
+            $data->employeeId = $request->employeeId;
+            $data->currentWorkingArea = currentWorkingArea($request->employeeId);
+            $data->changeWorkingArea = $request->changeWorkingArea;
+            $data->changeBy = session('user_id');
+            $data->save();
+            
+            $employee = register::where('user_id', $request->employeeId)->first();
+            $employee->working_area = $request->changeWorkingArea;
+            $employee->save();
+    
+            // Update multiple records in linklotcard table where user_id matches $request->employeeId for 'role'
+            linklotcard::where('user_id', $request->employeeId)
+                ->update(['role' => $request->changeWorkingArea]);
+    
+            lotcard::where('user_id', $request->employeeId)
+                ->update(['working_area' => $request->changeWorkingArea]);
+    
+            DB::commit();
+            return redirect()->back()->with('success', 'Working Area change Successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+    
 }

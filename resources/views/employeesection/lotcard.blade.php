@@ -104,9 +104,9 @@
                           </div>
                           <label class="col-sm-1 col-form-label" for="basic-default-company">Working Area :</label>
                           <div class="col-sm-5">
-                            @if($data->working_area == 1)
-                            <input type="text" class="form-control" id="basic-default-company" name="working_area" value="Cutting Room" readonly/>
-                            @elseif($data->working_area == 2)
+                            {{-- @if($data->working_area == 1) --}}
+                            <input type="text" class="form-control" id="basic-default-company" name="working_area" value="{{$data->working_area}}" readonly/>
+                            {{-- @elseif($data->working_area == 2)
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="Kadi" readonly/>
                             @elseif($data->working_area == 3)
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="Singer" readonly/>
@@ -134,7 +134,7 @@
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="shirt" readonly/>
                             @elseif($data->working_area == 15)
                             <input type="text" class="form-control" id="basic-default-company" name="working_area" value="worker" readonly/>
-                            @endif
+                            @endif --}}
                           </div>
                         </div>
 

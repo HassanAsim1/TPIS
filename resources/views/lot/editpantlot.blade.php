@@ -69,9 +69,9 @@
                                     <label for="Quantity" class="form-label">Lot Fabric
                                     </label>
                                     <select class="form-select" name="fabricid" id="fabricLot">
-                                    <option selected value='{{$data->fabric_id}}'><strong>{{$data->fabric_id}}</option>
+                                    <option selected value='{{$data->fabricId}}'><strong>{{$data->fabricId}}</option>
                                         @foreach($FabData as $fabric)
-                                          <option value='{{$fabric->rate}}'><strong>{{$fabric->fabric_id}}</strong>/ {{$fabric->fabric_name}}</option>
+                                          <option value='{{$fabric->rate}}'><strong>{{$fabric->fabricId}}</strong>/ {{$fabric->fabric_name}}</option>
                                         @endforeach
                                         <script>
                                           $('#fabricLot').on('change',function(){
@@ -84,7 +84,7 @@
                                   <div class="col mb-0">
                                     <label for="Quantity" class="form-label">Fabric Rate
                                     </label>
-                                    <input type="text" id="fabric_rate" name="fabric_rate" class="form-control" value="{{getfabricrate($data->fabric_id)}}" readonly/>
+                                    <input type="text" id="fabric_rate" name="fabric_rate" class="form-control" value="{{getfabricrate($data->fabricId)}}" readonly/>
                                   </div>
                                 </div>
                                 <div class="row g-2">

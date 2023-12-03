@@ -11,6 +11,7 @@ use App\Models\cashier_payment;
 use App\Models\register;
 use App\Models\kadhilot;
 use App\Models\linkRoll;
+use App\Models\workingArea;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -297,6 +298,19 @@ function getSubRollQuantity($id){
     $data->rollUseStatus = 1;
     $data->save();
     return $data->rollQuantity;
+}
+
+function currentWorkingArea($id){
+    $data = register::where('user_id',$id)->first();
+    return $data->working_area;
+}
+
+function getWorkingArea($id){
+    $data = register::where('user_id',$id)->first();
+    dd($data);
+    $workingArea = workingArea::where('workingAreaId',$data->working_area)->first();
+    dd($workingArea);
+    return $workingArea->workingAreaName;
 }
 
 

@@ -166,9 +166,18 @@ $(document).ready(function(){
       $('.fabricFields').hide();
       $('.fabricSelect').show();
       $('.fabricFields input[name="slot[]"]').remove(); // Remove the input fields
+      // if ($('.fabricSelect input[name="slot[]"]').length === 0) {
+      //   $('.fabricSelect').append(`<select class="form-control" name="slot[]" >
+      //                                 <option value="">-- Select --</option>
+      //                                 @foreach($fabric as $fabricLot)
+      //                                   <option value="{{$fabricLot->fabricId}}" data-subtext="{{$fabricLot->fabricId}}">{{$fabricLot->fabricId}}</option>
+      //                                 @endforeach
+      //                                 </select>`);
+      // }
     } else {
       $('.fabricSelect').hide();
       $('.fabricFields').show();
+      $('.fabricSelect').remove();
       if ($('.fabricFields input[name="slot[]"]').length === 0) {
         $('.fabricFields').append('<input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>');
       }
@@ -176,6 +185,7 @@ $(document).ready(function(){
   }
   var count = 0;
   $('#add_row').click(function(){
+    count++
     if (currentBillType === 'Fabric Bill'){
       $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2">
@@ -231,7 +241,6 @@ $(document).ready(function(){
                               </div>`);
                               updateFabricFieldsVisibility();
     }
-    count++
     // e.preventDefault();
   });
   $(document).on('click','#remove_row',function(e){

@@ -10,6 +10,7 @@ use App\Models\linkRoll;
 use App\Models\LinkFabricLot;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use Alert;
 
 class fabricController extends Controller
@@ -21,8 +22,9 @@ class fabricController extends Controller
    }
 
     public function add_fabric(Request $req){
+        DB::beginTransaction();
         try {
-            $data = new fabric;
+            $data = new Fabric;
             $id = IdGenerator::generate(['table' =>'fabrics','field'=>'fabricId', 'length' => 10, 'prefix' =>'FABR-']);
             $data->fabricId = $id;
             $data->fabricName = $req->fabricName;
@@ -37,7 +39,7 @@ class fabricController extends Controller
             $data->remainingMeter = $req->meter;
             $data->fabricBaar = $req->fabricBaar;
             $data->description = $req->description;
-        
+
             foreach($req->rollData as $rolls){
                 $insertData = new LinkFabricLot;
                 $insertData->fabricId = $id;
@@ -48,12 +50,14 @@ class fabricController extends Controller
                 $insertData->save();
             }
             $data->status = 0;
-        
+
             if($data->save()){
                 Alert::success('Success', 'Fabric Added Successfully');
             }
+            DB::commit();
             return redirect('fabrics');
         } catch (QueryException $e) {
+            DB::rollback();
             Log::error($e->getMessage());
             Alert::error('Error', 'There was an error adding fabric. Please try again.');
             return redirect()->back();

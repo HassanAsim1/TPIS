@@ -93,8 +93,10 @@
                       <option value="">-- Select --</option>
                       @endif
                       <option value="">-- Select --</option>
-                      <option value="shirt">Shirt</option>
-                      <option value="pant">Pant</option>
+                      @foreach($workingArea as $working)
+                      <option value="{{$working->workingAreaId}}">{{$working->workingAreaName}}</option>
+                      <!-- <option value="pant">Pant</option> -->
+                      @endforeach
                     </select>
                   </div>
                   <div class="col-sm-2 mt-4">

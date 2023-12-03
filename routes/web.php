@@ -10,6 +10,7 @@ use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use App\Models\fabric;
 use App\Models\lot;
+use App\Models\workingArea;
 use App\Models\register;
 
 /*
@@ -32,7 +33,8 @@ Route::get('login', function () {
 Route::post("login",[UserController::class,'login']);
 
 Route::get('register', function () {
-    return view('register');
+    $data = workingArea::all();
+    return view('register',compact('data'));
 });
 Route::post("register",[UserController::class,'addData']);
 
@@ -94,7 +96,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
         $data = lot::orderBy('lot_id','DESC')->get();
         $master = register::where('role','master')->get();
         $mstatus = register::where('email',session('email'))->first();
-        $FabData = fabric::where('remaining_meter','>',0)->get();
+        $FabData = fabric::where('remainingMeter','>',0)->get();
         // dd($FabData);
         return view('lot.addpantlot',compact('data','master','mstatus','FabData'));
     });
@@ -158,6 +160,16 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('/addFabricLot', [fabricController::class,'addFabricLot'])->name('addFabricLot');
     Route::get('/getRollIdData/{id}', [fabricController::class,'getRollIdData'])->name('getRollIdData');
     Route::get('/getFabricLotQuantity/{id}', [fabricController::class,'getFabricLotQuantity'])->name('getFabricLotQuantity');
+    Route::get('/rollInvoice/{id}', [InvoiceController::class,'rollInvoice'])->name('rollInvoice');
+    // Route::get('/fabricDetailId/{id}', [fabricController::class,'fabricDetailId'])->name('fabricDetailId');
+
+    //Working Area
+
+    Route::get('/workingArea', [LotController::class,'workingArea'])->name('workingArea');
+    Route::post('/addWorkingArea', [LotController::class,'addWorkingArea'])->name('addWorkingArea');
+    Route::get('/deleteWorkingArea/{id}', [LotController::class,'deleteWorkingArea'])->name('deleteWorkingArea');
+    Route::get('/changeWorkingArea', [LotController::class,'changeWorkingArea'])->name('changeWorkingArea');
+    Route::post('/addChangeWorkingArea', [LotController::class,'addChangeWorkingArea'])->name('addChangeWorkingArea');
 
 });
 

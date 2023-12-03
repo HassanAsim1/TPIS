@@ -60,4 +60,7 @@ class InvoiceController extends Controller
         $employeeData = employee_ledger::where('employee_id', $employeeId)->orderBy('created_at', 'asc')->get();
         return view('invoice.employee.employeInvoice')->with('employee', $employee)->with('employeeData', $employeeData);
     }
+    public function rollInvoice($id){
+        $roll = Roll::where('rollId',$id)->first();
+    }
 }

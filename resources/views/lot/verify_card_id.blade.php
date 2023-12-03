@@ -90,7 +90,7 @@
                                 <input type="text" class="form-control tquan" id="squan{{$count}}" name="squantity[]" value="{{$lotcard->quantity}}" />
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                  <input type="text" class="form-control trate" onkeydown="totalval({{$count}})" value="{{$lotcard->rate}}" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
+                                  <input type="text" class="form-control srate" onkeydown="totalval({{$count}})" value="{{$lotcard->rate}}" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
                                 </div>
                                 <div class="col-sm-2 mt-1">
                                   <input type="text" class="form-control tsum" id="stotal{{$count}}" value="{{$lotcard->total}}" name="stotal[]" placeholder="Total" readonly/>
@@ -225,40 +225,45 @@
       </script>
 
 <script>
-                        $(document).ready(function () {
-                            calculateTotals(); // Calculate totals when the page loads
+                        // Add an oninput event handler to quantity and rate input fields within the dynamically added rows
+  $(document).on('input', '.tquan, .srate', function () {
+    updateSubTotal($(this));
+    updateTotals();
+  });
 
-                            // Calculate totals when quantity input changes
-                            $(document).on('input', '.tquan', function () {
-                                calculateTotals();
-                            });
+  // Calculate and update sub-total for a row
+  function updateSubTotal(inputField) {
+    var row = inputField.closest('.row');
+    var quantity = parseFloat(row.find('.tquan').val()) || 0; // Ensure it's a number, default to 0
+    var rate = parseFloat(row.find('.srate').val()) || 0; // Ensure it's a number, default to 0
+    var subTotal = quantity * rate;
+    row.find('.tsum').val(subTotal);
+  }
 
-                            function calculateTotals() {
-                                var totalQuantity = 0;
-                                var grandTotal = 0;
+  // Calculate and update totals
+  function updateTotals() {
+    var sum = 0;
+    var sumquan = 0;
 
-                                $('.tquan').each(function () {
-                                    var quantity = parseFloat($(this).val());
-                                    totalQuantity += isNaN(quantity) ? 0 : quantity;
+    // Calculate the sum of subtotals
+    $('.tsum').each(function () {
+      var value = parseFloat($(this).val()) || 0; // Ensure it's a number, default to 0
+      sum += value;
+    });
 
-                                    var unitPrice = parseFloat($(this).data('unit-price')); // Replace with your actual unit price data
-                                    grandTotal += isNaN(quantity) || isNaN(unitPrice) ? 0 : (quantity * unitPrice);
-                                });
+    // Calculate the sum of quantities
+    $('.tquan').each(function () {
+      var value = parseFloat($(this).val()) || 0; // Ensure it's a number, default to 0
+      sumquan += value;
+    });
 
-                                $('#totalquan').val(totalQuantity);
-                                calculateGrandTotal();
-                            }
-                            function calculateGrandTotal() {
-                              var grandTotal = 0;
+    // Update the grand total and total quantity fields
+    $('#grandtotal').val(sum);
+    $('#totalquan').val(sumquan);
+  }
 
-                              $('.tsum').each(function () {
-                                var total = parseFloat($(this).val());
-                                grandTotal += isNaN(total) ? 0 : total;
-                              });
-
-                              $('#grandtotal').val(grandTotal);
-                            }
-                        });
+  // Initialize totals when the page loads
+  updateTotals();
                     </script>
     <x-footerscript/>
   </body>
