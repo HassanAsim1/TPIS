@@ -856,5 +856,54 @@ class LotController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+    public function addLot(){
+        $user = register::whereNotIn('role', ['admin', 'cashier'])->get();
+        return view('lot.addLot',compact('user'));
+    }
+    public function addLotData(Request $request){
+        try {
+            $existingRecord = linklotcard::where(function($query) use ($request) {
+                $query->where('lot_id', $request->lotId.'-'.$request->employeeId)
+                    ->where('role', currentWorkingArea($request->employeeId));
+            })
+            ->where(function($query) {
+                $query->where('status', 1)
+                ->orWhere('status', 0);
+            })
+            ->first();
+            if($existingRecord){
+                return redirect()->back()->with('error', 'Lot Already Added '.$existingRecord->card_id);
+            }
+            else{
+                $data = new lotcard;
+                $id = IdGenerator::generate(['table' => 'lotcards', 'field' => 'card_id', 'length' => 10, 'prefix' => 'CARD-']);
+                $data->card_id = $id;
+                $data->user_id = $request->employeeId;
+                $data->card_type = getWorkingArea($request->employeeId);
+                $data->fix_rate = $request->lotRate;
+                $data->working_area = currentWorkingArea($request->employeeId);
+                $data->total_pcs = $request->lotQuantity;
+                $data->grand_total = $request->lotQuantity;
+                $data->verify_card = 1;
+                $data->save();
+
+                $linkData = new linklotcard;
+                $linkData->card_id = $id;
+                $linkData->user_id = $request->employeeId;
+                $linkData->lot_id = $request->lotId.'-'.$request->employeeId;
+                $linkData->description = 'Added By ' . getname(session('user_id'));
+                $linkData->quantity = $request->lotQuantity;
+                $linkData->rate = $request->lotRate;
+                $linkData->total = $request->lotQuantity;
+                $linkData->role = currentWorkingArea($request->employeeId);
+                $linkData->status = 1;
+                $linkData->save();
+
+                return redirect()->back()->with('success', 'Lot Added Successfully');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while adding the lot: ' . $e->getMessage());
+        }        
+    }
     
 }

@@ -307,13 +307,13 @@ function currentWorkingArea($id){
 
 function getWorkingArea($id){
     $data = register::where('user_id',$id)->first();
-    dd($data);
     $workingArea = workingArea::where('workingAreaId',$data->working_area)->first();
-    dd($workingArea);
-    return $workingArea->workingAreaName;
+    if($workingArea){
+        return $workingArea->workingAreaName;
+    }
+    else{
+        return 'No show';
+    }
 }
-
-
-
 
 ?>

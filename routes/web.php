@@ -171,6 +171,10 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('/changeWorkingArea', [LotController::class,'changeWorkingArea'])->name('changeWorkingArea');
     Route::post('/addChangeWorkingArea', [LotController::class,'addChangeWorkingArea'])->name('addChangeWorkingArea');
 
+    // Add Lot By Admin
+    Route::post('addLotData',[LotController::class,'addLotData'])->name('addLotData');
+    Route::get('addLot',[LotController::class,'addLot'])->name('addLot');
+
 });
 
 

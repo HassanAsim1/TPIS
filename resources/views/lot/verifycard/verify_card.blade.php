@@ -90,7 +90,7 @@
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$lotcard->card_id}} / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($lotcard->created_at)->format('d M Y i:s:h')}}</span></strong></td>
                         <td>{{getname($lotcard->user_id)}}</td>
                         <td>{{$lotcard->card_type}}</td>
-                        <td><span class="badge bg-label-primary me-1">{{$lotcard->working_area}}</span></td>
+                        <td><span class="badge bg-label-primary me-1">{{getWorkingArea($lotcard->user_id)}}</span></td>
                         <td>{{$lotcard->grand_total}}</td>
                         <td>
                           <div class="dropdown">

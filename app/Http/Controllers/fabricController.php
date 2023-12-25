@@ -64,8 +64,9 @@ class fabricController extends Controller
         }
     }
     public function fabricDetail($id){
-        $data = fabric::where('fabric_id',$id)->first();
-        return view('dashboard.fabrics.fabricDetail',compact('data'));
+        $data = fabric::where('fabricId',$id)->first();
+        $fabricData = LinkFabricLot::where('fabricId',$id)->get();
+        return view('dashboard.fabrics.fabricDetail',compact('data','fabricData'));
     }
     public function addRoll(){
         $partie = partie::where('category', 'seller')->get();

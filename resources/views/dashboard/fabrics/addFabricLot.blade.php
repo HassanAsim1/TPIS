@@ -66,16 +66,16 @@
                                     <input type="text" class="form-control" name="fabricColor">
                                   </div>
                                   <div class="col mb-0">
-                                        <div class="mb-3">
-                                            <label for="select2Multiple" class="form-label">Select Roll</label>
-                                            <select id="select2Multiple" class="form-select" name="rollId">
-                                                    <option value=''>-- Select --</option>
-                                                    @foreach($fabricRoll as $fabric)
-                                                    <option value='{{$fabric->rollId}}'>{{$fabric->rollId}} /{{$fabric->biltyNo}} /{{$fabric->rollTotalMeter}}</option>
-                                                    @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
+                                      <div class="mb-3">
+                                          <label for="select2Multiple" class="form-label">Select Roll</label>
+                                          <select id="select2Multiple" class="form-select" name="rollId">
+                                              <option value=''>-- Select --</option>
+                                              @foreach($fabricRoll as $fabric)
+                                              <option value='{{$fabric->rollId}}'>{{$fabric->rollId}} /{{$fabric->biltyNo}} /{{$fabric->rollTotalMeter}}</option>
+                                              @endforeach
+                                          </select>
+                                      </div>
+                                  </div>
                                   <div class="col mb-0">
                                     <div class="col mb-0">
                                         <div class="mb-3">

@@ -117,7 +117,7 @@
                 </li>
               </ul>
             </li>
-            <li class="menu-item {{((request()->is('workingArea') || request()->is('changeWorkingArea'))) ? 'active open' : ''}}">
+            <li class="menu-item {{((request()->is('workingArea') || request()->is('changeWorkingArea') || request()->is('addLot'))) ? 'active open' : ''}}">
               <a href="#" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bxs-file-doc"></i>
                 <div data-i18n="Lot">Others</div>
@@ -131,6 +131,11 @@
                 <li class="menu-item {{(request()->is('changeWorkingArea')) ? 'active' : ''}}">
                   <a href="{{url('changeWorkingArea')}}" class="menu-link">
                     <div data-i18n="Shirt Lot">Change Working Area</div>
+                  </a>
+                </li>
+                <li class="menu-item {{(request()->is('addLot')) ? 'active' : ''}}">
+                  <a href="{{url('addLot')}}" class="menu-link">
+                    <div data-i18n="Add Lot">Add Lot Data</div>
                   </a>
                 </li>
               </ul>

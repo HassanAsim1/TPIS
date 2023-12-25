@@ -102,7 +102,7 @@
                               <!-- <a class="dropdown-item" href="javascript:void(0);"
                               ><i class="bx bx-edit-alt me-1"></i>View</a
                               >    -->
-                               <a class="dropdown-item" href="{{url('fabricDetail/'.$fabric->fabric_id)}}"
+                               <a class="dropdown-item" href="{{url('fabricDetail/'.$fabric->fabricId)}}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                               >
                               <a class="dropdown-item" href="javascript:void(0);"
