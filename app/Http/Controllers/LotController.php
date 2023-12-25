@@ -905,5 +905,9 @@ class LotController extends Controller
             return redirect()->back()->with('error', 'An error occurred while adding the lot: ' . $e->getMessage());
         }        
     }
+    public function timeline(){
+        $auditData = DB::table('audits')->get();
+        return view('timeline.timeline',compact('auditData'));
+    }
     
 }
