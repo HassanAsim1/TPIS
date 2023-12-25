@@ -79,12 +79,37 @@ class UserController extends Controller
 
     function login(Request $req)
     {
-        try {
-            $data = register::where('email', $req->email)->first();
-        
+       try {
+        $data = register::where('email', $req->email)->first();
+        $loginStatus = register::where('loginStatus',0)->first();
+        if($data){
             if ($data->loginStatus == 1 && $data->status == 'active') {
                 if ($data != '' && password_verify($req->password, $data->password)) {
-                    // ... your existing code ...
+                    $ses_email = $req->email;
+                        $ses_role = $data->role;
+                        $ses_name = $data->name;
+                        $ses_id = $data->user_id;
+                        $fixrate = $data->fix_rate;
+                        $ses_area = $data->working_area;
+                        $status = $data->status;
+                        $req->session()->put('email',$ses_email);
+                        $req->session()->put('role',$ses_role);
+                        $req->session()->put('name',$ses_name);
+                        $req->session()->put('user_id',$ses_id);
+                        $req->session()->put('working_area',$ses_area);
+                        $req->session()->put('fix_rate',$fixrate);
+                        if($data->loginStatus == 0){
+                            $req->session()->put('loginStatus','Disable');
+                        }
+                        else{
+                            $req->session()->put('loginStatus','Active');
+                        }
+                        // $req->session()->put('user_status',$status);
+                        if($ses_role == 'master' || $ses_role == 'admin'){
+                            $master_id = $data->user_id;
+                            $req->session()->put('master_id',$master_id);
+                        }
+                        Alert::success('Success','Welcome '.$data->name);
         
                     if ($data->role == 'master') {
                         return redirect('pantlot');
@@ -110,12 +135,16 @@ class UserController extends Controller
                 session()->put('nologin', 'Your Status is Disable — Contact Admin For access TPIS!');
                 return view('login');
             }
-        } catch (\Exception $e) {
-            // Handle exceptions here
-            // For example, log the error or return a generic error message
-            return redirect()->back()->with('error', 'An error occurred.'.$e->getMessage());
         }
-        
+        else {
+            session()->put('nologin', 'Your Status is Disable — Contact Admin For access TPIS!');
+            return view('login');
+        }
+    } catch (\Exception $e) {
+        $errorMessage = 'An error occurred: ' . $e->getMessage();
+        return redirect()->back()->with('nologin', $errorMessage);
+    }
+    
     }
     public function EmpTable(Request $req){
         $data = register::all();
