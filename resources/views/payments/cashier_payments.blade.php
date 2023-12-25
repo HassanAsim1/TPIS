@@ -59,7 +59,7 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('generate-invoice') }}', '_blank');">Generate Invoice</button>
+                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('cashierInvoice') }}', '_blank');">Generate Invoice</button>
               </div>
             </div>
 </div>
@@ -189,9 +189,9 @@
                   </div>
                 </div>
                 <div class="col-12 mt-3">
-          <!-- <a href="#" class="btn btn-secondary">Cancel</a> -->
-          <button type="submit" value="Add lot" class="btn btn-danger float-right">Add Debit</button>
-        </div>
+                  <!-- <a href="#" class="btn btn-secondary">Cancel</a> -->
+                  <button type="submit" value="Add lot" class="btn btn-danger float-right">Add Debit</button>
+                </div>
               </div>
             </div>
             <!-- /.card-body -->

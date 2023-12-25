@@ -124,7 +124,7 @@
                         <td>{{$balance = ($balance + $CashData->credit - $CashData->debit)}}</td>
                         @php $count++ @endphp
                       </tr>
-                      @endforeach
+                @endforeach
             </tbody>
         </table>
     </div>

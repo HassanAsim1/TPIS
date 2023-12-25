@@ -23,25 +23,13 @@ class InvoiceController extends Controller
         else{
             $CashEntry = cashier_payment::where('given_by', session('user_id'))->get();
         }
-
-        // Create a PDF instance using Dompdf
         $pdf = new Dompdf();
-
-        // Load the HTML view for the invoice (you need to create this view)
         $html = view('invoice.cashier_invoice')->with('CashEntry',$CashEntry)->render();
 
         $pdf->loadHtml($html);
-
-        // Set paper size, orientation, etc.
         $pdf->setPaper('A4', 'portrait');
-
-        // Render the PDF (HTML to PDF)
         $pdf->render();
-
-        // Create a unique filename for the PDF
         $filename = getname(session('user_id')) . '.pdf';
-
-        // Stream the PDF to the user for download
         return $pdf->stream($filename);
     }
     public function printPartieInvoice($partie_id){
@@ -62,5 +50,15 @@ class InvoiceController extends Controller
     }
     public function rollInvoice($id){
         $roll = Roll::where('rollId',$id)->first();
+    }
+    public function cashierInvoice(){
+        $data = cashier_payment::where('given_by',session('user_id'))->get();
+        // dd($data);
+        if($data){
+            return view('invoice.cashierInvoice',compact('data'));
+        }
+        else{
+            return redirect()->back()->with('error','User Not Exist');
+        }
     }
 }
