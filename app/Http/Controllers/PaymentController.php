@@ -51,6 +51,7 @@ class PaymentController extends Controller
             $Pid = IdGenerator::generate($config);
             $EmpData = new employee_ledger;
             $EmpData->payment_id = $Pid;
+            $EmpData->cashierPayId = $req->inputDebitID;
             $EmpData->employee_id = $req->user_id;
             $EmpData->description = $req->description;
             $EmpData->debit = $req->debit;
@@ -224,6 +225,16 @@ class PaymentController extends Controller
     public function update_cash_data(Request $request){
         $data = cashier_payment::where('pay_id',$request->pay_id)->first();
         $data->description = $request->description;
+        if($data->user_id != 'Expense' && $data->user_id != 'Company' && $data->credit == ''){
+            $empData = employee_ledger::where('cashierPayId',$request->pay_id)->first();
+            $empData->debit = $request->debit;
+            $empData->save();
+        }
+        if($data->user_id != 'Expense' && $data->user_id != 'Company' && $data->debit == ''){
+            $empData = employee_ledger::where('cashierPayId',$request->pay_id)->first();
+            $empData->credit = $request->credit;
+            $empData->save();
+        }
         if ($request->debit) {
             $data->debit = $request->debit;
         } else {
@@ -231,6 +242,9 @@ class PaymentController extends Controller
         }
         if($request->has('verify')){
             $data->verify = 1;
+        }
+        else{
+            $data->verify = 0;
         }
         $data->save();
 

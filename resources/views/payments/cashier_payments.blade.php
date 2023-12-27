@@ -25,6 +25,47 @@
     <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jszip.min.js"></script>
+
+<style>
+  .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    /* Style for the table */
+    .table-bordered {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table-bordered th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+  @media print {
+      body * {
+          visibility: hidden;
+      }
+
+      #printTable, #printTable * {
+          visibility: visible;
+      }
+
+      #printTable {
+          position: absolute;
+          left: 0;
+          top: 0;
+      }
+  }
+</style>
   </head>
 
   <body>
@@ -59,8 +100,11 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('generate-invoice') }}', '_blank');">Generate Invoice</button>
+                <button type="button" class="btn btn-secondary mt-1" onclick="window.open('{{ route('generate-invoice') }}', '_blank');">Generate Invoice</button>
+                <button type="button" class="btn btn-secondary mt-1" id="printButton">Current Invoice</button>
               </div>
+              
+            <input class="form-control mt-2" type="text" id="searchInput" placeholder="Search...">
             </div>
 </div>
     <section class="content mt-2" id="CreditCashier" style="display:none;">
@@ -189,9 +233,9 @@
                   </div>
                 </div>
                 <div class="col-12 mt-3">
-          <!-- <a href="#" class="btn btn-secondary">Cancel</a> -->
-          <button type="submit" value="Add lot" class="btn btn-danger float-right">Add Debit</button>
-        </div>
+                  <!-- <a href="#" class="btn btn-secondary">Cancel</a> -->
+                  <button type="submit" value="Add lot" class="btn btn-danger float-right">Add Debit</button>
+                </div>
               </div>
             </div>
             <!-- /.card-body -->
@@ -236,8 +280,10 @@
                     $num = count($CashEntry);
                     $count = 1; @endphp
                     <input type="hidden" id="table_row" value="{{$num}}"/>
-                     @foreach($CashEntry as $CashData)
-                      <tr id="row{{$count}}">
+                     @foreach($CashEntry as $key => $CashData)
+                      <tr 
+                      {{-- id="row{{$count}}" --}}
+                       id="row{{$key + 1}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$CashData->pay_id}}</strong> / <span class="badge bg-label-secondary me-1">{{\Carbon\Carbon::parse($CashData->created_at)->format('d M Y')}}</span></td>
                         @if($CashData->user_id != 'Expense' && $CashData->user_id != 'Company')
                           @if($CashData->debit != null)
@@ -265,9 +311,9 @@
                               <a class="dropdown-item" href="{{url('cashier_payments/'.$CashData->pay_id)}}"
                               ><i class="bx bx-edit-alt me-1"></i>Update</a
                               >
-                              <a class="dropdown-item" href="javascript:void(0);"
+                              {{-- <a class="dropdown-item" href="javascript:void(0);"
                                 ><i class="bx bx-trash me-1"></i> Delete</a
-                              >
+                              > --}}
                             </div>
                           </div>
                         </td>
@@ -295,6 +341,56 @@
         document.getElementById('row'+rowval).scrollIntoView();
       })
     </script>
+
+    <script>
+      const searchInput = document.getElementById('searchInput');
+      const rows = document.querySelectorAll('tbody tr');
+  
+      searchInput.addEventListener('input', function () {
+          const searchString = this.value.trim().toLowerCase();
+  
+          rows.forEach(row => {
+              const isVisible = Array.from(row.children).some(cell => cell.textContent.trim().toLowerCase().includes(searchString));
+              row.style.display = isVisible ? '' : 'none';
+          });
+      });
+  </script>
+  <script>
+   function filterTable(searchText) {
+        $('.table-bordered tbody tr').each(function () {
+            const isVisible = $(this).text().toLowerCase().includes(searchText);
+            $(this).toggle(isVisible);
+        });
+    }
+
+    $('#printButton').on('click', function () {
+    const printContent = $('.table-bordered').clone(); // Clone the table
+
+    // Create a new window
+    const printWindow = window.open('', '', 'width=600,height=600');
+
+    // Write HTML content to the new window
+    printWindow.document.write('<html><head><title>Print Table</title>');
+
+    // Include CSS styles in the new window
+    printWindow.document.write(
+        '<style>' +
+        'body { font-family: Arial, sans-serif; }' + // Example styles - customize as needed
+        '.table-bordered { border-collapse: collapse; width: 100%; }' +
+        '.table-bordered th, .table-bordered td { border: 1px solid #ddd; padding: 8px; text-align: left; }' +
+        '.table-bordered th { background-color: #f2f2f2; }' +
+        '</style>'
+    );
+
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<div id="printTable"></div>'); // Create a placeholder for the table
+    printContent.appendTo(printWindow.document.getElementById('printTable')); // Append cloned table to the placeholder
+
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
+  </script>
 
     <x-footerscript/>
     <script>

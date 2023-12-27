@@ -22,6 +22,31 @@
 >
   <head>
     <x-head />
+    <style>
+      .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    /* Style for the table */
+    .table-bordered {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table-bordered th {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    </style>
   </head>
 
   <body>
@@ -228,9 +253,11 @@
                               <!-- <a class="dropdown-item"
                               ><i class="bx bx-edit-alt me-1"></i>View Ledger</a
                               > -->
+                              @if(session('role') == 'admin' || session('role') == 'cashier' || session('role') == 'manager')
                               <a class="dropdown-item" href="{{url('delete_employee_payment/'.$parties_ledger->payment_id)}}" onclick="confirmDelete(event)"
                                 ><i class="bx bx-trash me-1"></i> Delete</a
                               >
+                              @endif
                             </div>
                           </div>
                         </td>
