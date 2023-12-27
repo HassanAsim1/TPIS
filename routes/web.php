@@ -174,6 +174,8 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     // Add Lot By Admin
     Route::post('addLotData',[LotController::class,'addLotData'])->name('addLotData');
     Route::get('addLot',[LotController::class,'addLot'])->name('addLot');
+    Route::get('cashierInvoice',[InvoiceController::class,'cashierInvoice'])->name('cashierInvoice');
+    Route::get('timeline',[LotController::class,'timeline'])->name('timeline');
 
 });
 

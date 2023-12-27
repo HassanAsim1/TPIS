@@ -79,70 +79,72 @@ class UserController extends Controller
 
     function login(Request $req)
     {
-        $data = register::where('email',$req->email)->first();
+       try {
+        $data = register::where('email', $req->email)->first();
         $loginStatus = register::where('loginStatus',0)->first();
-    //    dd($data);
-    // dd($data);
-       if($data->loginStatus == 1 && $data->status == 'active'){
-            if($data != '' && password_verify($req->password,$data->password))
-            {
+        if($data){
+            if ($data->loginStatus == 1 && $data->status == 'active') {
+                if ($data != '' && password_verify($req->password, $data->password)) {
                     $ses_email = $req->email;
-                    $ses_role = $data->role;
-                    $ses_name = $data->name;
-                    $ses_id = $data->user_id;
-                    $fixrate = $data->fix_rate;
-                    $ses_area = $data->working_area;
-                    $status = $data->status;
-                    $req->session()->put('email',$ses_email);
-                    $req->session()->put('role',$ses_role);
-                    $req->session()->put('name',$ses_name);
-                    $req->session()->put('user_id',$ses_id);
-                    $req->session()->put('working_area',$ses_area);
-                    $req->session()->put('fix_rate',$fixrate);
-                    if($loginStatus != ''){
-                        $req->session()->put('loginStatus','Disable');
-                    }
-                    else{
-                        $req->session()->put('loginStatus','Active');
-                    }
-                    // $req->session()->put('user_status',$status);
-                    if($ses_role == 'master' || $ses_role == 'admin'){
-                        $master_id = $data->user_id;
-                        $req->session()->put('master_id',$master_id);
-                    }
-                    Alert::success('Success','Welcome '.$data->name);
-                    if($data->role == 'master'){
+                        $ses_role = $data->role;
+                        $ses_name = $data->name;
+                        $ses_id = $data->user_id;
+                        $fixrate = $data->fix_rate;
+                        $ses_area = $data->working_area;
+                        $status = $data->status;
+                        $req->session()->put('email',$ses_email);
+                        $req->session()->put('role',$ses_role);
+                        $req->session()->put('name',$ses_name);
+                        $req->session()->put('user_id',$ses_id);
+                        $req->session()->put('working_area',$ses_area);
+                        $req->session()->put('fix_rate',$fixrate);
+                        if($data->loginStatus == 0){
+                            $req->session()->put('loginStatus','Disable');
+                        }
+                        else{
+                            $req->session()->put('loginStatus','Active');
+                        }
+                        // $req->session()->put('user_status',$status);
+                        if($ses_role == 'master' || $ses_role == 'admin'){
+                            $master_id = $data->user_id;
+                            $req->session()->put('master_id',$master_id);
+                        }
+                        Alert::success('Success','Welcome '.$data->name);
+        
+                    if ($data->role == 'master') {
                         return redirect('pantlot');
-                    }
-                    elseif($data->role == 'admin'){
+                    } elseif ($data->role == 'admin') {
                         return redirect('dashboard');
-                    }
-                    elseif($data->role != 'employee'){
+                    } elseif ($data->role != 'employee') {
                         return redirect(route('lotcard'));
-                    }
-                    elseif($data->role == 'employee'){
+                    } elseif ($data->role == 'employee') {
                         return redirect(route('lotcard'));
-                    }
-                    elseif($data->role == 'manager'){
+                    } elseif ($data->role == 'manager') {
                         return redirect('TrackPant');
-                    }
-                    elseif($data->role == 'cashier'){
+                    } elseif ($data->role == 'cashier') {
                         return redirect('cashier_payments');
                     }
-            }
-            elseif($data != ''){
-                    session()->put('nologin','Wrong Password — Contact Admin For access TPIS!');
+                } elseif ($data != '') {
+                    session()->put('nologin', 'Wrong Password — Contact Admin For access TPIS!');
                     return view('login');
-            }
-            else{
-                    session()->put('nologin','User Not Exist — Contact Admin For access TPIS!');
+                } else {
+                    session()->put('nologin', 'User Not Exist — Contact Admin For access TPIS!');
                     return view('login');
+                }
+            } else {
+                session()->put('nologin', 'Your Status is Disable — Contact Admin For access TPIS!');
+                return view('login');
             }
-       }
-       else{
-            session()->put('nologin','Your Status is Disable — Contact Admin For access TPIS!');
+        }
+        else {
+            session()->put('nologin', 'Your Status is Disable — Contact Admin For access TPIS!');
             return view('login');
-       }
+        }
+    } catch (\Exception $e) {
+        $errorMessage = 'An error occurred: ' . $e->getMessage();
+        return redirect()->back()->with('nologin', $errorMessage);
+    }
+    
     }
     public function EmpTable(Request $req){
         $data = register::all();
