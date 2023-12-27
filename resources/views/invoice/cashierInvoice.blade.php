@@ -121,7 +121,7 @@
                                     @foreach($data as $invoice)
                                     <tr>
                                         <td class="py-1">
-                                            <p class="card-text font-weight-bold mb-25">{{$invoice->pay_id}}</p>
+                                            <p class="card-text font-weight-bold mb-25">{{$invoice->pay_id}} / {{ \Carbon\Carbon::parse($employee->created_at)->format('j F y') }}</p>
                                         </td>
                                         <td class="py-1">
                                             @if($invoice->user_id != 'Expense' && $invoice->user_id != 'Company')

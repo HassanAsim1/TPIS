@@ -250,12 +250,6 @@ $(document).ready(function(){
         })
       })
     </script>
-    <script>
-        const printButton = document.getElementById('printButton');
-        printButton.addEventListener('click', () => {
-            window.print();
-        });
-    </script>
 
     <x-footerscript/>
   </body>
