@@ -100,7 +100,7 @@
                 </button>
                 <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
-                <button type="button" class="btn btn-secondary mt-1" onclick="window.open('{{ route('generate-invoice') }}', '_blank');">Generate Invoice</button>
+                <button type="button" class="btn btn-secondary mt-1" onclick="window.open('{{ route('cashierInvoice') }}', '_blank');">Generate Invoice</button>
                 <button type="button" class="btn btn-secondary mt-1" id="printButton">Current Invoice</button>
               </div>
               
