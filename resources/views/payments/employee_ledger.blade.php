@@ -240,7 +240,7 @@
                       <tr id="row{{$count}}">
                         <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$parties_ledger->payment_id}}</strong> / <span class="badge bg-label-secondary">{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y i:s:h')}}</span></td>
                         {{-- <td>{{$parties_ledger->employee_id}}</td> --}}
-                        <td>{{$parties_ledger->description}} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
+                        <td>{{$parties_ledger->description}} / {{$parties_ledger->cashierPayId}} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
                         <td>{{$parties_ledger->debit}}</td>
                         <td>{{$parties_ledger->credit}}</td>
                         <td>{{$balance = ($balance + $parties_ledger->credit - $parties_ledger->debit)}}</td>
