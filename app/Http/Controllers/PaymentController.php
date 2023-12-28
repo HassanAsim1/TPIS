@@ -64,6 +64,7 @@ class PaymentController extends Controller
             $Pid = IdGenerator::generate($config);
             $EmpData = new parties_ledger;
             $EmpData->payment_id = $Pid;
+            $EmpData->cashierPayId = $req->inputDebitID;
             $EmpData->parties_id = $req->user_id;
             $EmpData->description = 'Debit By Cashier';
             $EmpData->debit = $req->credit;
@@ -232,8 +233,10 @@ class PaymentController extends Controller
         }
         if($data->user_id != 'Expense' && $data->user_id != 'Company' && $data->debit == ''){
             $empData = employee_ledger::where('cashierPayId',$request->pay_id)->first();
-            $empData->credit = $request->credit;
-            $empData->save();
+            if($empData){
+                $empData->credit = $request->credit;
+                $empData->save();
+            }
         }
         if ($request->debit) {
             $data->debit = $request->debit;

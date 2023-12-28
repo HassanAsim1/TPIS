@@ -70,6 +70,7 @@
           <select class="form-control" name="bill_type" id="billTypeSelect" required>
               <option value="">Select</option>
               <option value="pant_bill">Pant Bill</option>
+              <option value="Fabric Manual">Fabric Manual</option>
               <option value="shirt_bill">Shirt Bill</option>
               <option value="Fabric Bill">Fabric Bill</option>
               <option value="Pant & Shirt Bill">Pant & Shirt Bill</option>
@@ -83,7 +84,7 @@
 				<div class="col-md-6">
 					<h1>From</h1>
 						<address>
-							<p>Owner Jeans<br>c/o Mubashir Hussain</br>Contact #: 0324-9841973<br></p>
+							<p>Owner Jeans<br>c/o Mubashir Hussain<br />Contact #: 0324-9841973<br></p>
 						</address>
 				</div>
 				<div class="col-md-6">
