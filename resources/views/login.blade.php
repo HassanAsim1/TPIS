@@ -101,11 +101,11 @@
                       </g>
                     </svg>
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder">TPIS</span>
+                  <span class="app-brand-text demo text-body fw-bolder">All Rounder</span>
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to TPIS! 👋</h4>
+              <h4 class="mb-2">Welcome to All Rounder! 👋</h4>
               <p class="mb-4">Please sign-in to your account and start the adventure</p>
 
               <form id="formAuthentication" class="mb-3" action="/login" method="POST">
