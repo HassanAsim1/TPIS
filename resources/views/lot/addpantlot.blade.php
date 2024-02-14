@@ -99,6 +99,12 @@
                                 </div>
                                 <div class="row g-2">
                                   <div class="col mb-0">
+                                    <label for="lotNumber" class="form-label">Lot Number</label>
+                                    <input type="text" id="lotNumber" name="lotNumber" class="form-control" placeholder="Lot Number" />
+                                  </div>
+                                </div>
+                                <div class="row g-2">
+                                  <div class="col mb-0">
                                     <label for="Quantity" class="form-label">Lot Size
                                     </label>
                                     <select class="form-control muliple-select" style="border:2px;" name="size[]" id="multi-search" multiple>

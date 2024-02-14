@@ -163,7 +163,7 @@
                                       @if($TrackData->status == 1)
                                       <tr>
                                         <td>
-                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                                         </td>
                                         <td>{{$TrackData->lot_quantity}}</td>
                                         <td>{{$TrackData->lot_master}}</td>
@@ -173,13 +173,36 @@
                                           <div class="dropdown">
                                             <button
                                               type="button"
-                                              class="btn btn-success"
+                                              class="btn btn-success btn-sm"
                                               data-bs-toggle="dropdown"
                                               onclick="next('{{$TrackData->lot_id}}')"
                                             >
                                             Next
                                             </button></a>
                                             </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
+                                      @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 1)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Cutting Room</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
                                           </div>
                                         </td>
                                       </tr>
@@ -217,7 +240,7 @@
                         @if($TrackData->status == 2)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -248,6 +271,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 2)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">kadhi</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -282,7 +329,7 @@
                         @if($TrackData->status == 3)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -313,6 +360,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 3)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Singer</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -347,7 +418,7 @@
                         @if($TrackData->status == 4)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -378,6 +449,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 4)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Fido</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -412,7 +507,7 @@
                         @if($TrackData->status == 5)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -443,6 +538,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 5)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Safety</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -477,7 +596,7 @@
                         @if($TrackData->status == 6)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -508,6 +627,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 6)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Batake</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -542,7 +685,7 @@
                         @if($TrackData->status == 7)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -573,6 +716,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 7)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Thoka Mori</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -608,7 +775,7 @@
                         @if($TrackData->status == 10)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -639,6 +806,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 10)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Rib Button</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -672,7 +863,7 @@
                         @if($TrackData->status == 8)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -703,6 +894,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 8)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Washing</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -734,7 +949,7 @@
                         @if($TrackData->status == 9)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -765,6 +980,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 9)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Clipping</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -796,7 +1035,7 @@
                         @if($TrackData->status == 11)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -827,6 +1066,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 11)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Press</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -858,7 +1121,7 @@
                         @if($TrackData->status == 12)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -889,6 +1152,30 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 12)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Packing</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="dropdown" onclick="shirtnext('{{$shirtLot->lot_id}}')">Next</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -920,7 +1207,7 @@
                         @if($TrackData->status == 13)
                         <tr>
                           <td>
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lot_id}}</strong>
+                            <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$TrackData->lotNumber}}</strong>
                           </td>
                           <td>{{$TrackData->lot_quantity}}</td>
                           <td>{{$TrackData->lot_master}}</td>
@@ -950,6 +1237,29 @@
                         </tr>
                         @endif
                         @endforeach
+                        @foreach($shirtLots as $shirtLot)
+                                      @php
+                                          $size = json_decode($shirtLot->lot_size);
+                                      @endphp
+                                      @if($shirtLot->status == 13)
+                                      <tr>
+                                        <td>
+                                          <i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$shirtLot->lotNumber}}</strong>
+                                        </td>
+                                        <td>{{$shirtLot->lot_quantity}}</td>
+                                        <td>{{$shirtLot->lot_master}}</td>
+                                        <td><span class="badge bg-label-info me-1">Complete</span></td>
+                                        <td>
+                                        <a>
+                                          <a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="dropdown" onclick="shirtback('{{$shirtLot->lot_id}}')">Back</button>
+                                          </a>
+                                          </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      @endif
+                                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -990,6 +1300,27 @@
         $.ajax({
           type: 'GET',
           url: 'back/'+id,
+          success(data){
+            location.reload();
+          }
+        })
+      }
+    </script>
+    <script>
+      function shirtnext(id){
+        $.ajax({
+          type: 'GET',
+          url: 'shirtnext/'+id,
+          success(data){
+            location.reload();
+          }
+        })
+      }
+
+      function shirtback(id){
+        $.ajax({
+          type: 'GET',
+          url: 'shirtback/'+id,
           success(data){
             location.reload();
           }

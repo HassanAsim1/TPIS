@@ -79,11 +79,11 @@
                     <thead>
                       <tr>
                       <th>LOT-ID</th>
-                        <th>NAME</th>
+                        <th>Row</th>
                         <th>QUANTITY</th>
                         <th>REMAINING-QUAN</th>
                         <th>MASTER</th>
-                        <th>LOT-SIZE</th>
+                        <th>REMAINING</th>
                         <th>LOT-STATUS</th>
                         <th>Actions</th>
 
@@ -92,12 +92,12 @@
                     <tbody>
                       @foreach($data as $user)
                       <tr>
-                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->lot_id}}</strong></td>
-                          <td>{{$user->lot_fabric}}</td>
+                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$user->lotNumber}}</strong></td>
+                          <td>{{$user->total_row}}</td>
                           <td>{{$user->lot_quantity}}</td>
                           <td>{{$user->lot_remain}}</td>
                           <td>{{$user->lot_master}}</td>
-                          <td>{{$user->lot_size}}</td>
+                          <td>{{$user->lot_remain}}</td>
                           <td><span class="badge badge-primary">{{$user->status}}</span></td>
                         <td>
                           <div class="dropdown">

@@ -91,7 +91,7 @@
                     <tbody>
                       @foreach($data as $lot)
                       <tr>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$lot->lot_id}}</strong></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$lot->lotNumber}}</strong></td>
                         <td>{{$lot->lot_name}}</td>
                         <td>{{$lot->lot_quantity}}</td>
                         <td>{{$lot->lot_remain}}</td>

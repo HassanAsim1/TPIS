@@ -125,6 +125,8 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::post('addkadhilotdetails',[LotController::class, 'addkadhilotdetails']);
     Route::get('next/{id}',[LotController::class,'Next']);
     Route::get('back/{id}',[LotController::class,'Back']);
+    Route::get('shirtnext/{id}',[LotController::class,'shirtNext']);
+    Route::get('shirtback/{id}',[LotController::class,'shirtBack']);
 
     Route::get('weekly_payments',[PaymentController::class,'weekly_payments']);
     Route::post('weekly_payments',[PaymentController::class,'add_weekly_payments']);

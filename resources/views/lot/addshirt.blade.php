@@ -22,7 +22,7 @@
           @endif
 	<div class="card">
 		<div class="card-body invoice-padding pb-0">
-    <form action="{{url('bill_inv')}}" method="POST">
+    <form action="{{url('addshirtlot')}}" method="POST">
       @csrf
 			<div class="row d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
 				<div class="col-md-3">
@@ -36,7 +36,7 @@
 					<input
 						type="text"
 						class="form-control"
-						name="invoice_id"
+						name="shirtId"
 						value="{{$id}}"
 						autofocus
 						readonly
@@ -57,13 +57,21 @@
 		<hr class="mt-4">
 		<div>
 			<div class="row row_fuild">
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<label for="" class="form-label">Select Master</label>
 					<input type="text" class="form-control" name="lot_master" value="{{session('user_id')}}" readonly />
 				</div>
-				<div class="col-md-6">
-				<label for="" class="form-label">Total Quantity</label>
-                    <input type="text" class="form-control" name="lot_master" placeholder="Lot Quantity"/>
+        <div class="col-md-4">
+          <label for="" class="form-label">Lot Number</label>
+              <input type="text" class="form-control" name="lotNumber" placeholder="Lot Number"/>
+          </div>
+				<div class="col-md-4">
+				<label for="" class="form-label">Select Master</label>
+          <select name="lotMaster" class="form-control">
+            @foreach($masters as $master)
+            <option value="{{$master->user_id}}">{{$master->name}}</option>
+            @endforeach
+          </select>
 				</div>
 			</div>
 		</div>
@@ -73,59 +81,42 @@
                           <div id="addnewrow">
                               <div class="row">
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
+                                  <select name="suserId[]" class="form-control">
+                                    <option value="None">None</option>
+                                    @foreach($employees as $employee)
+                                    <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                    @endforeach
+                                  </select>
                                 </div>
                                 <div class="col-sm-2">
                                   <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description"/>
                                 </div>
                                 <div class="col-sm-2">
-                                <input type="text" class="form-control tquan" id="squan0" name="squantity[]" placeholder="Quantity"/>
+                                <input type="text" class="form-control tquan" onkeydown="totalval(0)" id="squan0" name="squantity[]" placeholder="Quantity"/>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" onkeydown="totalval(0)" id="srate0" name="srate[]" placeholder="Rate"/>
+                                  <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana0" name="sghazana[]" placeholder="Ghazana"/>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control tsum" id="stotal0" name="stotal[]" placeholder="Total" readonly/>
+                                  <input type="color" class="form-control tsum" name="scolor[]" value="#3498db" />
                                 </div>
                                 <div class="col-sm-2">
                                   <button type="button" class="btn btn-success" id="add_row">Add Row</button>
                                 </div>
                               </div>
                             </div>
-                            {{-- <div class="row" style="margin-top:10px;">
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" name="slot[]" value="{{$lot->lot_id}}" placeholder="Lot ID" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" name="sdes[]" value="{{count((array)json_decode($lot->lot_size))}}" placeholder="Description" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                <input type="text" class="form-control mt-2 tquan" id="squan{{$count}}" value="{{$lot->lot_remain}}" name="squantity[]" placeholder="Quantity"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2" onkeydown="totalval('{{$count}}')" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control mt-2 tsum" id="stotal{{$count}}" name="stotal[]" placeholder="Total" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <button type="button" class="btn btn-danger mt-2" id="remove_row">Remove Row</button>
-                                </div>
-                              </div> --}}
-                              {{-- @php $count++ @endphp
-                              @endforeach --}}
                             <hr />
                             <div class="row justify-content-end">
                               <div class="col-sm-6">
                                 <button type="submit" class="btn btn-primary">Add Shirt Lot</button>
                               </div>
                               <div class="col-sm-3 mb-2">
+                                <label class="col-form-label" for="basic-default-company">Total Ghazana :</label>
+                                <input type="text" class="form-control" id="totalGhazana" name="totalGhazana" placeholder="Total Ghazana" readonly/>
+                                </div>
+                              <div class="col-sm-3 mb-2">
                               <label class="col-form-label" for="basic-default-company">Total Quantity :</label>
                               <input type="text" class="form-control" id="totalquan" name="total_quantity" placeholder="Total Quantity" readonly/>
-                              </div>
-                              <div class="col-sm-3 mb-3">
-                              <label class="col-form-label" for="basic-default-company">Grand-Total :</label>
-                              <input type="number" class="form-control stotal" id="grandtotal" name="grandtotal" placeholder="Grand Total" readonly/>
                               </div>
                               <div class="col-sm-3">
                               <!-- <input type="text" class="form-control stotal" id="stotal" name="stotal[]" placeholder="Total" readonly/> -->
@@ -137,91 +128,88 @@
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 
-	<script>
-$(document).ready(function(){
-  var count = 0;
-  $('#add_row').click(function(){
-    count++
-    // e.preventDefault();
-    $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description"/>
-                                </div>
-                                <div class="col-sm-2">
-                                <input type="text" class="form-control tquan" id="squan`+count+`"  name="squantity[]" placeholder="Quantity"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control" onkeydown=totalval(`+count+`) id="srate`+count+`" name="srate[]" placeholder="Rate"/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control tsum" id="stotal`+count+`" name="stotal[]" placeholder="Total" readonly/>
-                                </div>
-                                <div class="col-sm-2">
-                                  <button type="button" class="btn btn-danger" id="remove_row">Remove Row</button>
-                                </div>
-                              </div>`);
-  });
-  $(document).on('click','#remove_row',function(e){
-      e.preventDefault();
-      let row_item = $(this).parent().parent();
-      $(row_item).remove();
-      OnRemoveSum(this);
-  })
-});
-  </script>
-<script>
-  function OnRemoveSum(){
-    var sum = 0;
-          $('.tsum').each(function() {
-              sum += Number($(this).val());
+    <script>
+      $(document).ready(function () {
+          var count = 0;
+          $('#add_row').click(function () {
+              count++;
+              $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
+                                          <div class="col-sm-2">
+                                              <select name="suserId[]" class="form-control">
+                                                  <option value="None">None</option>
+                                                  @foreach($employees as $employee)
+                                                  <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                                  @endforeach
+                                              </select>
+                                          </div>
+                                          <div class="col-sm-2">
+                                              <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description"/>
+                                          </div>
+                                          <div class="col-sm-2">
+                                              <input type="text" class="form-control tquan" onkeyup="totalval(${count})" id="squan${count}" name="squantity[]" placeholder="Quantity"/>
+                                          </div>
+                                          <div class="col-sm-2">
+                                              <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana${count}" name="sghazana[]" placeholder="Ghazana"/>
+                                          </div>
+                                          <div class="col-sm-2">
+                                              <input type="color" class="form-control tsum" name="scolor[]" value="#3498db" />
+                                          </div>
+                                          <div class="col-sm-2">
+                                              <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove Row</button>
+                                          </div>
+                                      </div>`);
           });
-          $('#grandtotal').val(sum);
-          var sumquan = 0;
-          $('.tquan').each(function() {
-              sumquan += Number($(this).val());
-              $('#totalquan').val(sumquan);
+  
+          $(document).on('click', '.btn-danger', function (e) {
+              e.preventDefault();
+              let row_item = $(this).parent().parent();
+              $(row_item).remove();
+              OnRemoveSum();
+          })
+      });
+  
+      function totalval(id) {
+          $('#squan' + id).on('keyup', function () {
+              let quan = $(this).val();
+              $('#stotal' + id).val(quan);
+              calculateTotal();
           });
-  }
-    // let totalsum = 0;
-    function totalval(id){
-      $('#srate'+id).on('keyup',function(){
-        // let totalsum = 0;
-        let quan = $('#squan'+id).val();
-        let rate = $(this).val();
-        let total = quan * rate;
-        $('#stotal'+id).val(total);
+      }
+  
+      // function totalGhazana() {
+      //     $('#ghazana' + id).on('keyup', function () {
+      //         calculateTotalGhazana();
+      //     });
+      // }
+  
+      function calculateTotal() {
           var sum = 0;
-          $('.tsum').each(function() {
+          $('.tquan').each(function () {
               sum += Number($(this).val());
           });
-          $('#grandtotal').val(sum);
-          var tquan = 0;
-          $('.tquan').each(function() {
-              tquan += Number($(this).val());
+          $('#totalquan').val(sum);
+      }
+  
+      function calculateTotalGhazana() {
+          var sumGhanaza = 0;
+          $('.tGhazana').each(function () {
+              sumGhanaza += Number($(this).val());
           });
-          $('#totalquan').val(tquan);
-      })
-    $('#squan'+id).on('keyup',function(){
-        let quan = $(this).val();
-        let rate = $('#srate'+id).val();
-        let total = quan * rate;
-        $('#stotal'+id).val(total);
-        var sum = 0;
-          $('.tsum').each(function() {
-              sum += Number($(this).val());
-          });
-          $('#grandtotal').val(sum);
-          var sumquan = 0;
-          $('.tquan').each(function() {
-              sumquan += Number($(this).val());
-          });
-          $('#totalquan').val(sumquan);
-    })
-    }
-    </script>
+          $('#totalGhazana').val(sumGhanaza);
+      }
+  
+      function OnRemoveSum() {
+          calculateTotal();
+          calculateTotalGhazana();
+      }
+  
+      function removeRow(btn) {
+          var row = btn.parentNode.parentNode;
+          row.parentNode.removeChild(row);
+          OnRemoveSum();
+      }
+  </script>
+  
     <script>
       $('#parties_id').on('change',function(){
         var partie_id = $('#parties_id').val();

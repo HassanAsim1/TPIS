@@ -10,7 +10,7 @@
     $secondParameter = $urlSegments[count($urlSegments) - 2]; // Index before the last segment
     @endphp
 
-<title>TPIS - {{ $secondParameter }}</title>
+    <title>All Rounder - {{ $secondParameter }}</title>
 
     <title>{{request()->is()}}</title>
 

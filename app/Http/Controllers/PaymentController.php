@@ -43,43 +43,54 @@ class PaymentController extends Controller
         ->with('ParData',$ParData);
     }
     public function PayDebit(Request $req){
-        $data = new cashier_payment;
-        $data->pay_id = $req->inputDebitID;
-        // dd($req->user_id);
-        if($req->user_id != 'Expense' && $req->debit != ''){
-            $config = ['table'=>'employee_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'EMPPAY-'];
-            $Pid = IdGenerator::generate($config);
-            $EmpData = new employee_ledger;
-            $EmpData->payment_id = $Pid;
-            $EmpData->cashierPayId = $req->inputDebitID;
-            $EmpData->employee_id = $req->user_id;
-            $EmpData->description = $req->description;
-            $EmpData->debit = $req->debit;
-            $EmpData->credit = $req->credit;
-            $EmpData->given_by = $req->given_by;
-            $EmpData->save();
+        try {
+            DB::beginTransaction();
+        
+            $data = new cashier_payment;
+            $data->pay_id = $req->inputDebitID;
+        
+            if ($req->user_id != 'Expense' && $req->debit != '') {
+                $config = ['table' => 'employee_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'EMPPAY-'];
+                $Pid = IdGenerator::generate($config);
+                $EmpData = new employee_ledger;
+                $EmpData->payment_id = $Pid;
+                $EmpData->cashierPayId = $req->inputDebitID;
+                $EmpData->employee_id = $req->user_id;
+                $EmpData->description = $req->description;
+                $EmpData->debit = $req->debit;
+                $EmpData->credit = $req->credit;
+                $EmpData->given_by = $req->given_by;
+                $EmpData->save();
+            }
+        
+            if ($req->user_id != 'Company' && $req->credit != '') {
+                $config = ['table' => 'parties_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'PRTYPAY-'];
+                $Pid = IdGenerator::generate($config);
+                $EmpData = new parties_ledger;
+                $EmpData->payment_id = $Pid;
+                $EmpData->cashierPayId = $req->inputDebitID;
+                $EmpData->parties_id = $req->user_id;
+                $EmpData->description = 'Debit By Cashier';
+                $EmpData->debit = $req->credit;
+                $EmpData->given_by = $req->given_by;
+                $EmpData->save();
+            }
+        
+            $data->user_id = $req->user_id;
+            $data->description = $req->description;
+            $data->verify = 0;
+            $data->debit = $req->debit;
+            $data->credit = $req->credit;
+            $data->given_by = $req->given_by;
+            $data->save();
+        
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (e.g., log it, show an error message)
+            return redirect()->back()->with('error', 'Transaction failed: ' . $e->getMessage());
         }
-        if($req->user_id != 'Company' && $req->credit != ''){
-            $config = ['table'=>'parties_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'PRTYPAY-'];
-            $Pid = IdGenerator::generate($config);
-            $EmpData = new parties_ledger;
-            $EmpData->payment_id = $Pid;
-            $EmpData->cashierPayId = $req->inputDebitID;
-            $EmpData->parties_id = $req->user_id;
-            $EmpData->description = 'Debit By Cashier';
-            $EmpData->debit = $req->credit;
-            // $EmpData->credit = $req->credit;
-            $EmpData->given_by = $req->given_by;
-            $EmpData->save();
-        }
-        $data->user_id = $req->user_id;
-        $data->description = $req->description;
-        $data ->verify = 0;
-        $data->debit = $req->debit;
-        $data->credit = $req->credit;
-        $data->given_by = $req->given_by;
-        $data->save();
-        return redirect()->back();
     }
     public function PartiesLedger($id){
             $config = ['table'=>'parties_ledgers','field'=>'payment_id','length'=>12,'prefix'=>'PRTYPAY-'];
@@ -221,19 +232,25 @@ class PaymentController extends Controller
     }
     public function update_cash($id){
         $data = cashier_payment::where('pay_id',$id)->first();
-        return view('payments.update_cashier_payments',compact('data'));
+        $employees = register::where('status','active')->get();
+        return view('payments.update_cashier_payments',compact('data','employees'));
     }
     public function update_cash_data(Request $request){
+        // dd($request->user_id);
         $data = cashier_payment::where('pay_id',$request->pay_id)->first();
         $data->description = $request->description;
-        if($data->user_id != 'Expense' && $data->user_id != 'Company' && $data->credit == ''){
+        $data->user_id = $request->user_id;
+        if($request->user_id != 'Expense' && $request->user_id != 'Company' && $data->credit == ''){
             $empData = employee_ledger::where('cashierPayId',$request->pay_id)->first();
+            // dd($empData);
+            $empData->employee_id = $request->user_id;
             $empData->debit = $request->debit;
             $empData->save();
         }
-        if($data->user_id != 'Expense' && $data->user_id != 'Company' && $data->debit == ''){
+        if($request->user_id != 'Expense' && $request->user_id != 'Company' && $data->debit == ''){
             $empData = employee_ledger::where('cashierPayId',$request->pay_id)->first();
             if($empData){
+                $empData->employee_id = $request->user_id;
                 $empData->credit = $request->credit;
                 $empData->save();
             }

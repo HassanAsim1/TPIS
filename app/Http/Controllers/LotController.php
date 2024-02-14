@@ -38,53 +38,71 @@ class LotController extends Controller
     public function Add_Pant_Lot(Request $req){
         // dd($req);
         // dd(number_format((float)$req->cost_price, 2, '.', ''));
-        $data = new lot;
-        $id = IdGenerator::generate(['table' =>'lots','field'=>'lot_id', 'length' => 10, 'prefix' =>'PANT-']);
-        $data->lot_id = $id;
-        $data->lot_name = $req->name;
-        $data->lot_quantity = $req->quantity;
-        $data->lot_remain = $req->remain_quantity;
-        $data->lot_size = json_encode($req->size);
-        $data->lot_master = $req->master;
-        $data->damage_pcs = $req->damage;
-        $data->lot_cm = $req->cm;
-        $data->fabric_id = $req->fabricid;
-        $data->fcost = $req->fcost;
-        $data->mcost = $req->muratary;
-        $data->beltclip = $req->beltclip;
-        if($req->has('rib') == 'on'){
-            $data->rib = 1;
+        try {
+            DB::beginTransaction();
+        
+            $data = new lot;
+            $id = IdGenerator::generate(['table' => 'lots', 'field' => 'lot_id', 'length' => 10, 'prefix' => 'PANT-']);
+            $data->lot_id = $id;
+            $data->lot_name = $req->name;
+            $data->lotNumber = $req->lotNumber;
+            $data->lot_quantity = $req->quantity;
+            $data->lot_remain = $req->remain_quantity;
+            $data->lot_size = json_encode($req->size);
+            $data->lot_master = $req->master;
+            $data->damage_pcs = $req->damage;
+            $data->lot_cm = $req->cm;
+            $data->fabric_id = $req->fabricid;
+            $data->fcost = $req->fcost;
+            $data->mcost = $req->muratary;
+            $data->beltclip = $req->beltclip;
+        
+            if ($req->has('rib') == 'on') {
+                $data->rib = 1;
+            } else {
+                $data->rib = 0;
+            }
+        
+            if ($req->has('kadi') == 'on') {
+                $data->kadi = 1;
+            } else {
+                $data->kadi = 0;
+            }
+        
+            if ($req->has('outoffactory') == 'on') {
+                $data->outoffactory = 1;
+            } else {
+                $data->outoffactory = 0;
+            }
+        
+            $data->cost_price = number_format((float)$req->cost_price, 2, '.', '');
+            $data->sale_price = $req->sale_price;
+            $data->status = 1;
+        
+            if ($data->save()) {
+                DB::commit();
+                Alert::success('Success', 'Lot Added Successfully');
+                return redirect()->back();
+            }
+        
+            // If save fails for some reason
+            DB::rollback();
+            Alert::error('Error', 'Failed to add lot.');
+            return redirect()->back();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (e.g., log it, show an error message)
+            Alert::error('Error', 'Transaction failed: ' . $e->getMessage());
+            return redirect()->back();
         }
-        else{
-            $data->rib = 0;
-        }
-        if($req->has('kadi') == 'on'){
-            $data->kadi = 1;
-        }
-        else{
-            $data->kadi = 0;
-        }
-        if($req->has('outoffactory') == 'on'){
-            $data->outoffactory = 1;
-        }
-        else{
-            $data->outoffactory = 0;
-        }
-        $data->cost_price = number_format((float)$req->cost_price, 2, '.', '');
-        $data->sale_price = $req->sale_price;
-        $data->status = 1;
-
-        if($data->save()){
-            Alert::success('Success', 'Lot Added Successfully');
-        }
-        // return redirect(route('pant_lot'));
-        return redirect()->back();
 
     }
     public function TrackPantLot(){
         $data = lot::all();
+        $shirtLots = shirtlot::all();
         // dd($data->lot_id);
-        return view('lot.TrackPantLot',['data'=>$data]);
+        return view('lot.TrackPantLot',compact('data','shirtLots'));
     }
     public function LotCard(){
         $data = register::where('user_id',session('user_id'))->first();
@@ -296,39 +314,58 @@ class LotController extends Controller
     }
     public function addshirt(){
         $id = IdGenerator::generate(['table' =>'shirtlots','field'=>'lot_id', 'length' => 10, 'prefix' =>'SHIRT-']);
-        $master = register::where('role','master')->get();
-        return view('lot.addshirt',compact('id'))->with('master',$master);
+        $masters = register::where('role','master')->get();
+        $employees = register::where('working_area',13)->get();
+        return view('lot.addshirt',compact('id','employees'))->with('masters',$masters);
 
     }
 
     public function InsertShirtLot(Request $req){
+        try {
+            DB::beginTransaction();
             $data = new shirtlot;
-            $data->lot_id = $req->lot_id;
-            $data->lot_fabric = $req->shirt_fabric;
-            $data->lot_master = $req->lot_master;
-            $data->lot_quantity = $req->lot_quantity;
-            $data->lot_remain = $req->lot_quantity;
+            $data->lot_id = $req->shirtId;
+            $data->lotNumber = 'S'.$req->lotNumber;
+            $data->lot_quantity = $req->total_quantity;
+            $data->lot_remain = $req->total_quantity;
+            $data->total_row = count($req->squantity);
+            $data->total_ghazana = $req->totalGhazana;
             $data->damage_pcs = 0;
             $data->cost_price = 0;
             $data->sale_price = 0;
-            $data->lot_size = 0;
-            $data->status = 'Active';
-
             $num = count($req->squantity);
-            for($i=0; $i<$num; $i++){
+        
+            for ($i = 0; $i < $num; $i++) {
                 $InData = new linkshirtlot;
-                $InData->lot_id = $req->lot_id;
-                $InData->lot_color = "images/path";
+                $InData->lot_id = $req->shirtId;
+                $InData->userId = $req->suserId[$i];
+                $InData->lot_color = $req->scolor[$i];
+                $InData->description = $req->sdes[$i];
+                $InData->lot_ghazana = $req->sghazana[$i];
+                $InData->lot_id_num = $i+1;
                 $InData->lot_quantity = $req->squantity[$i];
-                $InData->lot_size = $req->size[$i];
                 $InData->save();
             }
-            if($data->save()){
+            $data->lot_master = $req->lotMaster;
+            $data->status = 1;
+        
+            if ($data->save()) {
+                DB::commit();
                 Alert::success('Success', 'Shirt-Lot Added Successfully');
-
+                return redirect()->back();
             }
-           // return view('lot.shitrtlot',['data'=>$data]);
+        
+            // If save fails for some reason
+            DB::rollback();
+            Alert::error('Error', 'Failed to add lot.');
             return redirect()->back();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (e.g., log it, show an error message)
+            Alert::error('Error', 'Transaction failed: ' . $e->getMessage());
+            return redirect()->back();
+        }
      }
      public function bill_inv(){
         $data = partie::where('category','buyer')->get();
@@ -908,6 +945,25 @@ class LotController extends Controller
     public function timeline(){
         $auditData = DB::table('audits')->get();
         return view('timeline.timeline',compact('auditData'));
+    }
+
+    public function shirtNext($id){
+        $data = shirtlot::where('lot_id',$id)->first();
+        $inc = $data->status;
+        $inc++;
+        $data->status = $inc;
+        session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
+        $data->save();
+        return 'success';
+    }
+    public function shirtBack($id){
+        $data = shirtlot::where('lot_id',$id)->first();
+        $inc = $data->status;
+        $inc--;
+        $data->status = $inc;
+        session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
+        $data->save();
+        return 'success';
     }
     
 }
