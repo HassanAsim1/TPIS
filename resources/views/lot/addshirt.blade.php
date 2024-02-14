@@ -36,7 +36,7 @@
 					<input
 						type="text"
 						class="form-control"
-						name="shirtId"
+					 required	name="shirtId"
 						value="{{$id}}"
 						autofocus
 						readonly
@@ -47,7 +47,7 @@
 					<input
 						type="text"
 						class="form-control"
-						name="created_by"
+					 required	name="created_by"
             value="{{session('role')}}"
 						autofocus
             readonly
@@ -59,15 +59,15 @@
 			<div class="row row_fuild">
 				<div class="col-md-4">
 					<label for="" class="form-label">Select Master</label>
-					<input type="text" class="form-control" name="lot_master" value="{{session('user_id')}}" readonly />
+					<input type="text" class="form-control" required name="lot_master" value="{{session('user_id')}}" readonly />
 				</div>
         <div class="col-md-4">
           <label for="" class="form-label">Lot Number</label>
-              <input type="text" class="form-control" name="lotNumber" placeholder="Lot Number"/>
+              <input type="text" class="form-control" required name="lotNumber" placeholder="Lot Number"/>
           </div>
 				<div class="col-md-4">
 				<label for="" class="form-label">Select Master</label>
-          <select name="lotMaster" class="form-control">
+          <select required name="lotMaster" class="form-control">
             @foreach($masters as $master)
             <option value="{{$master->user_id}}">{{$master->name}}</option>
             @endforeach
@@ -81,7 +81,7 @@
                           <div id="addnewrow">
                               <div class="row">
                                 <div class="col-sm-2">
-                                  <select name="suserId[]" class="form-control">
+                                  <select required name="suserId[]" class="form-control">
                                     <option value="None">None</option>
                                     @foreach($employees as $employee)
                                     <option value="{{$employee->id}}">{{$employee->name}}</option>
@@ -89,7 +89,7 @@
                                   </select>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description"/>
+                                  <input type="text" class="form-control" required name="sdes[]" id="basic-default-company" placeholder="Description"/>
                                 </div>
                                 <div class="col-sm-2">
                                 <input type="text" class="form-control tquan" onkeydown="totalval(0)" id="squan0" name="squantity[]" placeholder="Quantity"/>
@@ -143,16 +143,16 @@
                                               </select>
                                           </div>
                                           <div class="col-sm-2">
-                                              <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description"/>
+                                              <input type="text" class="form-control" required name="sdes[]" id="basic-default-company" placeholder="Description"/>
                                           </div>
                                           <div class="col-sm-2">
-                                              <input type="text" class="form-control tquan" onkeyup="totalval(${count})" id="squan${count}" name="squantity[]" placeholder="Quantity"/>
+                                              <input type="text" class="form-control tquan" onkeyup="totalval(${count})" id="squan${count}" required name="squantity[]" placeholder="Quantity"/>
                                           </div>
                                           <div class="col-sm-2">
-                                              <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana${count}" name="sghazana[]" placeholder="Ghazana"/>
+                                              <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana${count}" required name="sghazana[]" placeholder="Ghazana"/>
                                           </div>
                                           <div class="col-sm-2">
-                                              <input type="color" class="form-control tsum" name="scolor[]" value="#3498db" />
+                                              <input type="color" class="form-control tsum" required name="scolor[]" value="#3498db" />
                                           </div>
                                           <div class="col-sm-2">
                                               <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove Row</button>
