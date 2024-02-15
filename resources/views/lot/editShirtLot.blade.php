@@ -22,7 +22,7 @@
           @endif
 	<div class="card">
 		<div class="card-body invoice-padding pb-0">
-    <form action="{{url('addshirtlot')}}" method="POST">
+    <form action="{{url('editShirtLotData')}}" method="POST">
       @csrf
 			<div class="row d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
 				<div class="col-md-3">
@@ -59,8 +59,8 @@
 			<div class="row row_fuild">
 				<div class="col-md-4">
 					<label for="" class="form-label">Select Master</label>
-					<select class="form-select" name="lotMaster" id="fabricLot" required>
-            <option value=''>-- Select --</option>
+          <select class="form-select" name="lotMaster" id="fabricLot" required>
+            <option value='{{$shirtLot->fabricId}}'>{{$shirtLot->fabricId}}</option>
             @foreach($masters as $master)
               <option value='{{$master->user_id}}'><strong>{{$master->user_id}}</strong>/ {{$master->name}}</option>
             @endforeach
@@ -68,8 +68,8 @@
 				</div>
         <div class="col-sm-4">
           <label for="" class="form-label">Select Fabric</label>
-          <select class="form-select" name="fabricId" id="fabricLot">
-            <option value=''>-- Select --</option>
+          <select class="form-select" name="fabricId" id="fabricLot" required>
+            <option value='{{$shirtLot->fabricId}}'>{{$shirtLot->fabricId}}</option>
             @foreach($fabricData as $fabric)
               <option value='{{$fabric->fabricId}}'><strong>{{$fabric->fabricId}}</strong>/ {{$fabric->fabricName}}</option>
             @endforeach
@@ -83,64 +83,62 @@
         </div>
         <div class="col-sm-4">
             <label for="" class="form-label">Total Yard</label>
-            <input type="number" class="form-control" required name="fabricYard" placeholder="Total Yard"/>
+            <input type="number" class="form-control" required name="fabricYard" value="{{$shirtLot->fabricYard}}" placeholder="Total Yard"/>
         </div>
         <div class="col-md-4">
           <label for="" class="form-label">Lot Number</label>
-              <input type="text" class="form-control" required name="lotNumber" placeholder="Lot Number"/>
+              <input type="text" class="form-control" required name="lotNumber" placeholder="Lot Number" value="{{$shirtLot->lotNumber}}" />
           </div>
-				<div class="col-md-4">
-				{{-- <label for="" class="form-label">Select Master</label>
-          <select required name="lotMaster" class="form-control">
-            @foreach($masters as $master)
-            <option value="{{$master->user_id}}">{{$master->name}}</option>
-            @endforeach
-          </select>
-				</div> --}}
 			</div>
 		</div>
 		<hr class="mt-4">
     {{-- @php $count = 0 @endphp
     @foreach($lotdata as $lot) --}}
                           <div id="addnewrow">
-                              <div class="row">
+                            @foreach($shirtLotData as $shirt)
+                            <div class="row mb-2">
                                 <div class="col-sm-2">
                                   <select required name="suserId[]" class="form-control">
-                                    <option value="None">None</option>
+                                    <option value="{{$shirt->userId}}">{{getName($shirt->userId)}}</option>
                                     @foreach($employees as $employee)
-                                    <option value="{{$employee->id}}">{{$employee->name}}</option>
+                                    <option value="{{$employee->user_id}}">{{$employee->user_id}} / {{$employee->name}}</option>
                                     @endforeach
                                   </select>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control" required name="sdes[]" id="basic-default-company" placeholder="Description"/>
+                                  <input type="text" class="form-control" required name="sdes[]" id="basic-default-company" value="{{$shirt->description}}" placeholder="Description"/>
                                 </div>
                                 <div class="col-sm-2">
-                                <input type="text" class="form-control tquan" onkeydown="totalval(0)" id="squan0" name="squantity[]" placeholder="Quantity"/>
+                                <input type="text" class="form-control tquan" onkeydown="totalval(0)" id="squan0" name="squantity[]" value="{{$shirt->lot_quantity}}" placeholder="Quantity"/>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana0" name="sghazana[]" placeholder="Ghazana"/>
+                                  <input type="text" class="form-control tGhazana" onkeyup="calculateTotalGhazana()" id="ghazana0" value="{{$shirt->lot_ghazana}}" name="sghazana[]" placeholder="Ghazana"/>
                                 </div>
                                 <div class="col-sm-2">
-                                  <input type="color" class="form-control tsum" name="scolor[]" value="#3498db" />
+                                  <input type="color" class="form-control tsum" name="scolor[]" value="{{$shirt->lot_color}}" />
                                 </div>
                                 <div class="col-sm-2">
-                                  <button type="button" class="btn btn-success" id="add_row">Add Row</button>
-                                </div>
+                                  @if($loop->last)
+                                      <button type="button" class="btn btn-success btn-sm" id="add_row">Add Row</button>
+                                  @else
+                                      <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove Row</button>
+                                  @endif
                               </div>
+                              </div>
+                            @endforeach
                             </div>
                             <hr />
                             <div class="row justify-content-end">
                               <div class="col-sm-6">
-                                <button type="submit" class="btn btn-primary">Add Shirt Lot</button>
+                                <button type="submit" class="btn btn-primary">Update Lot</button>
                               </div>
                               <div class="col-sm-3 mb-2">
                                 <label class="col-form-label" for="basic-default-company">Total Ghazana :</label>
-                                <input type="text" class="form-control" id="totalGhazana" name="totalGhazana" placeholder="Total Ghazana" readonly/>
+                                <input type="text" class="form-control" id="totalGhazana" name="totalGhazana"  value="{{$shirtLot->total_ghazana}}" placeholder="Total Ghazana" readonly/>
                                 </div>
                               <div class="col-sm-3 mb-2">
                               <label class="col-form-label" for="basic-default-company">Total Quantity :</label>
-                              <input type="text" class="form-control" id="totalquan" name="total_quantity" placeholder="Total Quantity" readonly/>
+                              <input type="text" class="form-control" id="totalquan" name="total_quantity" placeholder="Total Quantity" value="{{$shirtLot->lot_quantity}}" readonly/>
                               </div>
                               <div class="col-sm-3">
                               <!-- <input type="text" class="form-control stotal" id="stotal" name="stotal[]" placeholder="Total" readonly/> -->
@@ -159,12 +157,12 @@
               count++;
               $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
                                           <div class="col-sm-2">
-                                              <select name="suserId[]" class="form-control">
-                                                  <option value="None">None</option>
-                                                  @foreach($employees as $employee)
-                                                  <option value="{{$employee->id}}">{{$employee->name}}</option>
-                                                  @endforeach
-                                              </select>
+                                            <select required name="suserId[]" class="form-control">
+                                              <option value="{{$shirt->userId}}">{{getName($shirt->userId)}}</option>
+                                              @foreach($employees as $employee)
+                                              <option value="{{$employee->user_id}}">{{$employee->user_id}} / {{$employee->name}}</option>
+                                              @endforeach
+                                            </select>
                                           </div>
                                           <div class="col-sm-2">
                                               <input type="text" class="form-control" required name="sdes[]" id="basic-default-company" placeholder="Description"/>
@@ -179,7 +177,7 @@
                                               <input type="color" class="form-control tsum" required name="scolor[]" value="#3498db" />
                                           </div>
                                           <div class="col-sm-2">
-                                              <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove Row</button>
+                                              <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove Row</button>
                                           </div>
                                       </div>`);
           });

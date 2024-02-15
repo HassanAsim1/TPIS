@@ -82,6 +82,8 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('TrackPant',[LotController::class,'TrackPantLot']);
     Route::get('lotcard',[LotController::class,'LotCard'])->name('lotcard');
     Route::get('shirtlot',[LotController::class,'ShirtLot'])->name('shirtlot');
+    Route::get('editshirtlot/{id}',[LotController::class,'editshirtlot'])->name('editshirtlot');
+    Route::post('editShirtLotData',[LotController::class,'editShirtLotData'])->name('editShirtLotData');
     Route::post('addshirtlot',[LotController::class,'InsertShirtLot'])->name('InsertShirtlot');
     Route::get('bill_invoice',[LotController::class,'bill_inv'])->name('b_inv');
     Route::post('bill_inv',[LotController::class,'InsertInvoice'])->name('insert_bill_inv');

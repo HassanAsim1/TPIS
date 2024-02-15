@@ -200,13 +200,33 @@
                         <div class="col-12">
                             <span class="font-weight-bold">Contact for any Queries:</span><br >
                             <span>Name : Hassan Asim</span><br>
-                            <span>Phone # +92305-4773322</span>
+                            <span>Phone # +92340-4498132</span>
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
+        <span>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+        <table style="width: 100%; margin-right: auto; margin-right: 100px; border: 1px solid black; border-collapse: collapse; margin-top: 50px;">
+            <tr>
+                <th colspan="1" style="border: 1px solid black; padding: 16px; background-color: lightblue; text-align: left;">Invoice# {{$Invdata->invoice_id}}</th>
+                <th style="border: 1px solid black; padding: 16px; background-color: lightblue; text-align: left;">{{ \Carbon\Carbon::now()->format('j F y') }}</th>
+            </tr>
+            <tr>
+                <td colspan="1" style="border: 1px solid black; padding: 50px;">
+                    <strong>Customer:</strong> {{getpartieaddress($Invdata->partie_id)->name}} <br>
+                    {{getpartieaddress($Invdata->partie_id)->address}}<br />
+                    <strong>Total Pcs:</strong> {{$Invdata->total_pcs}} <br>
+                    <strong>Total Amount:</strong> {{$Invdata->grand_total}} <br>
+                </td>
+                <td colspan="1" style="border: 1px solid black; padding: 50px;">
+                    <strong>Customer Signature:</strong><br>
+                    <strong><br><br />
+                    <strong>__________________________ <br>
+                </td>
+            </tr>
+        </table>
     </div>
     <!-- END: Content-->
 

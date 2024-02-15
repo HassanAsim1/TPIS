@@ -248,11 +248,11 @@
                       <tr id="row{{$count}}">
                         <td>{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y , H:i')}}</td>
                         <td>
-                          <a href="{{ substr($parties_ledger->trans_id, 0, 3) === 'INV' ? '/invoiceEdit/' . $parties_ledger->trans_id : '#' }}">
+                          <a href="{{ substr($parties_ledger->trans_id, 0, 3) === 'INV' ? '/invoiceEdit/' . $parties_ledger->trans_id : '#' }}" target="_blank">
                               {{ $parties_ledger->trans_id }}
                           </a> / {{ $parties_ledger->cashierPayId }}
                           <span class="badge bg-label-secondary me-1">{{ $parties_ledger->payment_id }}</span>
-                      </td>
+                        </td>
                         @if($parties_ledger->trans_id && $parties_ledger->credit)
                         <td>{{$parties_ledger->description}} / {!! getInvoiceRecord($parties_ledger->trans_id) !!} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
                         @else

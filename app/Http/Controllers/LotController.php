@@ -307,16 +307,16 @@ class LotController extends Controller
     // ------------------------ SHIRT LOT -------------------------
 
     public function ShirtLot(){
-
         $data = shirtlot::all();
         $mstatus = register::where('email',session('email'))->first();
         return view('lot.shirtlot',['data'=>$data, 'mstatus'=>$mstatus]);
     }
     public function addshirt(){
         $id = IdGenerator::generate(['table' =>'shirtlots','field'=>'lot_id', 'length' => 10, 'prefix' =>'SHIRT-']);
-        $masters = register::where('role','master')->get();
-        $employees = register::where('working_area',13)->get();
-        return view('lot.addshirt',compact('id','employees'))->with('masters',$masters);
+        $masters = register::where('role','master')->where('status','active')->get();
+        $employees = register::where('working_area',13)->where('status','active')->get();
+        $fabricData = fabric::where('remainingMeter','>',0)->get();
+        return view('lot.addshirt',compact('id','employees','fabricData'))->with('masters',$masters);
 
     }
 
@@ -325,15 +325,33 @@ class LotController extends Controller
             DB::beginTransaction();
             $data = new shirtlot;
             $data->lot_id = $req->shirtId;
-            $data->lotNumber = 'S'.$req->lotNumber;
+            if (strpos($req->lotNumber, 'S') !== 0) {
+                $data->lotNumber = 'S' . $req->lotNumber;
+            } else {
+                $data->lotNumber = $req->lotNumber;
+            }
             $data->lot_quantity = $req->total_quantity;
             $data->lot_remain = $req->total_quantity;
             $data->total_row = count($req->squantity);
             $data->total_ghazana = $req->totalGhazana;
+            $data->fabricId = $req->fabricId;
             $data->damage_pcs = 0;
             $data->cost_price = 0;
             $data->sale_price = 0;
             $num = count($req->squantity);
+            if ($data->fabricYard == '') {
+                $data->fabricYard = $req->fabricYard;
+                $fabricYard = fabric::where('fabricId', $req->fabricId)->first();
+                $fabricYard->remainingMeter -= $req->fabricYard;
+                $fabricYard->save();
+            } else {
+                $fabricYardDifference = (int)$req->fabricYard - (int)$data->fabricYard;
+                $data->fabricYard = $req->fabricYard;
+
+                $fabricYard = fabric::where('fabricId', $req->fabricId)->first();
+                $fabricYard->remainingMeter -= $fabricYardDifference;
+                $fabricYard->save();
+            }
         
             for ($i = 0; $i < $num; $i++) {
                 $InData = new linkshirtlot;
@@ -342,7 +360,7 @@ class LotController extends Controller
                 $InData->lot_color = $req->scolor[$i];
                 $InData->description = $req->sdes[$i];
                 $InData->lot_ghazana = $req->sghazana[$i];
-                $InData->lot_id_num = $i+1;
+                $InData->lot_id_num = time() + $i;
                 $InData->lot_quantity = $req->squantity[$i];
                 $InData->save();
             }
@@ -964,6 +982,80 @@ class LotController extends Controller
         session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
         $data->save();
         return 'success';
+    }
+    public function editshirtlot($id){
+        $shirtLot = shirtlot::where('lot_id',$id)->first();
+        $shirtLotData = linkshirtlot::where('lot_id',$id)->get();
+        $masters = register::where('role','master')->where('status','active')->get();
+        $employees = register::where('working_area',13)->where('status','active')->get();
+        $fabricData = fabric::where('remainingMeter','>',0)->get();
+        return view('lot.editShirtlot',compact('id','employees','fabricData','shirtLotData','shirtLot'))->with('masters',$masters);
+    }
+    public function editShirtLotData(Request $request){
+        try {
+            DB::beginTransaction();
+            $data = shirtlot::where('lot_id',$request->shirtId)->first();
+            $data->lot_id = $request->shirtId;
+            if (strpos($request->lotNumber, 'S') !== 0) {
+                $data->lotNumber = 'S' . $request->lotNumber;
+            } else {
+                $data->lotNumber = $request->lotNumber;
+            }
+            $data->lot_quantity = $request->total_quantity;
+            $data->lot_remain = $request->total_quantity;
+            if ($data->fabricYard == '') {
+                $data->fabricYard = $request->fabricYard;
+                $fabricYard = fabric::where('fabricId', $request->fabricId)->first();
+                $fabricYard->remainingMeter -= $request->fabricYard;
+                $fabricYard->save();
+            } else {
+                $fabricYardDifference = (int)$request->fabricYard - (int)$data->fabricYard;
+                $data->fabricYard = $request->fabricYard;
+
+                $fabricYard = fabric::where('fabricId', $request->fabricId)->first();
+                $fabricYard->remainingMeter -= $fabricYardDifference;
+                $fabricYard->save();
+            }
+            $data->fabricId = $request->fabricId;
+            // Save the changes to $data
+            $data->save();
+            $data->total_row = count($request->squantity);
+            $data->total_ghazana = $request->totalGhazana;
+            $data->damage_pcs = 0;
+            $data->cost_price = 0;
+            $data->sale_price = 0;
+            $num = count($request->squantity);
+            
+            $shirtData = linkshirtlot::where('lot_id', $request->shirtId)->delete();
+
+            for ($i = 0; $i < $num; $i++) {
+                $InData = new linkshirtlot;
+                $InData->lot_id = $request->shirtId;
+                $InData->userId = $request->suserId[$i];
+                $InData->lot_color = $request->scolor[$i];
+                $InData->description = $request->sdes[$i];
+                $InData->lot_ghazana = $request->sghazana[$i];
+                $InData->lot_id_num = time() + $i;
+                $InData->lot_quantity = $request->squantity[$i];
+                $InData->save();
+            }
+            $data->lot_master = $request->lotMaster;
+        
+            if ($data->save()) {
+                DB::commit();
+                Alert::success('Success', 'Shirt-Lot Added Successfully');
+                return redirect()->back();
+            }
+        
+            DB::rollback();
+            Alert::error('Error', 'Failed to add lot.');
+            return redirect()->back();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            Alert::error('Error', 'Transaction failed: ' . $e->getMessage());
+            return redirect()->back();
+        }
     }
     
 }
