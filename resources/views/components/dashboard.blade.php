@@ -99,6 +99,12 @@
                 <div data-i18n="Layouts">Fabrics</div>
               </a>
             </li>
+            <li class="menu-item {{(request()->is('customReport*')) ? 'active' : ''}}">
+              <a href="{{url('customReport')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-t-shirt"></i>
+                <div data-i18n="Layouts">Custom Report</div>
+              </a>
+            </li>
             <li class="menu-item {{((request()->is('addRoll') || request()->is('viewRoll'))) ? 'active open' : ''}}">
               <a href="#" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bxs-file-doc"></i>

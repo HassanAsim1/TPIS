@@ -315,5 +315,14 @@ function getWorkingArea($id){
         return 'No show';
     }
 }
+function getPartieReport($id){
+    $data = invoice::where('invoice_id',$id)->first('partie_id');
+    if($data){
+        return $data->partie_id;
+    }
+    else{
+        return '';
+    }
+}
 
 ?>

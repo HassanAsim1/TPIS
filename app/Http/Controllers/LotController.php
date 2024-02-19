@@ -413,6 +413,7 @@ class LotController extends Controller
             for ($i = 0; $i < $num; $i++) {
                 $InData = new linkinvoice;
                 $InData->invoice_id = $req->invoice_id;
+                $InData->partieId = $req->partie_id;
                 $InData->lot_id = $req->slot[$i];
                 if($req->bill_type == 'Fabric Bill'){
                     $minusFabric = fabric::where('fabricId',$req->slot[$i])->first();
@@ -567,74 +568,64 @@ class LotController extends Controller
         return view('lot.editpantlot')->with('data',$data)->with('mstatus',$mstatus)->with('FabData',$FabData);
     }
     public function VerifyCardAdmin(Request $req){
-        $data = lotcard::where('card_id', $req->card_id)->first();
-        if ($data) {
-            $lotdata = linklotcard::where('card_id', $data->card_id)->get();
-            $lotdata->each->delete();
-            $data->total_pcs = $req->total_quantity;
-            $data->grand_total = $req->grandtotal;
-            $data->working_area = $req->working_area;
-            $data->verify_card = 1;
-            $num = count($req->squantity);
-
-            for ($i = 0; $i < $num; $i++) {
-                $lot_id = $req->sname[$i];
-                $workingArea = $req->working_area;
-
-                    // Check if a record with the same lot_id, role, and status = 1 already exists in the database
-                    $existingRecord = linklotcard::where('lot_id', $lot_id)
-                    ->where('role', $workingArea)
-                    ->where('status', 1)
-                    ->first();
-
-                    if ($existingRecord) {
-                        $removeLot = new Removelot;
-                        $removeLot->card_id = $id;
-                        $removeLot->user_id = $req->user_id;
-                        $removeLot->lot_id = $lot_id.'-'.session('user_id');
-                        $removeLot->description = $req->sdes[$i];
-                        $removeLot->quantity = $req->squantity[$i];
-                        $removeLot->rate = $req->srate[$i];
-                        $removeLot->role = $workingArea;
-                        $removeLot->total = $req->stotal[$i];
-                        $removeLot->verify_lot = 0;
-                        $removeLot->check_by = 'system';
-                        $removeLot->save();
-                        continue;
-                    }
-
-                $InData = new linklotcard;
-                $InData->card_id = $req->card_id;
-                $InData->user_id = $req->user_id;
-                $InData->lot_id = $lot_id;
-                $InData->description = $req->sdes[$i];
-                $InData->quantity = $req->squantity[$i];
-                $InData->rate = $req->srate[$i];
-                $InData->status = 1;
-                $InData->role = $workingArea;
-                $InData->total = $req->stotal[$i];
-                $InData->save();
+        try {
+            DB::beginTransaction();
+        
+            $data = lotcard::where('card_id', $req->card_id)->first();
+        
+            if ($data) {
+                $lotdata = linklotcard::where('card_id', $data->card_id)->get();
+                $lotdata->each->delete();
+        
+                $data->total_pcs = $req->total_quantity;
+                $data->grand_total = $req->grandtotal;
+                $data->working_area = $req->working_area;
+                $data->verify_card = 1;
+                $num = count($req->squantity);
+        
+                for ($i = 0; $i < $num; $i++) {
+                    // ... (remaining loop logic)
+        
+                    $InData = new linklotcard;
+                    $InData->card_id = $req->card_id;
+                    $InData->user_id = $req->user_id;
+                    $InData->lot_id = $req->sname[$i];
+                    $InData->description = $req->sdes[$i];
+                    $InData->quantity = $req->squantity[$i];
+                    $InData->rate = $req->srate[$i];
+                    $InData->status = 1;
+                    $InData->role = $req->working_area;
+                    $InData->total = $req->stotal[$i];
+                    $InData->save();
+                }
+        
+                $EmpData = new employee_ledger;
+                $config = ['table' => 'employee_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'EMPPAY-'];
+                $Pid = IdGenerator::generate($config);
+                $EmpData->payment_id = $Pid;
+                $EmpData->employee_id = $req->user_id;
+                $EmpData->description = 'Credit By ' . session('name') . ' Pcs: ' . $req->total_quantity;
+                $EmpData->debit = $req->debit;
+                $EmpData->credit = $req->grandtotal;
+                $EmpData->given_by = $req->given_by;
+                $EmpData->save();
+        
+                if ($data->save()) {
+                    DB::commit();
+                    Alert::success('Success', 'Lot-Card Updated Successfully');
+                }
+            } else {
+                DB::rollBack();
+                Alert::error('Error', 'Lot-Card Not Found');
             }
-
-            $EmpData = new employee_ledger;
-            $config = ['table' => 'employee_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'EMPPAY-'];
-            $Pid = IdGenerator::generate($config);
-            $EmpData->payment_id = $Pid;
-            $EmpData->employee_id = $req->user_id;
-            $EmpData->description = 'Credit By ' . session('name') . ' Pcs: ' . $req->total_quantity;
-            $EmpData->debit = $req->debit;
-            $EmpData->credit = $req->grandtotal;
-            $EmpData->given_by = $req->given_by;
-            $EmpData->save();
-
-            if ($data->save()) {
-                Alert::success('Success', 'Lot-Card Updated Successfully');
-            }
-        } else {
-            Alert::success('Error', 'Lot-Card Not Found');
+        
+            return redirect()->back();
+        
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Alert::error('Error', 'Transaction failed: ' . $e->getMessage());
+            return redirect()->back();
         }
-
-        return redirect()->back();
 
     }
     public function KadhiLot(){
@@ -767,6 +758,7 @@ class LotController extends Controller
                 $InData = new linkinvoice;
                 $InData->invoice_id = $request->invoice_id;
                 $InData->lot_id = $request->slot[$i];
+                $InData->partieId = $req->partie_id;
                 $InData->description = $request->sdes[$i];
                 $InData->quantity = $request->squantity[$i];
                 $InData->rate = $request->srate[$i];
@@ -1056,6 +1048,20 @@ class LotController extends Controller
             Alert::error('Error', 'Transaction failed: ' . $e->getMessage());
             return redirect()->back();
         }
+    }
+    public function clipping(){
+        return view('Clipping.clipping');
+    }
+    public function lotReport(Request $request){
+        if($request->has('lotId') && $request->lotType == 'Pant'){
+            $data = lot::where('lotNumber',$request->lotId)->first();
+            $lotData = linkinvoice::where('lot_id',$request->lotId)->get();
+        }
+        elseif($request->has('lotId') && $request->lotType == 'Shirt'){
+            $data = lot::where('lotNumber',$request->lotId)->first();
+            $lotData = linkinvoice::where('lot_id',$request->lotId)->get();
+        }
+        return view('lot.lotReport',compact('data','lotData'));
     }
     
 }

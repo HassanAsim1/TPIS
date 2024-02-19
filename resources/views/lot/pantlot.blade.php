@@ -146,6 +146,9 @@
                                <a class="dropdown-item" href="{{url('editpantlot/' .$lot->lot_id)}}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                               >
+                              <a class="dropdown-item" href="{{url('lotReport?lotId=' .$lot->lotNumber.'&lotType=Pant')}}"
+                                ><i class="bx bx-edit-alt me-1"></i> Report</a
+                              >
                               <a class="dropdown-item" href=""
                                 ><i class="bx bx-trash me-1"></i> Delete</a
                               >

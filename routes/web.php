@@ -91,6 +91,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::post('addpantlot',[LotController::class,'InsertPantLot'])->name('InsertPantlot');
     Route::get('verify_card',[LotController::class,'CardVerify'])->name('CardVerify');
     Route::get('verify_card/{id}',[LotController::class,'CardVerifyID'])->name('CardVerifyID');
+    Route::get('report',[PaymentController::class,'report'])->name('report');
     Route::get('parties_ledger/delete/{id}',[LotController::class,'DeletePartiePayid']);
     Route::get('viewlot/{id}',[LotController::class,'ViewLotDetail']);
     Route::post('adminverify',[LotController::class,'VerifyCardAdmin'])->name('AdminVerify');
@@ -180,6 +181,8 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('addLot',[LotController::class,'addLot'])->name('addLot');
     Route::get('cashierInvoice',[InvoiceController::class,'cashierInvoice'])->name('cashierInvoice');
     Route::get('timeline',[LotController::class,'timeline'])->name('timeline');
+    Route::get('clipping',[LotController::class,'clipping'])->name('clipping');
+    Route::get('customReport',[PaymentController::class,'customReport'])->name('customReport');
 
 });
 

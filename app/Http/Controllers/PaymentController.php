@@ -10,6 +10,7 @@ use App\Models\register;
 use App\Models\weeklypayment;
 use App\Models\link_weekly_payments;
 use App\Models\employee_ledger;
+use App\Models\invoice;
 use Illuminate\Support\Facades\DB;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -308,5 +309,93 @@ class PaymentController extends Controller
         $weekpay = link_weekly_payments::where('week_id',$data->week_id)->get();
 
         return view('payments.Week_Payments.view_weekly_payment_id',compact('data','weekpay'));
+    }
+    public function report(Request $request){
+        $parties = partie::where('partie_id',$request->partieId)->first();
+        $pants = invoice::where('partie_id',$request->partieId)->where('bill_type','pant_bill')->sum('total_pcs');
+        $shirts = invoice::where('partie_id',$request->partieId)->where('bill_type','shirt_bill')->sum('total_pcs');
+        $pantShirts = invoice::where('partie_id',$request->partieId)->where('bill_type','Pant & Shirt Bill')->sum('total_pcs');
+        $fabrics = invoice::where('partie_id',$request->partieId)->where('bill_type','Fabric Bill')->sum('total_pcs');
+
+        $currentDate = Carbon::now();
+
+        // Yearly data
+        $yearlyData = invoice::where('partie_id', $request->partieId)
+            ->whereYear('created_at', $currentDate->year)
+            ->sum('total_pcs');
+
+        // Quarterly data
+        $quarterlyData = invoice::where('partie_id', $request->partieId)
+            ->whereBetween('created_at', [$currentDate->startOfQuarter(), $currentDate->endOfQuarter()])
+            ->sum('total_pcs');
+
+        // Monthly data
+        $monthlyData = invoice::where('partie_id', $request->partieId)
+            ->whereMonth('created_at', $currentDate->month)
+            ->sum('total_pcs');
+
+        // Total pcs
+        $totalPcs = $yearlyData + $quarterlyData + $monthlyData;
+
+        return view('payments.report',compact('pants','shirts','pantShirts','fabrics','parties', 'yearlyData', 'quarterlyData', 'monthlyData', 'totalPcs'));
+    }
+    public function customReport(Request $request){
+        if($request->has('partieId')){
+            // Parse the request dates
+            $formDate = Carbon::parse($request->input('formDate'));
+            $toDate = Carbon::parse($request->input('toDate'));
+
+            $parties = partie::where('partie_id', $request->partieId)->first();
+
+            $pants = invoice::where('partie_id', $request->partieId)
+                ->where('bill_type', 'pant_bill')
+                ->whereBetween('created_at', [$formDate, $toDate])
+                ->sum('total_pcs');
+
+            $shirts = invoice::where('partie_id', $request->partieId)
+                ->where('bill_type', 'shirt_bill')
+                ->whereBetween('created_at', [$formDate, $toDate])
+                ->sum('total_pcs');
+
+            $pantShirts = invoice::where('partie_id', $request->partieId)
+                ->where('bill_type', 'Pant & Shirt Bill')
+                ->whereBetween('created_at', [$formDate, $toDate])
+                ->sum('total_pcs');
+
+            $fabrics = invoice::where('partie_id', $request->partieId)
+                ->where('bill_type', 'Fabric Bill')
+                ->whereBetween('created_at', [$formDate, $toDate])
+                ->sum('total_pcs');
+
+            // Total pcs for the specified date range
+            $totalPcsDateRange = $pants + $shirts + $pantShirts + $fabrics;
+
+            // Assuming you still want the total pcs for the entire year, quarter, and month
+            $currentDate = Carbon::now();
+
+            // Yearly data
+            $yearlyData = invoice::where('partie_id', $request->partieId)
+                ->whereYear('created_at', $currentDate->year)
+                ->sum('total_pcs');
+
+            // Quarterly data
+            $quarterlyData = invoice::where('partie_id', $request->partieId)
+                ->whereBetween('created_at', [$currentDate->startOfQuarter(), $currentDate->endOfQuarter()])
+                ->sum('total_pcs');
+
+            // Monthly data
+            $monthlyData = invoice::where('partie_id', $request->partieId)
+                ->whereMonth('created_at', $currentDate->month)
+                ->sum('total_pcs');
+
+            // Total pcs for the entire year, quarter, and month
+            $totalPcs = $yearlyData + $quarterlyData + $monthlyData;
+
+            return view('payments.report', compact('pants', 'shirts', 'pantShirts', 'fabrics', 'parties', 'yearlyData', 'quarterlyData', 'monthlyData', 'totalPcs', 'totalPcsDateRange'));
+        }
+        else{
+            $parties = partie::all();
+            return view('payments.customReport',compact('parties'));
+        }
     }
 }
