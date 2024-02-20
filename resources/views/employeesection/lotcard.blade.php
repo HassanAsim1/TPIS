@@ -152,7 +152,9 @@
                             <div id="addnewrow">
                               <div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2 mt-1">
-                                  <input type="text" class="form-control" name="sname[]" placeholder="Lot ID" required/>
+                                  <div class="fabricFields">
+                                    <input type="text" class="form-control lotInput" name="sname[]" placeholder="Lot ID" required/>
+                                  </div>
                                 </div>
                                 <div class="col-sm-2 mt-1">
                                   <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description" value="16 to 34" readonly required/>
@@ -251,7 +253,7 @@ $(document).ready(function () {
     $('#addnewrow').append(`
       <div class="row" style="margin-top:10px;">
         <div class="col-sm-2">
-          <input type="text" class="form-control" name="sname[]" placeholder="Lot ID" required/>
+          <input type="text" class="form-control lotInput" name="sname[]" placeholder="Lot ID" required/>
         </div>
         <div class="col-sm-2">
           <input type="text" class="form-control" name="sdes[]" id="basic-default-company" placeholder="Description" value="16 to 34" readonly required/>

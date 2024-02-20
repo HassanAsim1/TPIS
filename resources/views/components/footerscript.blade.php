@@ -37,6 +37,8 @@
 <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 <script src="{{asset('multiple/plugins/select2/js/select2.full.min.js')}}"></script>
+<script src="../../../app-assets/vendors/js/extensions/jstree.min.js"></script>
+<script src="../../../app-assets/js/scripts/extensions/ext-component-tree.js"></script>
 
 <script>
   $(function () {

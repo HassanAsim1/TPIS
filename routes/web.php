@@ -183,6 +183,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('timeline',[LotController::class,'timeline'])->name('timeline');
     Route::get('clipping',[LotController::class,'clipping'])->name('clipping');
     Route::get('customReport',[PaymentController::class,'customReport'])->name('customReport');
+    Route::get('checkRemainingQuantity',[LotController::class,'checkRemainingQuantity'])->name('checkRemainingQuantity');
 
 });
 

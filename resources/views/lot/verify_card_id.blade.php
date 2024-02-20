@@ -41,7 +41,7 @@
               <!-- Basic Layout & Basic with Icons -->
               <div class="row">
                 <!-- Basic Layout -->
-                <div class="col-xxl">
+                <div class="col-xl-9 col-md-9 col-12 invoice-actions mt-md-0 mt-2">
                   <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
                       <h5 class="mb-0">Verify Card - {{getname($data->user_id)}}</h5>
@@ -50,21 +50,21 @@
                     <div class="card-body">
                     <form action="{{url('adminverify')}}" method="POST">
                       @csrf
-                      <input type="hidden" class="form-control" value="{{$data->card_id}}" name="card_id"/>
+                      <input type="hidden" class="form-control form-control-sm" value="{{$data->card_id}}" name="card_id"/>
                         <div class="row mb-3">
                           <label class="col-sm-1 col-form-label" for="basic-default-name">User ID</label>
                           <div class="col-sm-11">
-                            <input type="text" class="form-control" id="basic-default-name" value="{{$data->user_id}}" name="user_id" readonly/>
+                            <input type="text" class="form-control form-control-sm" id="basic-default-name" value="{{$data->user_id}}" name="user_id" readonly/>
                           </div>
                         </div>
                         <div class="row mb-3">
                           <label class="col-sm-1 col-form-label" for="basic-default-company">Card Type :</label>
                           <div class="col-sm-5">
-                          <input type="text" class="form-control" id="basic-default-name" value="{{$data->card_type}}" name="card_type" readonly/>
+                          <input type="text" class="form-control form-control-sm" id="basic-default-name" value="{{$data->card_type}}" name="card_type" readonly/>
                           </div>
                           <label class="col-sm-1 col-form-label" for="basic-default-company">Working Area :</label>
                           <div class="col-sm-5">
-                            <input type="text" class="form-control" id="basic-default-company" name="working_area" value="{{$data->working_area}}" readonly/>
+                            <input type="text" class="form-control form-control-sm" id="basic-default-company" name="working_area" value="{{$data->working_area}}" readonly/>
                           </div>
                         </div>
                         <hr />
@@ -73,7 +73,7 @@
                             @foreach($CardData as $lotcard)
                               <div class="row">
                                 <div class="col-sm-2 mt-1">
-                                {{-- <select class="form-control selectpicker border" id="lot_id" name="sname[]" data-live-search="true">
+                                {{-- <select class="form-control form-control-sm selectpicker border" id="lot_id" name="sname[]" data-live-search="true">
                                   <option value=""> -- Select Lot --</option>
                                     @foreach($lotdata as $lot)
                                       @if($lot->status == session('working_area'))
@@ -81,25 +81,25 @@
                                       @endif
                                     @endforeach
                               </select> --}}
-                              <input type="text" class="form-control" name="sname[]" id="basic-default-company" value="{{$lotcard->lot_id}}" />
+                              <input type="text" class="form-control form-control-sm" name="sname[]" id="basic-default-company" value="{{$lotcard->lot_id}}" />
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                  <input type="text" class="form-control" name="sdes[]" id="basic-default-company" value="{{$lotcard->description}}" placeholder="Description"/>
+                                  <input type="text" class="form-control form-control-sm" name="sdes[]" id="basic-default-company" value="{{$lotcard->description}}" placeholder="Description"/>
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                <input type="text" class="form-control tquan" id="squan{{$count}}" name="squantity[]" value="{{$lotcard->quantity}}" />
+                                <input type="text" class="form-control form-control-sm tquan" id="squan{{$count}}" name="squantity[]" value="{{$lotcard->quantity}}" />
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                  <input type="text" class="form-control srate" onkeydown="totalval({{$count}})" value="{{$lotcard->rate}}" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
+                                  <input type="text" class="form-control form-control-sm srate" onkeydown="totalval({{$count}})" value="{{$lotcard->rate}}" id="srate{{$count}}" name="srate[]" placeholder="Rate"/>
                                 </div>
                                 <div class="col-sm-2 mt-1">
-                                  <input type="text" class="form-control tsum" id="stotal{{$count}}" value="{{$lotcard->total}}" name="stotal[]" placeholder="Total" readonly/>
+                                  <input type="text" class="form-control form-control-sm tsum" id="stotal{{$count}}" value="{{$lotcard->total}}" name="stotal[]" placeholder="Total" readonly/>
                                 </div>
                                 <!-- <div class="col-sm-2 mt-1">
                                   <button type="button" class="btn btn-success" id="add_row">Add Row</button>
                                 </div> -->
                                 <div class="col-sm-2 mt-1">
-                                   <button type="button" class="btn btn-danger" id="remove_row">Remove Row</button>
+                                   <button type="button" class="btn btn-danger btn-sm" id="remove_row">Remove Row</button>
                                 </div>
                               </div>
                               @php $count++ @endphp
@@ -114,20 +114,55 @@
                               </div>
                               <div class="col-sm-3">
                               <label class="col-form-label" for="basic-default-company">Total Quantity :</label>
-                              <input type="text" class="form-control" id="totalquan" name="total_quantity" value="{{$data->total_pcs}}" placeholder="Total Quantity" readonly/>
+                              <input type="text" class="form-control form-control-sm" id="totalquan" name="total_quantity" value="{{$data->total_pcs}}" placeholder="Total Quantity" readonly/>
                               </div>
                               <div class="col-sm-3">
                               <label class="col-form-label" for="basic-default-company">Grand-Total :</label>
-                              <input type="text" class="form-control stotal" id="grandtotal" name="grandtotal" value="{{$data->grand_total}}" placeholder="Grand Total" readonly/>
+                              <input type="text" class="form-control form-control-sm stotal" id="grandtotal" name="grandtotal" value="{{$data->grand_total}}" placeholder="Grand Total" readonly/>
                               </div>
                               <div class="col-sm-3">
-                              <!-- <input type="text" class="form-control stotal" id="stotal" name="stotal[]" placeholder="Total" readonly/> -->
+                              <!-- <input type="text" class="form-control form-control-sm stotal" id="stotal" name="stotal[]" placeholder="Total" readonly/> -->
                               </div>
                             </div>
                           </div>
                       </form>
                     </div>
                   </div>
+                  <div class="col-xl-3 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
+                    <div class="card">
+                      <section class="basic-custom-icons-tree">
+                        <div class="row">
+                          <div class="card-header">
+                            <h6 class="card-title">Lot Info</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="jstree-basic">
+                                <ul>
+                                    @for($i = 0; $i < count($lotArray); $i++)
+                                    @php $quantity = 0; @endphp
+                                    <li class="jstree-open" data-jstree='{"icon" : "far fa-folder"}'>
+                                      {{$i + 1}}
+                                        @for($j = 0; $j < count($lotArray[$i]); $j++)
+                                        @php $lotId = $lotArray[$i][$j]['lot_id'] @endphp 
+                                        <ul>
+                                            <li data-jstree='{"icon" : "fab fa-css3-alt"}'>{{$lotArray[$i][$j]['lot_id']}} / {{$lotArray[$i][$j]['quantity']}}</li>
+                                            @php $quantity += $lotArray[$i][$j]['quantity'] @endphp
+                                        </ul>
+                                        @endfor
+                                        <ul>
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Pcs = {{$quantity}}</li>
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Total Pcs = {{getLotTotalPcs($lotId)}}</li>
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Reamining Pcs = {{getLotTotalPcs($lotId) - $quantity}} </li>
+                                        </ul>
+                                      </li>
+                                    @endfor
+                                </ul>
+                            </div>
+                        </div>
+                        </div>
+                    </section>
+                    </div>
+                </div>
                 </div>
                 @endif
            

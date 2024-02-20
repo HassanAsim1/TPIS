@@ -12,6 +12,8 @@ use App\Models\register;
 use App\Models\kadhilot;
 use App\Models\linkRoll;
 use App\Models\workingArea;
+use App\Models\lot;
+use App\Models\shirtlot;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -322,6 +324,23 @@ function getPartieReport($id){
     }
     else{
         return '';
+    }
+}
+
+function getLotTotalPcs($id){
+    $prefix = substr($id, 0, strpos($id, '-'));
+    $data = shirtlot::where('lotNumber', 'LIKE', $prefix . '%')->first();
+    if($data == ''){
+        $data = lot::where('lotNumber','LIKE', $prefix . '%')->first();
+        if($data){
+            return $data->lot_quantity;
+        }
+        else{
+            return 0;
+        }
+    }
+    else{
+        return $data->lot_quantity;
     }
 }
 

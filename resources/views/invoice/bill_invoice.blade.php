@@ -98,8 +98,9 @@
                           <div id="addnewrow">
                               <div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2">
-                                  <div class="fabricFields" style="display: none;">
-                                      <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
+                                  <div class="fabricFields">
+                                      <input type="text" class="form-control lotInput" name="slot[]" placeholder="Lot ID"/>
+                                      <span class="badge badge-success remainingQuantity mt-1 mb-1"></span>
                                   </div>
                                   <div class="fabricSelect" style="display: none;">
                                       <select class="form-control" name="slot[]" >
@@ -115,6 +116,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                 <input type="text" class="form-control tquan" id="squan0" name="squantity[]" placeholder="Quantity" required/>
+                                <span class="badge badge-danger remainingDanger mt-1 mb-1"></span>
                                 </div>
                                 <div class="col-sm-2">
                                   <input type="text" class="form-control" onkeydown="totalval(0)" id="srate0" name="srate[]" placeholder="Rate" required/>
@@ -221,7 +223,8 @@ $(document).ready(function(){
       $('#addnewrow').append(`<div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2">
                                   <div class="fabricFields" style="display: none;">
-                                      <input type="text" class="form-control" name="slot[]" placeholder="Lot ID"/>
+                                      <input type="text" class="form-control lotInput" name="slot[]" placeholder="Lot ID"/>
+                                      <span class="badge badge-success remainingQuantity mt-1 mb-1"></span>
                                   </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -229,6 +232,7 @@ $(document).ready(function(){
                                 </div>
                                 <div class="col-sm-2">
                                 <input type="text" class="form-control tquan" id="squan`+count+`"  name="squantity[]" placeholder="Quantity" required/>
+                                <span class="badge badge-danger remainingDanger mt-1 mb-1"></span>
                                 </div>
                                 <div class="col-sm-2">
                                   <input type="text" class="form-control" onkeydown=totalval(`+count+`) id="srate`+count+`" name="srate[]" placeholder="Rate" required/>
@@ -342,7 +346,47 @@ $(document).ready(function(){
         // });
     </script>
 
+<script>
+  $(document).ready(function() {
+      $(document).on('input', '.lotInput, .tquan', function() {
+          var lotNumber = $(this).closest('.row').find('.lotInput').val();
+          var quantity = $(this).closest('.row').find('.tquan').val();
+          var fabricFields = $(this).closest('.fabricFields');
+          var successBadge = fabricFields.find('.badge-success');
+          var dangerBadge = fabricFields.find('.badge-danger');
+          var remainingQuantitySpan = fabricFields.find('.remainingQuantity');
+  
+          // Make an AJAX request to the backend to check remaining quantity
+          $.ajax({
+              url: '/checkRemainingQuantity', // Replace with your backend route
+              method: 'GET',
+              data: { lotNumber: lotNumber, quantity: quantity },
+              success: function(response) {
+                  var remainingQuantity = response.remainingQuantity;
+                  var isQuantityAvailable = remainingQuantity >= 0;
+  
+                  remainingQuantitySpan.text('Remaining Quantity: ' + remainingQuantity);
 
-    <x-footerscript/>
-  </body>
+                  // Update the badges and UI based on remaining quantity
+                  if (isQuantityAvailable) {
+                      successBadge.show();
+                      dangerBadge.hide();
+                  } else {
+                      successBadge.hide();
+                      dangerBadge.show();
+                  }
+
+                  // Show the fabricFields div after checking the lot
+                  fabricFields.show();
+              },
+              error: function(error) {
+                  console.error('Error checking remaining quantity:', error);
+              }
+          });
+      });
+  });
+</script>
+
+  <x-footerscript/>
+</body>
 </html>

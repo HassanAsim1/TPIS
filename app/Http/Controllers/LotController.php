@@ -558,7 +558,31 @@ class LotController extends Controller
     public function CardVerifyID($id){
         $data = lotcard::where('card_id',$id)->first();
         $CardData = linklotcard::where('card_id',$data->card_id)->get();
-        return view('lot.verify_card_id',compact(('data')))->with('CardData',$CardData);
+        $lotArray = [];
+        $count = 0; 
+        foreach ($CardData as $lot) {
+            // Extract numeric portion using regex
+            preg_match('/\d+/', $lot->lot_id, $matches);
+        
+            // Create a new instance of linklotcard
+            $lotData = new linklotcard;
+        
+            // Add the numeric portion to the lotData object
+            $lotData->numericPortion = isset($matches[0]) ? $matches[0] : null;
+        
+            if (strpos($lot->lot_id, 'S') === 0) {
+                // If the lot_id starts with 'S', retrieve records where lot_id contains that 'S'
+                $lotData = linklotcard::where('lot_id', 'LIKE', '%' . $lotData->numericPortion . '%')->get();
+            } else {
+                // Otherwise, retrieve records where lot_id starts with the numeric portion
+                $lotData = linklotcard::where('lot_id', 'LIKE', $lotData->numericPortion . '%')->get();
+            }
+        
+            // Add the modified $lotData to the $lotArray
+            $lotArray[] = $lotData;
+        }
+        // dd($lotArray[0]);
+        return view('lot.verify_card_id',compact('data','lotArray'))->with('CardData',$CardData);
     }
     public function EditPantLot($id){
         $data = lot::where('lot_id',$id)->first();
@@ -1062,6 +1086,22 @@ class LotController extends Controller
             $lotData = linkinvoice::where('lot_id',$request->lotId)->get();
         }
         return view('lot.lotReport',compact('data','lotData'));
+    }
+    public function checkRemainingQuantity(Request $request)
+    {
+        $lotNumber = $request->input('lotNumber');
+        $quantity = $request->input('quantity');
+
+        if (strpos($lotNumber, 'S') === 0) {
+            $remainingQuantity = shirtlot::where('lotNumber', $lotNumber)->value('lot_remain');
+        } else {
+            $remainingQuantity = lot::where('lotNumber', $lotNumber)->value('lot_remain');
+        }
+
+        // Check if remaining quantity is sufficient
+        $isQuantityAvailable = ($remainingQuantity >= $quantity);
+
+        return response()->json(['remainingQuantity' => $remainingQuantity, 'isQuantityAvailable' => $isQuantityAvailable]);
     }
     
 }
