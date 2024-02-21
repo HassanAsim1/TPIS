@@ -184,6 +184,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('clipping',[LotController::class,'clipping'])->name('clipping');
     Route::get('customReport',[PaymentController::class,'customReport'])->name('customReport');
     Route::get('checkRemainingQuantity',[LotController::class,'checkRemainingQuantity'])->name('checkRemainingQuantity');
+    Route::get('/get-status-data', [PaymentController::class, 'getStatusData']);
 
 });
 

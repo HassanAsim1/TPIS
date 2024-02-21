@@ -143,12 +143,33 @@
                             </div>
                             <span>Pcs Sales</span>
                             <h3 class="card-title text-nowrap mb-1">{{gettotalpcs()}}</h3>
-                            <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                            @php
+                              $percentageChange = getPcsPercentage();
+
+                              if ($percentageChange > 0) {
+                                  $class = 'text-success';
+                                  $arrowIcon = 'bx bx-up-arrow-alt';
+                                  $sign = '+';
+                              } elseif ($percentageChange < 0) {
+                                  $class = 'text-danger';
+                                  $arrowIcon = 'bx bx-down-arrow-alt';
+                                  $sign = '-';
+                              } else {
+                                  $class = ''; // You can set a default class if needed
+                                  $arrowIcon = ''; // You can set a default arrow icon if needed
+                                  $sign = '';
+                              }
+
+                              $formattedPercentageChange = number_format(abs($percentageChange), 2);
+                          @endphp
+
+                          <small class="{{ $class }} fw-semibold"><i class="{{ $arrowIcon }}"></i> {{ $sign . $formattedPercentageChange }}%</small>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  
                   <!-- Total Revenue -->
                   <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
                     <div class="card">

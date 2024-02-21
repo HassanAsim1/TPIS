@@ -398,4 +398,57 @@ class PaymentController extends Controller
             return view('payments.customReport',compact('parties'));
         }
     }
+    public function getStatusData()
+    {
+        $statusData = $this->getStatusDataFromHelper();
+        return response()->json($statusData);
+    }
+    private function getStatusDataFromHelper()
+    {
+        $currentYear = Carbon::now()->year;
+
+        // Get the parties with a total_pcs greater than 2000
+        $selectedParties = DB::table('invoices')
+            ->select('partie_id', DB::raw('SUM(total_pcs) as total_pcs'))
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('partie_id')
+            ->havingRaw('SUM(total_pcs) > 2000')
+            ->get();
+
+        // Get the parties with a total_pcs less than or equal to 2000
+        $otherParties = DB::table('invoices')
+            ->select('partie_id', DB::raw('SUM(total_pcs) as total_pcs'))
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('partie_id')
+            ->havingRaw('SUM(total_pcs) <= 2000')
+            ->get();
+
+        // Extract labels, series, and calculate the total_pcs for "Others"
+        $labels = $selectedParties->pluck('partie_id')->toArray();
+        $series = $selectedParties->pluck('total_pcs')->toArray();
+        $colors = ['#6697EE', '#EEAA66', '#48C9B0', '#7D3C98', '#F4D03F', '#EC7063', '#2E4053', '#229954', '#909497', '#AED6F1', '#7B241C', '#CA6F1E', '#512E5F', '#7B7D7D'];
+
+        // Calculate the total_pcs for "Others"
+        $otherTotalPcs = $otherParties->sum('total_pcs');
+
+        // Add "Others" section if there are parties with total_pcs less than or equal to 2000
+        if ($otherTotalPcs > 0) {
+            $labels[] = 'Others';
+            $series[] = $otherTotalPcs;
+            $colors[] = '#CCCCCC'; // You can set a specific color for "Others"
+        }
+
+        // Get party names for each party ID
+        $partyNames = [];
+        foreach ($labels as $partyId) {
+            $partyNames[] = ($partyId !== 'Others') ? getpartiename($partyId) : 'Others';
+        }
+
+        return [
+            'labels' => $partyNames,
+            'series' => $series,
+            'colors' => $colors,
+        ];
+
+    }
 }

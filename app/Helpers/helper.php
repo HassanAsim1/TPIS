@@ -87,6 +87,16 @@ function getpcs(){
     }
     return $data;
 }
+function getPcsPercentage(){
+    $currentMonthTotalPcs = invoice::whereMonth('created_at', Carbon::now()->month)->sum('total_pcs');
+    $lastMonthTotalPcs = invoice::whereMonth('created_at', Carbon::now()->subMonth()->month)->sum('total_pcs');
+    if ($lastMonthTotalPcs == 0) {
+        $percentageChange = ($currentMonthTotalPcs - $lastMonthTotalPcs) * 100;
+    } else {
+        $percentageChange = ($currentMonthTotalPcs - $lastMonthTotalPcs) / $lastMonthTotalPcs * 100;
+    }
+    return $percentageChange;
+}
 function gettotalexpense(){
     $partie_debit = parties_ledger::sum('debit');
     $cashier_debit = cashier_payment::where('debit','!=',null)->get()->sum('debit');

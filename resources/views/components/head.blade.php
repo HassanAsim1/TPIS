@@ -60,6 +60,7 @@
     <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/jstree.min.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-tree.css">
+    <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
   <!-- Theme style -->
 
     <!-- Helpers -->

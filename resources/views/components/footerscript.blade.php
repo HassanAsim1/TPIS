@@ -39,6 +39,8 @@
 <script src="{{asset('multiple/plugins/select2/js/select2.full.min.js')}}"></script>
 <script src="../../../app-assets/vendors/js/extensions/jstree.min.js"></script>
 <script src="../../../app-assets/js/scripts/extensions/ext-component-tree.js"></script>
+<script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
+<script src="../assets/js/dashboards-analytics.js"></script>
 
 <script>
   $(function () {

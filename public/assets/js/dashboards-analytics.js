@@ -419,74 +419,88 @@
   }
 
   // Order Statistics Chart
-  // --------------------------------------------------------------------
-  const chartOrderStatistics = document.querySelector('#orderStatisticsChart'),
-    orderChartConfig = {
-      chart: {
-        height: 165,
-        width: 130,
-        type: 'donut'
-      },
-      labels: ['Electronic', 'Sports', 'Decor', 'Fashion'],
-      series: [85, 15, 50, 50],
-      colors: [config.colors.primary, config.colors.secondary, config.colors.info, config.colors.success],
-      stroke: {
-        width: 5,
-        colors: cardColor
-      },
-      dataLabels: {
-        enabled: false,
-        formatter: function (val, opt) {
-          return parseInt(val) + '%';
-        }
-      },
-      legend: {
-        show: false
-      },
-      grid: {
-        padding: {
-          top: 0,
-          bottom: 0,
-          right: 15
-        }
-      },
-      plotOptions: {
-        pie: {
-          donut: {
-            size: '75%',
-            labels: {
-              show: true,
-              value: {
-                fontSize: '1.5rem',
-                fontFamily: 'Public Sans',
-                color: headingColor,
-                offsetY: -15,
-                formatter: function (val) {
-                  return parseInt(val) + '%';
-                }
-              },
-              name: {
-                offsetY: 20,
-                fontFamily: 'Public Sans'
-              },
-              total: {
-                show: true,
-                fontSize: '0.8125rem',
-                color: axisColor,
-                label: 'Weekly',
-                formatter: function (w) {
-                  return '38%';
-                }
-              }
-            }
-          }
-        }
-      }
-    };
-  if (typeof chartOrderStatistics !== undefined && chartOrderStatistics !== null) {
-    const statisticsChart = new ApexCharts(chartOrderStatistics, orderChartConfig);
-    statisticsChart.render();
+  // your_script.js
+
+document.addEventListener('DOMContentLoaded', function () {
+  const chartOrderStatistics = document.querySelector('#orderStatisticsChart');
+
+  if (chartOrderStatistics !== null) {
+      // Make an AJAX request to Laravel backend to get status data
+      fetch('/get-status-data')
+          .then(response => response.json())
+          .then(statusData => {
+              const orderChartConfig = {
+                  chart: {
+                      height: 180,
+                      width: 140,
+                      type: 'donut'
+                  },
+                  labels: statusData.labels,
+                  series: statusData.series,
+                  colors: statusData.colors,
+                  stroke: {
+                      width: 5,
+                      colors: statusData.colors
+                  },
+                  dataLabels: {
+                      enabled: false,
+                      formatter: function (val, opt) {
+                          return parseInt(val) + '%';
+                      }
+                  },
+                  legend: {
+                      show: false
+                  },
+                  grid: {
+                      padding: {
+                          top: 0,
+                          bottom: 0,
+                          right: 15
+                      }
+                  },
+                  plotOptions: {
+                      pie: {
+                          donut: {
+                              size: '85%',
+                              labels: {
+                                  show: true,
+                                  value: {
+                                      fontSize: '0.8rem',
+                                      fontFamily: 'Public Sans',
+                                      color: '#212F3D',
+                                      offsetY: -15,
+                                      formatter: function (val) {
+                                          return parseInt(val) + ' Pcs';
+                                      }
+                                  },
+                                  name: {
+                                      offsetY: 20,
+                                      fontFamily: 'Public Sans',
+                                      color: '#212F3D'
+                                  },
+                                  total: {
+                                      show: true,
+                                      fontSize: '0.7125rem',
+                                      color: '#212F3D',
+                                      label: 'Weekly',
+                                      formatter: function (w) {
+                                          return '0Pcs';
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              };
+
+              const statisticsChart = new ApexCharts(chartOrderStatistics, orderChartConfig);
+              statisticsChart.render();
+          })
+          .catch(error => {
+              console.error('Error fetching status data:', error);
+          });
   }
+});
 
   // Income Chart - Area chart
   // --------------------------------------------------------------------
