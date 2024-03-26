@@ -158,15 +158,15 @@
                   />
                 </div>
                 <div class="mb-3">
-                    <label for="cnic" class="form-label">Date</label>
-                    <input
-                        type="date"
-                        class="form-control"
-                        name="date"
-                        value="{{ $data->created_at->format('Y-m-d') }}"
-                        autofocus
-                    />
-                </div>
+                  <label for="cnic" class="form-label">Date and Time</label>
+                  <input
+                      type="datetime-local"
+                      class="form-control"
+                      name="date"
+                      value="{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d\TH:i') }}"
+                      autofocus
+                  />
+              </div>
                 <button class="btn btn-primary d-grid w-100" type="submit">Update</button>
                 <a href="{{url('parties_ledger/'.$data->parties_id)}}"><button type="button" class="btn btn-secondary d-grid w-100 mt-2">Back</button></a>
               </form>

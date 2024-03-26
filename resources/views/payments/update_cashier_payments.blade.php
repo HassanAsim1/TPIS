@@ -117,7 +117,7 @@
                 <div class="mb-3">
                   <label for="inputId">Customer ID</label>
                   <select class="form-select" name="user_id" data-live-search="true">
-                  <option value="Expense" data-subtext="Company-Expense">Expense</option>
+                  <option value="{{$data->user_id}}" data-subtext="Company-Expense">{{$data->user_id}}</option>
                   @foreach($employees as $Emp)
                     @if($Emp->status == 'active')
                     <option value="{{$Emp->user_id}}" data-subtext="{{$Emp->user_id}}">{{$Emp->name}} / {{$Emp->user_id}}</option>

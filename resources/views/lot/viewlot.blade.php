@@ -64,18 +64,22 @@
                                   <div class="col mb-0">
                                     <label for="Quantity" class="form-label">Lot Fabric
                                     </label>
-                                    <input type="text" class="form-control" value="{{$data->fabric_id}}" readonly/>
+                                    <input type="text" class="form-control" value="{{$data->fabricId}}" readonly/>
+                                  </div>
+                                  <div class="col mb-0">
+                                    <label for="Quantity" class="form-label">Lot Number</label>
+                                    <input type="text" class="form-control" value="{{$data->lotNumber}}" readonly/>
                                   </div>
                                   <div class="col mb-0">
                                     <label for="Quantity" class="form-label">Fabric Rate
                                     </label>
-                                    <input type="text" class="form-control" value="{{getfabricrate('$data->fabric_id')}}" readonly/>
+                                    <input type="text" class="form-control" value="{{getfabricrate('$data->fabricId')}}" readonly/>
                                   </div>
                                 </div>
                                 <div class="row g-2">
                                   <div class="col mb-0">
                                     <label for="Quantity" class="form-label">Quantity</label>
-                                    <input type="text" value="{{$data->lot_quantity}}" class="form-control" readonly/>
+                                    <input type="text" value="{{$data->lot_quantity}}" class="form-control" id="totalQuantity" readonly/>
                                   </div>
                                   <div class="col mb-0">
                                     <label for="dobBasic" class="form-label">Remaining Quantity</label>
@@ -236,6 +240,7 @@
                                 @endif
                               </div>
                               <div class="modal-footer">
+                                <a><button type="button" data-toggle="modal" data-target="#imageModal" data-value="{{$data->lotNumber}}" class="btn btn-primary" onclick="updatePantLot()">Add Person</button></a>
                                 <a href="{{url('pantlot')}}"><button type="button" class="btn btn-secondary">Back</button></a>
                               </div>
                             </div>
@@ -243,6 +248,60 @@
                         </div>
                 </form>
                                       </div>
+
+
+        <!-- The Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="imageModalLabel">Add Person</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{{url('addPantLotDetails')}}" method="POST">
+                      @csrf
+                      <label for="">Pant Lot</label>
+                      <input id="pantLotInput" name="pantLot" class="form-control" readonly/>
+                      <label for="">Select Employee</label>
+                      <select name="userId" class="form-select" required>
+                          <option value=""> -- Select -- </option>
+                          @foreach($employees as $employee)
+                          <option value="{{$employee->user_id}}">{{$employee->name}}</option>
+                          @endforeach
+                      </select>
+                      <label for="">Lot Size</label>
+                      <select name="lotSize[]" class="form-select" id="lotSize" multiple required>
+                          <option value=""> -- Select -- </option>
+                          <?php
+                          for ($i = 18; $i <= 45; $i += 2) {
+                              $start = $i;
+                              $end = $i + 2;
+                              $optionValue = "$start to $end";
+                              echo "<option value=\"$optionValue\">$optionValue</option>";
+                          }
+                          ?>
+                          <option value="all">ALL</option>
+                      </select>
+                      <div class="row">
+                          <div class="col-sm-6">
+                              <label for="lotQuantity">Lot Quantity</label>
+                              <input name="quantity" id="lotQuantity" class="form-control" oninput="calculateBundle()"/>
+                          </div>
+                          <div class="col-sm-6">
+                              <label for="calculateLot">Quantity</label>
+                              <input name="quantity" id="calculateLot" class="form-control" readonly/>
+                          </div>
+                      </div>
+                      <label for="bundle">Bundle</label>
+                      <input name="bundle" id="bundle" class="form-control" readonly/>
+                  </form>
+                  </div>
+              </div>
+          </div>
+      </div>
              
 
     <!-- Core JS -->
@@ -258,8 +317,33 @@
         });
     </script>
     <script>
-        
-    </script>
+      document.getElementById('lotSize').addEventListener('change', calculateBundle);
+
+      function calculateBundle() {
+          var selectedLotSizes = $('#lotSize').val();
+          var lotQuantity = $('#totalQuantity').val();
+          if (selectedLotSizes && lotQuantity) {
+              var totalLotSize = selectedLotSizes.length + 1;
+              var bundleValue = lotQuantity / totalLotSize;
+              $('#bundle').val(bundleValue.toFixed(2));
+              $('#calculateLot').val(bundleValue.toFixed(2)); // Display the same value in "Quantity" field
+          } else {
+              $('#bundle').val('');
+              $('#calculateLot').val('');
+          }
+      }
+
+      function updatePantLot() {
+          // Get the lot number from the button's data-value attribute
+          var lotQuantity = $('#totalQuantity').val();
+          $('#lotQuantity').val(lotQuantity);
+
+          var lotNumber = document.querySelector('[data-target="#imageModal"]').getAttribute('data-value');
+          document.getElementById('pantLotInput').value = lotNumber;
+
+          calculateBundle(); // Call the function to update bundle when updating pant lot
+      }
+  </script>
     
     <x-footerscript/>
   </body>

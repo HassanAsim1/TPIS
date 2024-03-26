@@ -102,17 +102,10 @@
                 </button>
                 <button type="button" class="btn btn-sm btn-secondary mt-1" onclick="window.open('{{ route('cashierInvoice') }}', '_blank');">Generate Invoice</button>
                 <button type="button" class="btn btn-sm btn-secondary mt-1" id="printButton">Current Invoice</button>
-                <button type="button" class="btn btn-sm btn-secondary mt-1" onclick="window.open('{{ url('getAllCashierPayments') }}', '_blank');">All Record</button>
+                <a href="{{ url('cashier_payments') }}"><button type="button" class="btn btn-sm btn-secondary mt-1">Back</button></a>
               </div>
               
-            <div class="row">
-              <div class="col-sm-6">
-                <input class="form-control mt-2" type="text" id="searchInput" placeholder="Search...">
-              </div>
-              <div class="col-sm-6">
-                <input class="form-control mt-2" type="input"  value='{{$balance}}' readonly>
-              </div>
-            </div>
+            <input class="form-control mt-2" type="text" id="searchInput" placeholder="Search...">
             @if(session('role') == 'admin')
             <div class="card-tools">
               <select class="form-select mt-2" name="user_id" data-live-search="true" id="cashierDropdown">
@@ -308,74 +301,65 @@
                           <th>Description</th>
                           <th>Debit</th>
                           <th>Credit</th>
-                          {{-- <th>Total</th> --}}
+                          <th>Total</th>
                           <th>Action</th>
                       </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                    @php
-                        $totalRows = count($CashEntry);
-                        $balance = 0;
-                        $reversedCashEntry = $CashEntry->reverse();
-                        $count = 1;
-                    @endphp
-
-                    @foreach ($CashEntry as $key => $CashData)
-                        @php
-                            $reversedKey = $totalRows - $key - 1; // Calculate the corresponding key for reversed array
-                        @endphp
-                        <tr id="row{{ $key + 1 }}">
-                            <td>
-                                <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                <span class="badge bg-label-secondary me-1">{{ $CashData->pay_id }} - {{ \Carbon\Carbon::parse($CashData->created_at)->format('d M Y h:iA') }}</span>
-                            </td>
-                            @if ($CashData->user_id != 'Expense' && $CashData->user_id != 'Company')
-                                @if ($CashData->debit != null)
-                                    <td>{{ getname($CashData->user_id) }}</td>
-                                @else
-                                    <td>{{ getpartiename($CashData->user_id) }}</td>
-                                @endif
-                            @else
-                                <td>{{ $CashData->user_id }}</td>
-                            @endif
-                            @if ($CashData->verify == 0)
-                                <td>{{ $CashData->description }} /
-                                    <span class="badge bg-label-primary me-1">{{ getname($CashData->given_by) }}</span> /
-                                    <span class="badge bg-label-danger me-1">Not Verify</span>
-                                </td>
-                            @else
-                                <td>{{ $CashData->description }} /
-                                    <span class="badge bg-label-primary me-1">{{ getname($CashData->given_by) }}</span> /
-                                    <span class="badge bg-label-success me-1">Verify</span>
-                                </td>
-                            @endif
-                            <td>{{ $CashData->debit }}</td>
-                            <td>{{ $CashData->credit }}</td>
-                            {{-- <td>{{ $balance += ($reversedCashEntry[$reversedKey]->credit - $reversedCashEntry[$reversedKey]->debit) }}</td> --}}
-                            <td>
-                                <div class="dropdown">
-                                    <button type="button" class="btn btn-sm p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                        <i class="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ url('cashier_payments/' . $CashData->pay_id) }}">
-                                            <i class="bx bx-edit-alt me-1"></i>Update</a>
-                                        {{-- <a class="dropdown-item" href="javascript:void(0);"
-                                            ><i class="bx bx-trash me-1"></i> Delete</a
-                                        > --}}
-                                    </div>
-                                </div>
-                            </td>
-                            @php
-                                $count++;
-                            @endphp
-                        </tr>
-                    @endforeach
-
-
-
-                
-
+                      @php
+                          $balance = 0;
+                          $num = count($CashEntry);
+                          $count = 1;
+                      @endphp
+                      <input type="hidden" id="table_row" value="{{ $num }}" />
+                      @foreach ($CashEntry as $key => $CashData)
+                          <tr id="row{{ $key + 1 }}">
+                              <td>
+                                  <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                  <span class="badge bg-label-secondary me-1">{{ $CashData->pay_id }} - {{ \Carbon\Carbon::parse($CashData->created_at)->format('d M Y h:iA') }}</span>
+                              </td>
+                              @if ($CashData->user_id != 'Expense' && $CashData->user_id != 'Company')
+                                  @if ($CashData->debit != null)
+                                      <td>{{ getname($CashData->user_id) }}</td>
+                                  @else
+                                      <td>{{ getpartiename($CashData->user_id) }}</td>
+                                  @endif
+                              @else
+                                  <td>{{ $CashData->user_id }}</td>
+                              @endif
+                              @if ($CashData->verify == 0)
+                                  <td>{{ $CashData->description }} /
+                                      <span class="badge bg-label-primary me-1">{{ getname($CashData->given_by) }}</span> /
+                                      <span class="badge bg-label-danger me-1">Not Verify</span>
+                                  </td>
+                              @else
+                                  <td>{{ $CashData->description }} /
+                                      <span class="badge bg-label-primary me-1">{{ getname($CashData->given_by) }}</span> /
+                                      <span class="badge bg-label-success me-1">Verify</span>
+                                  </td>
+                              @endif
+                              <td>{{ $CashData->debit }}</td>
+                              <td>{{ $CashData->credit }}</td>
+                              <td>{{ $balance = ($balance + $CashData->credit - $CashData->debit) }}</td>
+                              <td>
+                                  <div class="dropdown">
+                                      <button type="button" class="btn btn-sm p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                          <i class="bx bx-dots-vertical-rounded"></i>
+                                      </button>
+                                      <div class="dropdown-menu">
+                                          <a class="dropdown-item" href="{{ url('cashier_payments/' . $CashData->pay_id) }}">
+                                              <i class="bx bx-edit-alt me-1"></i>Update</a>
+                                          {{-- <a class="dropdown-item" href="javascript:void(0);"
+                                              ><i class="bx bx-trash me-1"></i> Delete</a
+                                          > --}}
+                                      </div>
+                                  </div>
+                              </td>
+                              @php
+                                  $count++;
+                              @endphp
+                          </tr>
+                      @endforeach
                   </tbody>
               </table>
           </div>
@@ -392,7 +376,12 @@
     <!-- build:js assets/vendor/js/core.js -->
 
 
-    
+    <script>
+      $(document).ready(function(){
+        let rowval = $('#table_row').val();
+        document.getElementById('row'+rowval).scrollIntoView();
+      })
+    </script>
 
     <script>
       const searchInput = document.getElementById('searchInput');

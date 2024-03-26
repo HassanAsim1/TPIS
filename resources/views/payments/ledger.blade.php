@@ -84,13 +84,13 @@
               <div class="card-tools">
                 <div class="row">
                   <div class="col-sm-8">
-                  <button type="button" class="btn btn-tool btn-danger" data-card-widget="collapse" title="Collapse" id="DebitBtn">Add Debit
+                  <button type="button" class="btn btn-sm btn-tool btn-danger" data-card-widget="collapse" title="Collapse" id="DebitBtn">Add Debit
                 </button>
-                <button type="button" class="btn btn-tool btn-success" data-card-widget="collapse" title="Collapse"id="CreditBtn">Add Credit
+                <button type="button" class="btn btn-sm btn-tool btn-success" data-card-widget="collapse" title="Collapse"id="CreditBtn">Add Credit
                 </button>
-                <button type="button" class="btn btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
+                <button type="button" class="btn btn-sm btn-tool btn-secondary" data-card-widget="collapse" title="Collapse"id="CloseBtn">Close
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="window.open('{{ route('printPartieInvoice', ['partie_id' => $PRTYID->partie_id]) }}', '_blank');">Generate Invoice</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="window.open('{{ route('printPartieInvoice', ['partie_id' => $PRTYID->partie_id]) }}', '_blank');">Generate Invoice</button>
                   </div>
                   <div class="col-sm-4">
                   <label for="inputDate">Balance</label>
@@ -109,7 +109,7 @@
             <div class="card-header">
               <h3 class="card-title">Add Credit</h3>
               <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse" title="Collapse">
                   <i class="fas fa-minus"></i>
                 </button>
               </div>
@@ -127,7 +127,7 @@
                   </div>
                   <div class="col-sm-3">
                       <label for="inputId">TRANSACTION Date</label>
-                      <input type="date" name="date" id="inputId" class="form-control">
+                      <input type="datetime-local" name="date" id="inputId" class="form-control" value="{{ date('Y-m-d\TH:i') }}">
                   </div>
                 </div>
                 <div class="row">
@@ -149,8 +149,8 @@
                   </div>
                 </div>
                 <div class="col-12 mt-3">
-          <!-- <a href="/parties" class="btn btn-secondary">Cancel</a> -->
-          <button type="submit" value="Add lot" class="btn btn-success float-right">Add Credit</button>
+          <!-- <a href="/parties" class="btn btn-sm btn-secondary">Cancel</a> -->
+          <button type="submit" value="Add lot" class="btn btn-sm btn-success float-right">Add Credit</button>
         </div>
               </div>
             </div>
@@ -169,7 +169,7 @@
             <div class="card-header">
               <h3 class="card-title">Add Debit</h3>
               <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse" title="Collapse">
                   <i class="fas fa-minus"></i>
                 </button>
               </div>
@@ -187,7 +187,7 @@
                   </div>
                   <div class="col-sm-3">
                       <label for="inputId">TRANSACTION Date</label>
-                      <input type="date" name="date" id="inputIdDebit" class="form-control">
+                      <input type="datetime-local" name="date" id="inputIdDebit" class="form-control" value="{{ date('Y-m-d\TH:i') }}">
                   </div>
                 </div>
                 <div class="row">
@@ -209,8 +209,8 @@
                   </div>
                 </div>
                 <div class="col-12 mt-3">
-          <!-- <a href="#" class="btn btn-secondary">Cancel</a> -->
-          <button type="submit" value="Add lot" class="btn btn-danger float-right">Add Debit</button>
+          <!-- <a href="#" class="btn btn-sm btn-secondary">Cancel</a> -->
+          <button type="submit" value="Add lot" class="btn btn-sm btn-danger float-right">Add Debit</button>
         </div>
               </div>
             </div>
@@ -246,12 +246,11 @@
                     <input type="hidden" id="table_row" value="{{$num}}"/>
                      @foreach($ledger as $parties_ledger)
                       <tr id="row{{$count}}">
-                        <td>{{\Carbon\Carbon::parse($parties_ledger->created_at)->format('j F y , H:i')}}</td>
+                        <td><span class="badge bg-label-secondary me-1">{{ $parties_ledger->payment_id }} - {{\Carbon\Carbon::parse($parties_ledger->created_at)->format('d M Y h:iA')}}</span></td>
                         <td>
                           <a href="{{ substr($parties_ledger->trans_id, 0, 3) === 'INV' ? '/invoiceEdit/' . $parties_ledger->trans_id : '#' }}" target="_blank">
                               {{ $parties_ledger->trans_id }}
                           </a> / {{ $parties_ledger->cashierPayId }}
-                          <span class="badge bg-label-secondary me-1">{{ $parties_ledger->payment_id }}</span>
                         </td>
                         @if($parties_ledger->trans_id && $parties_ledger->credit)
                         <td>{{$parties_ledger->description}} / {!! getInvoiceRecord($parties_ledger->trans_id) !!} / <span class="badge bg-label-primary me-1">{{getname($parties_ledger->given_by)}}</span></td>
@@ -263,7 +262,7 @@
                         <td>{{$balance = ($balance + $parties_ledger->credit - $parties_ledger->debit)}}</td>
                         <td>
                           <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-sm p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                             <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">

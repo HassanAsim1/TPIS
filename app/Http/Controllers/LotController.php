@@ -14,6 +14,7 @@ use App\Models\parties_ledger;
 use App\Models\employee_ledger;
 use App\Models\linkinvoice;
 use App\Models\partie;
+use App\Models\lotPerson;
 use App\Models\fabric;
 use App\Models\invoice;
 use App\Models\kadhilot;
@@ -101,7 +102,6 @@ class LotController extends Controller
     public function TrackPantLot(){
         $data = lot::all();
         $shirtLots = shirtlot::all();
-        // dd($data->lot_id);
         return view('lot.TrackPantLot',compact('data','shirtLots'));
     }
     public function LotCard(){
@@ -342,8 +342,10 @@ class LotController extends Controller
             if ($data->fabricYard == '') {
                 $data->fabricYard = $req->fabricYard;
                 $fabricYard = fabric::where('fabricId', $req->fabricId)->first();
-                $fabricYard->remainingMeter -= $req->fabricYard;
-                $fabricYard->save();
+                if($fabricYard){
+                    $fabricYard->remainingMeter -= $req->fabricYard;
+                    $fabricYard->save();
+                }
             } else {
                 $fabricYardDifference = (int)$req->fabricYard - (int)$data->fabricYard;
                 $data->fabricYard = $req->fabricYard;
@@ -415,11 +417,26 @@ class LotController extends Controller
                 $InData->invoice_id = $req->invoice_id;
                 $InData->partieId = $req->partie_id;
                 $InData->lot_id = $req->slot[$i];
+
                 if($req->bill_type == 'Fabric Bill'){
                     $minusFabric = fabric::where('fabricId',$req->slot[$i])->first();
                     if($minusFabric){
                         $minusFabric->remainingMeter -= $req->squantity[$i];
                         $minusFabric->save();
+                    }
+                }
+                else{
+                    if (strpos($req->slot[$i], 'S') === 0) {
+                        $remainingQuantity = shirtlot::where('lotNumber', $req->slot[$i])->value('lot_remain');
+                    } else {
+                        $remainingQuantity = lot::where('lotNumber', $req->slot[$i])->value('lot_remain');
+                    }
+
+                    $remainingQuantity -= $req->squantity[$i];
+                    if (strpos($req->slot[$i], 'S') === 0) {
+                        shirtlot::where('lotNumber', $req->slot[$i])->update(['lot_remain' => $remainingQuantity]);
+                    } else {
+                        lot::where('lotNumber', $req->slot[$i])->update(['lot_remain' => $remainingQuantity]);
                     }
                 }
                 $InData->description = $req->sdes[$i];
@@ -705,6 +722,7 @@ class LotController extends Controller
     public function Next($id){
         $data = lot::where('lot_id',$id)->first();
         $inc = $data->status;
+        dd($data);
         $inc++;
         $data->status = $inc;
         session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
@@ -722,7 +740,8 @@ class LotController extends Controller
     }
     public function ViewLotDetail($id){
         $data = lot::where('lot_id',$id)->first();
-        return view('lot.viewlot',compact('data'));
+        $employees = register::where('working_area','<',13)->where('status','active')->get();
+        return view('lot.viewlot',compact('data','employees'));
     }
     public function show_verify_card(){
         if(session('role') == 'admin' || session('role') == 'manager'){
@@ -758,7 +777,7 @@ class LotController extends Controller
     public function updateInvoice(Request $request){
         try {
             // Start a database transaction
-            DB::beginTransaction();
+            // DB::beginTransaction();
         
             $data = invoice::where('invoice_id', $request->invoice_id)->first();
             $data->invoice_id = $request->invoice_id;
@@ -773,21 +792,52 @@ class LotController extends Controller
             $data->save();
         
             // Delete existing linked invoice data
-            $invoiceData = linkinvoice::where('invoice_id', $request->invoice_id)->get();
-            $invoiceData->each->delete();
+            // $invoiceData = linkinvoice::where('invoice_id', $request->invoice_id)->get();
+            // $invoiceData->each->delete();
         
             // Save the new linked invoice data
             $num = count($request->squantity);
             for ($i = 0; $i < $num; $i++) {
-                $InData = new linkinvoice;
-                $InData->invoice_id = $request->invoice_id;
-                $InData->lot_id = $request->slot[$i];
-                $InData->partieId = $req->partie_id;
-                $InData->description = $request->sdes[$i];
-                $InData->quantity = $request->squantity[$i];
-                $InData->rate = $request->srate[$i];
-                $InData->total = $request->stotal[$i];
-                $InData->save();
+                $InData = linkinvoice::updateOrInsert(
+                    [
+                        'invoice_id' => $request->invoice_id,
+                        'lot_id' => $request->slot[$i],
+                    ],
+                    [
+                        'partieId' => $request->partie_id,
+                        'description' => $request->sdes[$i],
+                        'quantity' => $request->squantity[$i],
+                        'rate' => $request->srate[$i],
+                        'total' => $request->stotal[$i],
+                    ]
+                );
+
+                // if (strpos($request->slot[$i], 'S') === 0) {
+                //     $remainingQuantity = shirtlot::where('lotNumber', $request->slot[$i])->value('lot_remain');
+                // } else {
+                //     $remainingQuantity = lot::where('lotNumber', $request->slot[$i])->value('lot_remain');
+                // }
+                // // dd($remainingQuantity);
+                // $quantityDifference = $request->squantity[$i] - $remainingQuantity;
+                // dd($request->squantity[$i]); 
+                // if ($quantityDifference > 0) {
+                //     $remainingQuantity -= $quantityDifference;
+                // } elseif ($quantityDifference < 0) {
+                //     $remainingQuantity += $quantityDifference;
+                // }
+                
+                // if (strpos($request->slot[$i], 'S') === 0) {
+                //     shirtlot::where('lotNumber', $request->slot[$i])->update(['lot_remain' => $remainingQuantity]);
+                // } else {
+                //     lot::where('lotNumber', $request->slot[$i])->update(['lot_remain' => $remainingQuantity]);
+                // }
+
+                // $InData->partieId = $request->partie_id;
+                // $InData->description = $request->sdes[$i];
+                // $InData->quantity = $request->squantity[$i];
+                // $InData->rate = $request->srate[$i];
+                // $InData->total = $request->stotal[$i];
+                // $InData->save();
             }
         
             // For Credit in Parties Ledger
@@ -812,7 +862,7 @@ class LotController extends Controller
             return redirect()->back()->with('success', $data->invoice_id . ' Has Successfully Updated');
         } catch (Exception $e) {
             // An error occurred, rollback the transaction
-            DB::rollBack();
+            // DB::rollBack();
         
             return redirect()->back()->with('error', 'Error, ' . $e->getMessage());
         }
@@ -984,6 +1034,7 @@ class LotController extends Controller
     public function shirtNext($id){
         $data = shirtlot::where('lot_id',$id)->first();
         $inc = $data->status;
+        dd($data);
         $inc++;
         $data->status = $inc;
         session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
@@ -993,6 +1044,7 @@ class LotController extends Controller
     public function shirtBack($id){
         $data = shirtlot::where('lot_id',$id)->first();
         $inc = $data->status;
+        dd($data);
         $inc--;
         $data->status = $inc;
         session()->put('msg', $id . ' Lot Status ' . $data->status . ' Updated');
@@ -1102,6 +1154,37 @@ class LotController extends Controller
         $isQuantityAvailable = ($remainingQuantity >= $quantity);
 
         return response()->json(['remainingQuantity' => $remainingQuantity, 'isQuantityAvailable' => $isQuantityAvailable]);
+    }
+    public function storePantLotDetails(Request $request)
+    {
+        try {
+            // Validate the form data
+            $validatedData = $request->validate([
+                'pantLot' => 'required',
+                'userId' => 'required',
+                'lotSize' => 'required|array',
+                'bandel' => 'required',
+            ]);
+
+            // Convert the array to a JSON string
+            $lotSizeJson = json_encode($validatedData['lotSize']);
+
+            // Create a new instance of the lotPerson model and assign values
+            $data = new lotPerson;
+            $data->pantLot = $validatedData['pantLot'];
+            $data->userId = $validatedData['userId'];
+            $data->lotSize = $lotSizeJson;
+            $data->bandel = $validatedData['bandel'];
+
+            // Save the record in the database
+            $data->save();
+
+            // Redirect or return a response as needed
+            return redirect()->back()->with('success', 'Form submitted successfully!');
+        } catch (ValidationException $e) {
+            // If validation fails, redirect back with errors
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
     
 }

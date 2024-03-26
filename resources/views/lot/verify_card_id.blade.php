@@ -138,24 +138,31 @@
                         <div class="card-body">
                             <div id="jstree-basic">
                                 <ul>
-                                    @for($i = 0; $i < count($lotArray); $i++)
-                                    @php $quantity = 0; @endphp
-                                    <li class="jstree-open" data-jstree='{"icon" : "far fa-folder"}'>
+                                  @for($i = 0; $i < count($lotArray); $i++)
+                                  @php $quantity = 0; @endphp
+                                  <li class="jstree-open" data-jstree='{"icon" : "far fa-folder"}'>
                                       {{$i + 1}}
-                                        @for($j = 0; $j < count($lotArray[$i]); $j++)
-                                        @php $lotId = $lotArray[$i][$j]['lot_id'] @endphp 
-                                        <ul>
-                                            <li data-jstree='{"icon" : "fab fa-css3-alt"}'>{{$lotArray[$i][$j]['lot_id']}} / {{$lotArray[$i][$j]['quantity']}}</li>
-                                            @php $quantity += $lotArray[$i][$j]['quantity'] @endphp
-                                        </ul>
-                                        @endfor
-                                        <ul>
+                                      @for($j = 0; $j < count($lotArray[$i]); $j++)
+                                      @php $lotId = $lotArray[$i][$j]['lot_id'] @endphp 
+                                      <ul>
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>{{$lotArray[$i][$j]['lot_id']}} / {{$lotArray[$i][$j]['quantity']}}</li>
+                                          @php $quantity += $lotArray[$i][$j]['quantity'] @endphp
+                                      </ul>
+                                      @php
+                                          // Move the code inside the inner loop
+                                          $totalPcs = getLotTotalPcs($lotId);
+                                          $remainingPcs = $totalPcs - $quantity;
+                                      @endphp
+                                      @if($totalPcs)
+                                      <ul>
                                           <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Pcs = {{$quantity}}</li>
-                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Total Pcs = {{getLotTotalPcs($lotId)}}</li>
-                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Reamining Pcs = {{getLotTotalPcs($lotId) - $quantity}} </li>
-                                        </ul>
-                                      </li>
-                                    @endfor
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Total Pcs = {{$totalPcs}}</li>
+                                          <li data-jstree='{"icon" : "fab fa-css3-alt"}'>Remaining Pcs = {{$remainingPcs}}</li>
+                                      </ul>
+                                      @endif
+                                      @endfor
+                                  </li>
+                                  @endfor
                                 </ul>
                             </div>
                         </div>

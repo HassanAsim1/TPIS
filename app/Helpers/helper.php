@@ -53,7 +53,7 @@ function getshirtverify(){
     return count($data);
 }
 function getfabricrate($id){
-    $data = fabric::where('fabric_id',$id)->first();
+    $data = fabric::where('fabricId',$id)->first();
     if($data == null){
         return 0;
     }

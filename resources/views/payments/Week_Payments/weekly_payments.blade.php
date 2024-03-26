@@ -97,7 +97,7 @@
                         <td><strong>Rs :</strong> {{number_format($employee->total_amount)}}</td>
                         <td>{{number_format($employee->remaining_amount)}}</td>
                         <td>{{number_format($employee->recieved_amount)}}</td>
-                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{$employee->created_at}}</strong></td>
+                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>{{ \Carbon\Carbon::parse($employee->created_at)->format('d M Y h:iA') }}</strong></td>
                         <td>
                           <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

@@ -27,28 +27,80 @@ class PaymentController extends Controller
     //     dd($id);
 
     // }
-    public function CashierLedger(){
-        $config = ['table'=>'cashier_payments','field'=>'pay_id','length'=>10,'prefix'=>'PAY-'];
+    public function CashierLedger(Request $request){
+        $config = ['table' => 'cashier_payments', 'field' => 'pay_id', 'length' => 10, 'prefix' => 'PAY-'];
         $id = IdGenerator::generate($config);
-        if(session('role') == 'admin'){
-            $CashEntry = cashier_payment::all();
+        if($request->has('user_id')){
+            $CashEntry = cashier_payment::where('given_by', $request->user_id)->get();
         }
         else{
-            $CashEntry = cashier_payment::where('given_by', session('user_id'))->get();
+            if (session('role') == 'admin') {
+                $CashEntry = cashier_payment::latest()->take(20)->get();
+                $creditSum = cashier_payment::sum('credit');
+                $debitSum = cashier_payment::sum('debit');
+                $balance = $creditSum - $debitSum;
+            } else {
+                $creditData = cashier_payment::where('given_by', session('user_id'))->sum('credit');
+                $debitData = cashier_payment::where('given_by', session('user_id'))->sum('debit');
+                $balance = $creditData - $debitData;
+                $CashEntry = cashier_payment::where('given_by', session('user_id'))->latest()->take(30)->get();
+            }
         }
+        
         $EmpData = register::all();
+        $cashiers = register::where('role','cashier')->orWhere('role','admin')->get();
         $ParData = partie::all();
-        $CashierData = register::where('role','cashier')->orwhere('role','manager')->get();
-        return view('payments.cashier_payments',['debit_id'=>$id])->with('Empdata',$EmpData)->with('CashData',$CashierData)
-        ->with('CashEntry',$CashEntry)
-        ->with('ParData',$ParData);
+        $CashierData = register::where('role', 'cashier')->orWhere('role', 'manager')->get();
+
+        return view('payments.cashier_payments', ['debit_id' => $id])
+            ->with('Empdata', $EmpData)
+            ->with('CashData', $CashierData)
+            ->with('CashEntry', $CashEntry)
+            ->with('ParData', $ParData)
+            ->with('cashiers',$cashiers)
+            ->with('balance', $balance);
+    }
+    public function getAllCashierPayments(Request $request){
+        $config = ['table' => 'cashier_payments', 'field' => 'pay_id', 'length' => 10, 'prefix' => 'PAY-'];
+        $id = IdGenerator::generate($config);
+        if($request->has('user_id')){
+            $CashEntry = cashier_payment::where('given_by', $request->user_id)->get();
+        }
+        else{
+            if (session('role') == 'admin') {
+                $CashEntry = cashier_payment::all();
+                $creditSum = cashier_payment::sum('credit');
+                $debitSum = cashier_payment::sum('debit');
+                $balance = $creditSum - $debitSum;
+            } else {
+                $creditData = cashier_payment::where('given_by', session('user_id'))->get('credit');
+                $debitData = cashier_payment::where('given_by', session('user_id'))->get('debit');
+                $balance = $creditData - $debitData;
+                $CashEntry = cashier_payment::where('given_by', session('user_id'))->get();
+            }
+        }
+        
+        $EmpData = register::all();
+        $cashiers = register::where('role','cashier')->orWhere('role','admin')->get();
+        $ParData = partie::all();
+        $CashierData = register::where('role', 'cashier')->orWhere('role', 'manager')->get();
+
+        return view('payments.getAllCashierRecord' , ['debit_id' => $id])
+            ->with('Empdata', $EmpData)
+            ->with('CashData', $CashierData)
+            ->with('CashEntry', $CashEntry)
+            ->with('ParData', $ParData)
+            ->with('cashiers',$cashiers)
+            ->with('balance', $balance);
     }
     public function PayDebit(Request $req){
         try {
             DB::beginTransaction();
         
             $data = new cashier_payment;
-            $data->pay_id = $req->inputDebitID;
+            $config = ['table' => 'cashier_payments', 'field' => 'pay_id', 'length' => 10, 'prefix' => 'PAY-'];
+            $id = IdGenerator::generate($config);
+            $data->pay_id = $id;
         
             if ($req->user_id != 'Expense' && $req->debit != '') {
                 $config = ['table' => 'employee_ledgers', 'field' => 'payment_id', 'length' => 12, 'prefix' => 'EMPPAY-'];

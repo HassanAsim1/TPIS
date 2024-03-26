@@ -108,6 +108,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('parties_payments',[PaymentController::class,'PartiesPayments'])->name('parties_payments');
     Route::get('parties_ledger/{id}',[PaymentController::class,'PartiesLedger']);
     Route::get('cashier_payments',[PaymentController::class,'CashierLedger']);
+    Route::get('getAllCashierPayments',[PaymentController::class,'getAllCashierPayments']);
     Route::post('adddebitemp',[PaymentController::class,'PayDebit']);
     Route::post('partie_credit',[PaymentController::class,'Partie_Credit']);
     Route::get('employee_payments',[PaymentController::class,'Employee_Payments']);
@@ -185,6 +186,7 @@ Route::group(['middleware'=>['ProtectedPage']],function(){
     Route::get('customReport',[PaymentController::class,'customReport'])->name('customReport');
     Route::get('checkRemainingQuantity',[LotController::class,'checkRemainingQuantity'])->name('checkRemainingQuantity');
     Route::get('/get-status-data', [PaymentController::class, 'getStatusData']);
+    Route::post('/addPantLotDetails', [LotController::class,'storePantLotDetails']);
 
 });
 
